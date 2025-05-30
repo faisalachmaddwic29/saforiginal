@@ -131,7 +131,7 @@ export default defineNuxtConfig({
 			],
 			link: [
 				// Favicon .ico (browser utama)
-				{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+				// { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
 				// Tambahan untuk PNG icon
 				{ rel: 'icon', type: 'image/png', href: '/192.png' },
 				// { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
