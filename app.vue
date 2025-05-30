@@ -2,6 +2,7 @@
 	<Html :class="colorModeClass">
     <Body>
       <NuxtLayout>
+				<NuxtLoadingIndicator color="#BD9E72" />
         <NuxtPage />
       </NuxtLayout>
     </Body>

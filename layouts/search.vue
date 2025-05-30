@@ -11,7 +11,7 @@
 						class="h-6 w-6"
 						@click="$router.back()"
 					>
-						<Icon name="material-symbols:arrow-back-rounded" class="text-2xl text-[#627086]" />
+						<Icon name="material-symbols:arrow-back-rounded" class="text-3xl text-[#1E293B] dark:text-[#627086]" />
 					</button>
 
 

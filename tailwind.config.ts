@@ -43,10 +43,10 @@ const config: Config = {
 				rating: '#FF9500',
       },
       maxWidth: {
-        container: '600px'
+        container: '500px'
       },
 			width: {
-				container: '600px'
+				container: '500px'
 			}
     },
   },

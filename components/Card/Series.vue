@@ -25,9 +25,9 @@
 
       <div
         v-if="props?.category"
-        class="w-max flex items-center text-xs gap-1 text-[#94A3B8]"
+        class="w-max flex items-center text-xs gap-1 text-[#627086] dark:text-[#94A3B8]"
       >
-        <Icon name="famicons:grid" class="w-4 h-4" />
+        <Icon name="mingcute:grid-line" class="w-4 h-4" />
         <span class="text-xs">{{ props?.category }}</span>
       </div>
     </div>
@@ -41,6 +41,7 @@ const emit = defineEmits<{
 
 const props = defineProps<{
 	id: string
+	slug: string
   thumbnail: string
   altText?: string
   title: string
@@ -49,6 +50,6 @@ const props = defineProps<{
 }>()
 
 function handleClick() {
-  emit('click', props.id) // emit id ke parent
+  emit('click', props.slug) // emit id ke parent
 }
 </script>

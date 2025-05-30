@@ -1,8 +1,17 @@
 <template>
-  <main class="flex-1 w-full pb-[56px] pt-[70px]">
+  <main class="flex-1 w-full" :class="{ 'pb-[56px] pt-[70px]': !props.clean }">
 		<div class="max-w-container mx-auto relative">
-			<NuxtImg src="/images/background.png" alt="Bacground" class="absolute top-[-50px] w-full h-[130px]" />
+			<NuxtImg v-if="!props.clean" src="/images/background.png" alt="Bacground" class="absolute top-[-50px] w-full h-[130px]" />
 			<slot />
 		</div>
 	</main>
 </template>
+
+<script setup lang="ts">
+const props = defineProps({
+	clean: {
+		type: Boolean,
+		default: false
+	}
+})
+</script>
