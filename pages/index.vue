@@ -1,7 +1,6 @@
 <template>
   <div class="mx-auto max-w-container px-4 py-6">
     <header class="flex items-center mb-6">
-      <NuxtImg src="/logo.png" alt="Logo" class="h-10 mr-3" />
       <h1 class="text-2xl font-bold text-primary">Produk Unggulan</h1>
     </header>
 
