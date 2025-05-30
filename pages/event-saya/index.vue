@@ -4,6 +4,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-	layout: 'page'
+	layout: 'search',
+
 });
 </script>

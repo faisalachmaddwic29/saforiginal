@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto max-w-container px-4 py-6">
+  <div class="px-4 py-6">
     <header class="flex items-center mb-4">
       <h1 class="text-xl font-bold text-primary">{{ product?.title }}</h1>
     </header>

@@ -40,6 +40,7 @@ const config: Config = {
         success: '#20D55B',
         warning: '#FFC409',
         danger: '#DC4C64',
+				rating: '#FF9500',
       },
       maxWidth: {
         container: '600px'
