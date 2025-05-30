@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   ssr: true,
   nitro: {
     preset: 'vercel'
@@ -16,8 +16,49 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxtjs/tailwindcss',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
+    '@nuxtjs/color-mode',
+    '@nuxt/image'
   ],
+  // Color Mode
+  colorMode: {
+    preference: 'system',      // bisa 'dark' atau 'system'
+    fallback: 'light',
+    storageKey: 'nuxt-color-mode',
+    classSuffix: '',           // biar class-nya jadi 'dark', bukan 'dark-mode'
+  },
+  css: ['~/assets/css/main.css'],
+  // Fonts
+  fonts: {
+    families: [
+      // Lato
+      {
+        name: 'Lato',
+        src: '/fonts/Lato/Lato-Regular.ttf',
+        weight: 400,
+        style: 'normal',
+      },
+      // Poppins
+      {
+        name: 'Poppins',
+        src: '/fonts/Poppins/Poppins-Regular.ttf',
+        weight: 400,
+        style: 'normal',
+      },
+      // Manrope
+      {
+        name: 'Manrope',
+        src: '/fonts/Manrope/Manrope.ttf',
+        weight: 400,
+        style: 'normal',
+      },
+    ],
+    defaults: {
+      weights: ['400'],
+      styles: ['normal'],
+      preload: true,
+    }
+  },
   pwa: {
     registerType: 'autoUpdate',
     injectRegister: 'auto',
@@ -74,6 +115,7 @@ export default defineNuxtConfig({
     },
     devOptions: {
       enabled: true,
+      suppressWarnings: true,
       type: 'module',
     }
   },
