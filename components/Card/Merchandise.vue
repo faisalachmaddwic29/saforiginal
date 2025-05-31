@@ -1,10 +1,67 @@
 <template>
-	<div class="w-[140px] bg-white rounded-xl shadow-sm overflow-hidden">
-		<NuxtImg src="/img/lapis-keberkahan.jpg" alt="Merch" class="w-full h-[140px] object-cover" />
-		<div class="p-2">
-			<h4 class="text-sm font-medium leading-tight line-clamp-2">Buku Lapis Lapis Keberkahan</h4>
-			<p class="text-xs text-gray-500">12 terjual</p>
-			<p class="text-sm font-semibold text-orange-600 mt-1">Rp 70.000</p>
+	<div class="group cursor-pointer w-[180px] md:w-[210px] bg-white rounded-sm border border-[rgba(148,163,184,0.2)] overflow-hidden flex-shrink-0">
+		<div class="relative border-b border-[rgba(148,163,184,0.2)]  overflow-hidden h-[180px] md:h-[210px]">
+      <NuxtImg
+        :src="props?.thumbnail"
+        :alt="props?.id"
+        class="w-full h-full object-fill transition-transform duration-500 ease-in-out group-hover:scale-110 rounded-t-xs"
+      />
+    </div>
+		<div class="p-3 md:p-4">
+			<h4 class="text-sm md:text-base font-bold leading-tight line-clamp-2 break-words text-wrap">{{ title }}</h4>
+			<div class="flex items-center my-2 gap-1">
+				<div class="flex items-center text-xs gap-[3px] bg-rating/10 px-1 py-0.5 rounded border border-rating">
+					<Icon name="material-symbols:star-rounded" class="w-4 h-4 text-rating" />
+					<span class="text-xs md:text-sm font-medium">{{ rating }}</span>
+				</div>
+				<p class="text-xs md:text-sm text-[#627086] dark:text-[#94A3B8]">{{ sold }} terjual</p>
+			</div>
+			<p class="text-base md:text-lg font-bold text-secondary">{{ formatPrice(price) }}</p>
 		</div>
 	</div>
 </template>
+
+<script setup lang="ts">
+
+const formatPrice = (price: number) => {
+  // Format angka tanpa desimal
+  const formatted = new Intl.NumberFormat('id-ID', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+
+  // Tambahkan "Rp." di depan dengan titik
+  return `Rp ${formatted}`;
+}
+
+
+const props = defineProps({
+	thumbnail: {
+		type: String,
+		default: '/images/merchandise.png'
+	},
+	id: {
+		type: String,
+		default: '1'
+	},
+	title: {
+		type: String,
+		default: 'Buku Lapis Lapis Keberkahan'
+	},
+	rating: {
+		type: Number,
+		default: 4.8
+	},
+	price: {
+		type: Number,
+		default: 70000
+	},
+	sold: {
+		type: Number,
+		default: 12
+	}
+});
+
+
+
+</script>

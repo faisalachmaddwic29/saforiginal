@@ -1,23 +1,23 @@
 <template>
   <div
-    class="group w-[180px] overflow-hidden cursor-pointer transition duration-200"
+    class="group w-[180px] md:w-[210px] overflow-hidden cursor-pointer transition duration-200 flex-shrink-0"
     @click="handleClick"
   >
     <div class="relative overflow-hidden rounded-lg h-[240px]">
       <NuxtImg
         :src="props?.thumbnail"
-        :alt="altText"
-        class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-125"
+        :alt="props?.id"
+        class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
       />
     </div>
-    <div class="pt-1">
-      <h3 class="font-bold text-sm line-clamp-1 uppercase">
+    <div class="w-full pt-0.5">
+      <h3 class="font-bold text-sm uppercase truncate">
         {{ props?.title }}
       </h3>
 
       <div
         v-if="props?.rating"
-        class="w-max flex items-center text-xs gap-[3px] my-1.5 bg-rating/10 px-1 py-0.5 rounded border border-rating"
+        class="w-max flex items-center text-xs gap-[3px] mt-0.5 mb-1 bg-rating/10 px-1 py-0.5 rounded border border-rating"
       >
         <Icon name="material-symbols:star-rounded" class="w-4 h-4 text-rating" />
         <span class="text-xs font-medium">{{ rating }}</span>

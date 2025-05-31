@@ -24,7 +24,7 @@
         >
           <NuxtImg
             :src="image"
-            class="w-full h-[200px] object-cover rounded-xl shadow-[0px_0px_4px_2px_rgba(0,0,0,0.09)] my-2"
+            class="w-full h-52 md:h-64 object-cover rounded-xl shadow-[0px_0px_4px_2px_rgba(0,0,0,0.09)] my-2"
             alt="carousel image"
             loading="lazy"
           />

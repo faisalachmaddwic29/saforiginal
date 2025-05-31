@@ -49,7 +49,7 @@
 
 			<!-- Bagikan -->
 			<button
-				class="mt-auto self-end border border-primary rounded-md py-1 px-3 flex justify-center items-center gap-1 cursor-pointer"
+				class="mt-auto self-end border border-secondary rounded-md py-1 px-3 flex justify-center items-center gap-1 cursor-pointer"
 				@click="showAlert"
 				>
 				<Icon name="heroicons-outline:share" class="w-4 h-4" />

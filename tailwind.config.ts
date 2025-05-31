@@ -84,10 +84,10 @@ const config: Config = {
 				"dark-secondary": '#0F172A',
       },
       maxWidth: {
-        container: '500px'
+        container: '600px'
       },
 			width: {
-				container: '500px'
+				container: '600px'
 			},
 			borderColor: {
         DEFAULT: '#C5C5C5',
