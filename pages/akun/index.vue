@@ -1,8 +1,8 @@
 
 <script setup lang="ts">
-
 definePageMeta({
 	layout: 'akun',
+	middleware: 'auth'
 });
 
 </script>

@@ -5,3 +5,21 @@
 body {
   @apply font-sans; /* Lato */
 }
+
+.btn-primary {
+  @apply w-full bg-secondary hover:bg-primary text-white p-3 rounded transition-colors duration-300;
+}
+.btn-primary-outline {
+  @apply w-full border border-secondary text-black p-3 rounded hover:bg-secondary hover:text-white transition-colors duration-300 dark:text-white;
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled,
+.btn-primary-outline.disabled,
+.btn-primary-outline:disabled {
+  @apply bg-gray text-white cursor-not-allowed;
+}
+
+.input {
+  @apply w-full border dark:border-white rounded-lg p-3 outline-none focus:outline-none focus:border-secondary focus:ring-0 bg-transparent transition-colors duration-300;
+}
