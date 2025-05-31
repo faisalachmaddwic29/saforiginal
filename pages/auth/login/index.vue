@@ -33,10 +33,8 @@ definePageMeta({
 });
 const config = useRuntimeConfig()
 
-console.log('Runtime config:', config.apiUrl)
-
 try {
-  const res = await $fetch(config.apiFe + '/locations')
+  const res = await $fetch(config.public.api + '/locations')
   console.log('Locations:', res)
 } catch (err) {
   console.error('Fetch error:', err)

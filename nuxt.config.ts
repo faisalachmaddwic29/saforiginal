@@ -13,6 +13,9 @@ export default defineNuxtConfig({
 				},
 				runtimeConfig: {
 					apiUrl: process.env.NUXT_API_URL,
+					public: {
+						api: process.env.NUXT_API_FRONTEND
+					},
 				},
 				modules: [
 				 '@nuxt/eslint',
