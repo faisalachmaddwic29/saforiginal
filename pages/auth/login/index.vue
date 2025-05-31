@@ -36,7 +36,7 @@ const config = useRuntimeConfig()
 console.log('Runtime config:', config.apiUrl)
 
 try {
-  const res = await $fetch('/api/source/locations')
+  const res = await $fetch(config.apiFe + '/locations')
   console.log('Locations:', res)
 } catch (err) {
   console.error('Fetch error:', err)
