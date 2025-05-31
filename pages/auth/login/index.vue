@@ -33,10 +33,23 @@ definePageMeta({
 });
 const config = useRuntimeConfig()
 
-try {
-  const res = await $fetch(config.public.api + '/locations')
-  console.log('Locations:', res)
-} catch (err) {
-  console.error('Fetch error:', err)
-}
+onMounted(async () => {
+	console.log('Runtime Config:', config.public.apiBaseUrl);
+
+	try {
+  const res = await $fetch('http://157.15.124.158:8080/api/auth/login',{method:'POST',
+		headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			},
+		body: JSON.stringify({
+				email: 'aryapujianto2@gmail.com',
+				password: 'password'
+			})
+	})
+		console.log('Locations:', res)
+	} catch (err) {
+		console.error('Fetch error:', err)
+	}
+})
 </script>
