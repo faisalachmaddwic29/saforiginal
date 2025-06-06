@@ -1,7 +1,12 @@
 <template>
-	<NuxtLayout>
-		<NuxtPage />
-	</NuxtLayout>
+	<Html :data-theme="colorModeClass">
+    <Body>
+			<NuxtLoadingIndicator color="var(--color-secondary)" />
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </Body>
+  </Html>
 </template>
 
 
