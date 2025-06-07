@@ -97,5 +97,11 @@ const items = ref([
 		</div>
 
 		<AppToolbarMenus />
+			<div class="flex gap-3">
+		 <Button @click="() => {notify.success('Data berhasil disimpan!')}" >Toast Success</Button>
+		 <Button @click="() => {notify.info('Data berhasil disimpan!')}" >Toast Info</Button>
+		 <Button @click="() => {notify.warning('Data berhasil disimpan!')}" >Toast Warning</Button>
+		 <Button @click="() => {notify.error('Data berhasil disimpan!')}" >Toast Error</Button>
+		</div>
 	</div>
 </template>

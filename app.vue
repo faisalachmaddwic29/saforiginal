@@ -1,6 +1,7 @@
 <template>
 	<NuxtLayout>
 		<NuxtPage />
+		<Toaster position="top-center" :closeButton="true"  :rich-colors="true"/>
 	</NuxtLayout>
 </template>
 
