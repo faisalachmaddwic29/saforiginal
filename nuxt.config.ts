@@ -12,7 +12,7 @@ export default defineNuxtConfig({
 		apiUrl: process.env.NUXT_API_URL,
 		apiVersion: process.env.NUXT_API_VERSION,
 		public: {
-			api: process.env.NUXT_API_FRONTEND
+			api: process.env.NUXT_API_FRONTEND,
 		},
 	},
 	modules: [
@@ -76,7 +76,8 @@ export default defineNuxtConfig({
 			// 	}
 			// ]
 			navigateFallback: '/', // Fallback ke root hanya untuk rute yang tidak cocok
-			navigateFallbackDenylist: [/^\/auth\/login-password/, /^\/auth\/login/], // Tolak fallback pada rute auth
+			// navigateFallbackDenylist: [/^\/auth\/login-password/, /^\/auth\/login/], // Tolak fallback pada rute auth
+			navigateFallbackDenylist: [/^\/auth\//], // Tolak fallback pada semua rute di bawah /auth
 			globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
 			runtimeCaching: [
 				{
@@ -99,7 +100,7 @@ export default defineNuxtConfig({
 		}
 	},
 	components: {
-		dirs: ['~/components/Base'],
+		dirs: ['~/components/Base', 'utils'],
 	},
 	app: {
 		pageTransition: { name: 'page', mode: 'out-in' },

@@ -1,33 +1,120 @@
 <template>
-	<form class="flex flex-col min-dvh-screen px-4 py-5 relative">
+	<form @submit="onSubmit" class="flex flex-col min-dvh-screen px-4 py-5 relative">
 		<h2 class="text-2xl md:text-3xl font-manrope font-extrabold mb-2.5 text-[#1E293B] dark:text-[#94A3B8]">Masuk</h2>
 		<p class="text-xs md:text-sm mb-5 text-[#1E293B] dark:text-[#94A3B8]">Halo kak, silahkan masukkan detail akun untuk masuk</p>
 
-		<!-- Form Login Paassword -->
-		<div class="flex flex-col">
+		<!-- Form Login Password -->
+		<div class="flex flex-col gap-5 mb-2.5">
+			<div>
+				<FormInput
+					id="identifier"
+					type="text"
+					name="identifier"
+					placeholder="Masukkan alamat email atau telepon"
+					v-model="identifier"
+					:error="errors.identifier"
+				/>
+			</div>
 
-			<input type="text" placeholder="Masukkan alamat email atau telepon" class="input mb-5">
-
-			<input type="text" placeholder="Masukkan password" class="input mb-2.5">
-
-			<NuxtLink to="/" class="text-xs md:text-sm text-secondary font-bold mb-7">Lupa password?</NuxtLink>
-
-			<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Belum punya akun? <NuxtLink to="/" class="text-secondary font-bold pl-0.5">Daftar sekarang</NuxtLink></p>
-
+			<div>
+				<FormInput
+					id="password"
+					:type="showPassword ? 'text' : 'password'"
+					name="password"
+					placeholder="Masukan password"
+					v-model="password"
+					:isIcon="true"
+					iconPosition="right"
+					:error="errors.password"
+				>
+					<template #icon>
+						<Icon v-if="showPassword" name="heroicons:eye" class="text-xl text-subtle cursor-pointer" @click="togglePassword" />
+						<Icon v-else name="heroicons:eye-slash" class="text-xl text-subtle cursor-pointer" @click="togglePassword" />
+					</template>
+				</FormInput>
+			</div>
 		</div>
+
+		<NuxtLink to="/" class=" mb-8 text-xs md:text-sm text-primary font-bold">Lupa password?</NuxtLink>
+
+		<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Belum punya akun? <NuxtLink to="/auth/registration-password" class="text-primary font-bold pl-0.5">Daftar sekarang</NuxtLink></p>
 
 		<div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
 			<AppContainer>
-				<!-- <button type="submit" class="btn-primary">Masuk</button> -->
-				<NuxtLink to="/" class="btn-primary">Masuk</NuxtLink>
+				<Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Masuk' }}</Button>
 			</AppContainer>
 		</div>
-
 	</form>
 </template>
 
 <script setup lang="ts">
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import { z } from 'zod'
+
 definePageMeta({
 	layout: 'detail',
 });
+
+const showPassword = ref(false)
+const isLoading = ref(false)
+
+// Schema validasi Zod (sama seperti sebelumnya)
+const schema = z.object({
+	identifier: z.string()
+		.min(1, 'Email atau telepon harus diisi')
+		.refine((val) => {
+			const isEmail = val.includes('@')
+			if (isEmail) {
+				return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
+			}
+			return /^(\+62|62|0)[0-9]{9,13}$/.test(val.replace(/\s+/g, ''))
+		}, 'Format email atau telepon tidak valid'),
+	password: z.string()
+		.min(1, 'Password harus diisi')
+})
+
+// Setup vee-validate dengan zod schema
+const { defineField, handleSubmit, errors, setErrors } = useForm({
+	validationSchema: toTypedSchema(schema),
+	initialValues: {
+		identifier: '',
+		password: ''
+	}
+})
+
+// Define fields dengan vee-validate
+const [identifier] = defineField('identifier')
+const [password] = defineField('password')
+
+// Toggle password
+const togglePassword = () => {
+	showPassword.value = !showPassword.value
+}
+
+// Handle submit dengan vee-validate
+const onSubmit = handleSubmit(async (values) => {
+	isLoading.value = true
+
+	try {
+		console.log('Form data:', values)
+
+		const response = await apiService.post('/auth/login', {
+				identifier: values.identifier,
+				password: values.password
+		});
+
+		console.log('Login response:', response)
+
+		// Redirect setelah berhasil
+		// await navigateTo(props.redirectTo)
+
+	} catch (error: any) {
+		handleValidationError(error, setErrors)
+
+		// Handle error (bisa tambahkan toast/notification)
+	} finally {
+		isLoading.value = false
+	}
+})
 </script>

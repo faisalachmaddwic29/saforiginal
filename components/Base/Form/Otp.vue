@@ -75,14 +75,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="otp w-full flex gap-x-4 justify-center">
+    <div class="otp w-full flex gap-4 md:gap-8 justify-center flex-wrap">
         <input
             v-for="(field, index) in props.fields"
             :key="field + index"
             v-model="data[index]"
             type="text"
             maxlength="1"
-            class="text-black text-3xl w-[48px] h-[48px] mr-2 rounded-md border border-[#b0b0b0] text-center focus:border-secondary focus:outline-none"
+            class="text-3xl w-[46.5px] h-[50px] rounded-md border border-[##C5C5C5] text-center focus:border-secondary focus:outline-none"
             @input="handleOtpInput($event, index)"
             @paste="index === 0 && handlePaste($event)"
         >

@@ -12,6 +12,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-rating: var(--rating);
+  --color-subtle: var(--subtle);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -120,7 +121,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
-	--subtle: #475569;
+	--subtle: #92949C;
 	--rating: #FF9500;
 }
 
@@ -151,10 +152,10 @@
   }
 
 	.btn-primary {
-		@apply w-full cursor-pointer flex items-center justify-center text-nowrap break-words bg-secondary hover:bg-primary text-white dark:text-[#0F172A] p-3 rounded transition-colors duration-300;
+		@apply w-full cursor-pointer flex items-center justify-center text-nowrap break-words bg-primary hover:bg-secondary text-white dark:text-[#0F172A] px-4 py-3 rounded transition-colors duration-300 text-sm md:text-base ;
 	}
 	.btn-primary-outline {
-		@apply w-full cursor-pointer flex items-center justify-center text-nowrap break-words border border-secondary text-black p-3 rounded hover:bg-secondary hover:text-white transition-colors duration-300 dark:text-white;
+		@apply w-full cursor-pointer flex items-center justify-center text-nowrap break-words border border-secondary text-black px-4 py-3 rounded hover:bg-secondary hover:text-white transition-colors duration-300 dark:text-white text-sm md:text-base;
 	}
 
 

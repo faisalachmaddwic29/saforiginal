@@ -4,7 +4,7 @@
       <!-- Hitung index 0-based -->
       <div class="relative w-5 h-5 text-lg md:text-xl flex items-center">
         <!-- FULL / HALF / EMPTY warna -->
-        <Icon name="material-symbols:star-rounded absolute top-0 left-0" class="w-5 h-5 text-lg md:text-xl text-[rgba(128,128,128,0.55)]"/>
+        <Icon name="material-symbols:star-rounded" class="absolute top-0 left-0 w-5 h-5 text-lg md:text-xl text-[rgba(128,128,128,0.55)]"/>
         <Icon
           v-if="getFill(i - 1) > 0"
           name="material-symbols:star-rounded"

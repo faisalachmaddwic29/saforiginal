@@ -2,7 +2,7 @@
   <AppWrapper>
 		<AppToolbarDetail />
 
-		<AppMain>
+		<AppMain :clean="true" class="pt-[70px] pb-[76px]">
 			<slot />
 		</AppMain>
   </AppWrapper>
