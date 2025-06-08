@@ -42,6 +42,15 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+	--color-info: #1A73E8;
+	--color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+	--color-success-foreground: var(--success-foreground);
+  --color-warning: #FFC409;
+	--color-warning-foreground: var(--warning-foreground);
+  --color-danger: #DC4C64;
+	--color-danger-foreground: var(--danger-foreground);
 }
 
 :root {
@@ -86,14 +95,24 @@
   --sidebar-ring: oklch(0.708 0 0);
 	--subtle: #475569;
 	--rating: #FF9500;
+	--toast-background: oklch(0.98 0 0);
+
+	--success: #20D55B;
+	--success-foreground: #E5FBEB;
+	--info: #1A73E8;
+	--info-foreground: #E5F7FF;
+	--warning: #FFC409;
+	--warning-foreground: #FFF8E0;
+	--danger: #DC4C64;
+	--danger-foreground: #F9E8EA;
 }
 
 .dark {
   --background: #0F172A; /* Setara dengan bg-[#0F172A] */
   --foreground: oklch(0.98 0 0); /* Setara dengan text-white */
-  --card: #0F172A
+  --card: #0F172A;
   --card-foreground: oklch(0.98 0 0);
-  --popover: #0F172A
+  --popover: #0F172A;
   --popover-foreground: oklch(0.98 0 0);
   --primary: #A07C4B;
   --primary-foreground: oklch(0.205 0 0);
@@ -123,6 +142,7 @@
   --sidebar-ring: oklch(0.439 0 0);
 	--subtle: #92949C;
 	--rating: #FF9500;
+	--toast-background: #364359;
 }
 
 
@@ -177,5 +197,3 @@
 		@apply w-full font-manrope text-sm md:text-base border border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)] rounded-lg p-3 md:p-4 outline-none focus:outline-none focus:ring-0 bg-transparent placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition-colors duration-300 focus:border-[var(--primary)] dark:focus:border-[var(--primary)];
 	}
 }
-
-
