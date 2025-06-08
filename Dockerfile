@@ -1,17 +1,27 @@
-FROM node:20-alpine
+# Menggunakan node versi stabil
+FROM node:22
 
-# Install native build tools
-RUN apk add --no-cache python3 make g++
-
+# Set working directory
 WORKDIR /usr/src/app
 
+# Copy package.json dan package-lock.json
 COPY package*.json ./
 
-RUN rm -rf node_modules && npm install
+RUN unlink package-lock.json
+# Install dependencies
+RUN RUN rm -rf node_modules && npm install
 
+# Copy semua file
 COPY . .
+
+# Build aplikasi dengan verbose output
 RUN npm run build --verbose
 
-RUN npm install -g pm2
+# Install PM2 globally
+RUN npm install pm2 -g
+
+# Jalankan dengan PM2
+# CMD ["pm2-runtime","start", "ecosystem.config.js"]
+# CMD ["node", "./.output/server/index.mjs"]
 
 CMD ["npx", "pm2-runtime", "./.output/server/index.mjs"]
