@@ -1,7 +1,7 @@
-FROM node:20-bullseye
+FROM node:20-alpine
 
-# Install native build tools untuk native modules seperti oxc-parser
-RUN apt-get update && apt-get install -y python3 make g++
+# Install native build tools
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /usr/src/app
 
