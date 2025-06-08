@@ -9,7 +9,7 @@ COPY package*.json ./
 
 RUN unlink package-lock.json
 # Install dependencies
-RUN RUN rm -rf node_modules && npm install
+RUN rm -rf node_modules && npm install
 
 # Copy semua file
 COPY . .
