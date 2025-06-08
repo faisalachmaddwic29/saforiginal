@@ -1,26 +1,16 @@
-# Menggunakan node versi stabil
-FROM node:22
+FROM node:20-bullseye
 
-# Set working directory
+# Install native build tools untuk native modules seperti oxc-parser
+RUN apt-get update && apt-get install -y python3 make g++
+
 WORKDIR /usr/src/app
 
-# Copy package.json dan package-lock.json
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy semua file
 COPY . .
-
-# Build aplikasi dengan verbose output
 RUN npm run build --verbose
 
-# Install PM2 globally
-RUN npm install pm2 -g
-
-# Jalankan dengan PM2
-# CMD ["pm2-runtime","start", "ecosystem.config.js"]
-# CMD ["node", "./.output/server/index.mjs"]
+RUN npm install -g pm2
 
 CMD ["npx", "pm2-runtime", "./.output/server/index.mjs"]
