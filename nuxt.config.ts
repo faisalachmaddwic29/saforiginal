@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	compatibilityDate: '2025-05-15',
-	devtools: { enabled: false },
+	devtools: { enabled: true },
 	ssr: true,
 	// nitro: {
 	// 	preset: process.env.NITRO_PRESET || undefined,
@@ -19,12 +19,14 @@ export default defineNuxtConfig({
 		'@nuxt/eslint',
 		'@nuxt/icon',
 		'@nuxt/image',
+		'@pinia/nuxt',
 		'shadcn-nuxt',
 		['@nuxtjs/google-fonts',
 			{
 				families: {
 					Lato: [100, 200, 300, 400, 500, 600, 700, 800, 900],
 					Poppins: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+					Inter: [100, 200, 300, 400, 500, 600, 700, 800, 900],
 					Manrope: [100, 200, 300, 400, 500, 600, 700, 800, 900],
 				}
 			}
@@ -49,7 +51,7 @@ export default defineNuxtConfig({
 		 */
 		componentDir: './components/ui'
 	},
-	css: ['~/assets/css/tailwind.css','vue-sonner/style.css'],
+	css: ['~/assets/css/tailwind.css', 'vue-sonner/style.css'],
 	vite: {
 		plugins: [
 			tailwindcss(),
@@ -64,7 +66,7 @@ export default defineNuxtConfig({
 		includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
 		workbox: {
 			// navigateFallback: '/',
-			// navigateFallbackDenylist: [/^\/auth\/login-password/, /^\/auth\/login/], // Menolak rute tertentu
+			// navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/], // Menolak rute tertentu
 			// globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
 			// runtimeCaching: [
 			// 	{
@@ -76,8 +78,8 @@ export default defineNuxtConfig({
 			// 	}
 			// ]
 			navigateFallback: '/', // Fallback ke root hanya untuk rute yang tidak cocok
-			// navigateFallbackDenylist: [/^\/auth\/login-password/, /^\/auth\/login/], // Tolak fallback pada rute auth
-			navigateFallbackDenylist: [/^\/auth\//], // Tolak fallback pada semua rute di bawah /auth
+			// navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/], // Tolak fallback pada rute auth
+			navigateFallbackDenylist: [/^\/\//], // Tolak fallback pada semua rute di bawah /
 			globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
 			runtimeCaching: [
 				{
@@ -101,6 +103,9 @@ export default defineNuxtConfig({
 	},
 	components: {
 		dirs: ['~/components/Base', 'utils'],
+	},
+	imports: {
+		dirs: ['stores/**'],
 	},
 	app: {
 		pageTransition: { name: 'page', mode: 'out-in' },

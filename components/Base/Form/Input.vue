@@ -6,6 +6,7 @@
     <div class="relative">
       <input
         :id="id"
+        :name="name"
         :type="type"
         :placeholder="placeholder"
         :value="modelValue"
@@ -27,10 +28,8 @@
         <slot name="icon">{{ icon }}</slot>
       </div>
     </div>
-    <p v-if="error" class="mt-1 text-sm text-red-600 flex gap-1 items-center">
-			<Icon name="ion:alert-circle-outline" class="text-lg text-red-600" />
-      {{ capitalize(error.toString()) }}
-    </p>
+		<!-- Error message -->
+		<FormMessageError v-if="error" :message="error" />
   </div>
 </template>
 
@@ -46,8 +45,9 @@ const props = defineProps({
   iconPosition: { type: String, default: "left" },
   className: { type: String, default: "" },
   labelText: { type: String, default: "" },
-  error: { type: [String, Array, Object], default: undefined },
+  error: { type: String, default: undefined },
   id: { type: String, default: "" },
+  name: { type: String, default: "" },
   autoComplete: { type: Boolean, default: false },
   isRequiredLabel: { type: Boolean, default: false },
   isNumber: { type: Boolean, default: false },

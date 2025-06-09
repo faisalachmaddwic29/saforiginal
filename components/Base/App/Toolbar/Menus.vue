@@ -1,5 +1,5 @@
 <template>
-  <nav class="fixed inset-x-0 w-full z-20 bottom-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+  <nav class="fixed z-1 inset-x-0 w-full bottom-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
     <AppContainer>
         <ul class="flex justify-between items-center">
           <li

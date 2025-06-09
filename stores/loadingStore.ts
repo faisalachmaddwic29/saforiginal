@@ -1,12 +1,19 @@
-export const useLoading = defineStore("loading-form", () => {
-    const isLoading = ref(false);
+import { defineStore } from 'pinia'
 
-    const toggle = () => {
-        isLoading.value = !isLoading.value;
-    };
 
-    const stop = () => {
-        isLoading.value = false;
-    };
-    return { isLoading, toggle, stop };
+export const useLoadingStore = defineStore("loading-form", {
+	state: () => ({
+		isLoading: false
+	}),
+	actions: {
+		toggle() {
+			this.isLoading = !this.isLoading;
+		},
+		stop() {
+			this.isLoading = false;
+		},
+		start() {
+			this.isLoading = true;
+		},
+	},
 });

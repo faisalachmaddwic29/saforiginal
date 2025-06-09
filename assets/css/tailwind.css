@@ -58,6 +58,7 @@
   --font-poppins: 'Poppins', sans-serif;
   --font-manrope: 'Manrope', sans-serif;
   --font-lato: 'Lato', sans-serif;
+  --font-inter: 'Inter', sans-serif;
 
   /* Default Colors */
   --background: oklch(0.98 0 0); /* Setara dengan bg-white */
@@ -161,6 +162,7 @@
   --font-poppins: var(--font-poppins);
   --font-manrope: var(--font-manrope);
   --font-lato: var(--font-lato);
+  --font-inter: var(--font-inter);
 }
 
 @layer utilities {

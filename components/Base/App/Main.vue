@@ -1,6 +1,6 @@
 <template>
   <main
-		class="flex-1 w-full"
+		class="relative z-0 w-full h-full"
 		:class="{
 			'pb-[60px] pt-[70px]': props.clean
 		}"

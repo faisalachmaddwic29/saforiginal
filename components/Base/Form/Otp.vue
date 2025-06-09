@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 
 interface Props {
-	fields: number
+	fields: number,
+	isError?: boolean
 }
 
 interface Emits {
@@ -13,6 +14,10 @@ const props : Props = defineProps({
 		fields: {
 			type: Number,
 			default: 6
+		},
+		isError: {
+			type: Boolean,
+			default: false
 		}
 });
 
@@ -82,9 +87,10 @@ onMounted(() => {
             v-model="data[index]"
             type="text"
             maxlength="1"
-            class="text-3xl w-[46.5px] h-[50px] rounded-md border border-[##C5C5C5] text-center focus:border-secondary focus:outline-none"
+            class="font-manrope text-bold text-3xl w-[46.5px] h-[50px] rounded-md border text-center focus:border-secondary focus:outline-none"
             @input="handleOtpInput($event, index)"
             @paste="index === 0 && handlePaste($event)"
+						:class="props.isError ? '!border-red-500' : 'border-[#C5C5C5]'"
         >
     </div>
 </template>

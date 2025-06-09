@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 
 definePageMeta({
 	layout: 'default',
+	middleware: 'auth',
 });
 
 
@@ -36,6 +37,12 @@ const items = ref([
     icon: "/images/items/presentation-chart-bar.svg",
   },
 ]);
+
+// handle logout
+const authStore = useAuthStore();
+const handleLogout = () => {
+	authStore.logout({ redirectTo: '/login', callApi: true });
+};
 
 </script>
 
@@ -85,23 +92,45 @@ const items = ref([
 					</ul>
 				</div>
 
-				<NuxtLink to="/auth/login">
-					<ListItem label="Keluar akun" :isIcon="false" :isRed="true" >
-						<template #icon>
-							<NuxtImg src="/images/items/logout.svg" class="w-6 h-6" />
-						</template>
-					</ListItem>
-				</NuxtLink>
+				<Dialog>
+					<DialogTrigger as-child>
+						<ListItem label="Keluar akun" :isIcon="false" :isRed="true" >
+							<template #icon>
+								<NuxtImg src="/images/items/logout.svg" class="w-6 h-6" />
+							</template>
+						</ListItem>
+					</DialogTrigger>
+					<DialogContent class="sm:max-w-[425px] p-4">
+						<DialogHeader>
+							<DialogTitle class="mb-5">
+									<div class="inline-flex p-3.5 items-center justify-center shrink-0 size-15 rounded-full text-danger bg-danger-foreground">
+										<Icon name="solar:danger-triangle-outline" class="text-4xl" />
+									</div>
+							</DialogTitle>
+							<DialogDescription>
+								<p class="font-inter text-lg md:text-2xl font-bold mb-2 text-[#171717] dark:text-white">Keluar dari SAF Original</p>
+								<p class="font-inter text-sm md:text-base text-[#737373]">Apakah Kamu yakin ingin keluar?</p>
+							</DialogDescription>
+						</DialogHeader>
+					<DialogFooter class="mt-8">
+						<div class="flex items-center justify-between gap-4 max-w-full overflow-hidden">
+							<DialogClose as-child class="flex-1 shrink-0 w-full">
+								<Button variant="outline" class="w-full">Batal</Button>
+							</DialogClose>
+							<Button class="flex-1 w-full" @click="handleLogout">Keluar</Button>
+						</div>
+					</DialogFooter>
+					</DialogContent>
+				</Dialog>
 			</div>
 
 		</div>
-
 		<AppToolbarMenus />
-			<div class="flex gap-3 flex-col">
-		 <Button @click="() => {notify.success('Data berhasil disimpan!')}" >Toast Success</Button>
-		 <Button @click="() => {notify.info('Data berhasil disimpan!')}" >Toast Info</Button>
-		 <Button @click="() => {notify.warning('Data berhasil disimpan!')}" >Toast Warning</Button>
-		 <Button @click="() => {notify.error('Data berhasil disimpan!')}" >Toast Error</Button>
-		</div>
+			<!-- <div class="flex gap-3 flex-col">
+				<Button @click="() => {notify.success('Data berhasil disimpan!')}" >Toast Success</Button>
+				<Button @click="() => {notify.info('Data berhasil disimpan!')}" >Toast Info</Button>
+				<Button @click="() => {notify.warning('Data berhasil disimpan!')}" >Toast Warning</Button>
+				<Button @click="() => {notify.error('Data berhasil disimpan!')}" >Toast Error</Button>
+			</div> -->
 	</div>
 </template>
