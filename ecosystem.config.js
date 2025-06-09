@@ -3,8 +3,8 @@ module.exports = {
     {
       name: 'saf-original',
       script: './.output/server/index.mjs',
-      instances: 1, // Untuk docker, gunakan 1 instance per container
-      exec_mode: 'fork', // Fork mode untuk single instance
+      instances: 1,
+      exec_mode: 'fork',
       env: {
         NODE_ENV: 'production',
         NITRO_PORT: 3001,
@@ -20,7 +20,18 @@ module.exports = {
       watch: false,
       max_memory_restart: '1G',
       // Graceful shutdown
-      kill_timeout: 5000
+      kill_timeout: 5000,
+      // Restart settings
+      restart_delay: 4000,
+      max_restarts: 10,
+      min_uptime: '10s',
+      // Process management
+      wait_ready: true,
+      listen_timeout: 8000,
+      // Performance monitoring
+      pmx: false,
+      // Merge logs
+      merge_logs: true
     }
   ]
 };
