@@ -24,6 +24,24 @@ class ApiServiceImpl implements ApiService {
 	}
 
 	/**
+	 * Build endpoint URL with version prefix
+	 */
+	private buildEndpointUrl(endpoint: string): string {
+		 const config = useRuntimeConfig()
+		if (endpoint.includes('/auth')) {
+			return endpoint;
+		}
+
+		const apiVersion = config.public.apiVersion;
+
+		if (apiVersion) {
+			return `/${apiVersion}${endpoint}`;
+		}
+
+		return endpoint;
+	}
+
+	/**
 	 * Make HTTP request with error handling
 	 */
 	/**
@@ -40,9 +58,11 @@ class ApiServiceImpl implements ApiService {
 			const authHeaders = this.getAuthHeaders();
 			const headers = { ...authHeaders, ...(customHeaders || {}) };
 
+			const finalEndpoint = this.buildEndpointUrl(endpoint);
+
 			const response: AxiosResponse = await ApiInstance.request({
 				method,
-				url: endpoint,
+				url: finalEndpoint,
 				data,
 				params,
 				headers,

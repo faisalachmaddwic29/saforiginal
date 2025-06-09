@@ -1,9 +1,10 @@
 // services/api/api_instance.ts
 import axios, { type AxiosInstance } from 'axios';
 
+const config = useRuntimeConfig()
 // Create Axios Instance
 const ApiInstance: AxiosInstance = axios.create({
-    baseURL: process.env.apiUrl || 'https://saf-api.mandatech.co.id/api',
+    baseURL: config.public.apiUrl || 'https://saf-api.mandatech.co.id/api',
     timeout: 30000,
     headers: {
         'Accept': 'application/json',
