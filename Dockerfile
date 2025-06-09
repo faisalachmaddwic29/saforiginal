@@ -1,5 +1,5 @@
 # Menggunakan node versi stabil
-FROM node:22
+FROM node:22-alpine
 
 # Set working directory
 WORKDIR /usr/src/app
@@ -19,6 +19,9 @@ COPY . .
 
 # Build aplikasi dengan verbose output
 RUN npm run build --verbose
+
+# Remove devDependencies after build to reduce image size
+RUN npm prune --production
 
 # Install PM2 globally
 RUN npm install pm2 -g
