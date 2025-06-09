@@ -4,7 +4,9 @@
     <div class="w-3 h-6 bg-primary rounded-r-full"></div>
 
     <!-- Text -->
-    <span class="text-base md:text-lg font-bold font-manrope">Data pribadi</span>
+    <span class="text-base md:text-lg font-bold font-manrope">
+			<slot />
+		</span>
   </div>
 </template>
 

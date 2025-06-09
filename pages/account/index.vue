@@ -74,7 +74,7 @@ const handleLogout = () => {
 
 			<!-- list -->
 			<div class="mt-5">
-				<TitleSection>Account</TitleSection>
+				<TitleSection>Data Pribadi</TitleSection>
 
 
 				<div class="mt-6 mb-12">

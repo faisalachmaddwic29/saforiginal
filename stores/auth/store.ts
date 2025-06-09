@@ -19,8 +19,6 @@ export const useAuthStore = defineStore("auth", {
 
 		// Getter untuk cek apakah token expired (jika diperlukan)
 		isTokenExpired: (state) => {
-			console.log('state.expiresIn', state.expiresIn);
-			console.log(Date.now() > state.expiresIn);
 			if (!state.expiresIn) return false;
 			return Date.now() > state.expiresIn; // Langsung compare aja
 		}
@@ -58,14 +56,11 @@ export const useAuthStore = defineStore("auth", {
 
 		// Logout - hapus semua data auth
 		async logout(options: { redirectTo?: string; callApi?: boolean } = {}) {
-			console.log(options.callApi && this.accessToken);
-			console.log(options.callApi, this.accessToken);
 			const loadingStore = useLoadingStore();
 			try {
 				loadingStore.start();
 				// Jika ada API logout endpoint
 				if (options.callApi && this.accessToken) {
-					console.log('jalana');
 
 					// TODO: Panggil API logout
 					const response = await apiService.post('/auth/logout', {});

@@ -9,7 +9,7 @@
 			<FormMessageError v-if="errors.otp" :message="errors.otp" class="justify-center" />
 		</div>
 
-		<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <NuxtLink to="/registration" class="text-primary font-bold pl-0.5">Kirim ulang</NuxtLink></p>
+		<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span @click="sendOtp" class="text-primary font-bold pl-0.5">Kirim ulang</span></p>
 
 
 		<div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
@@ -92,4 +92,24 @@ const onSubmit = handleSubmit(async (values) => {
 		isLoading.value = false
 	}
 })
+
+const sendOtp = async () => {
+	loadingStore.start();
+
+	try {
+		const response = await apiService.post('/auth/register', {
+				phone: registrationStore.phone
+		});
+		const { data, message } = response;
+
+		notify.success(message);
+
+	} catch (error: any) {
+		handleValidationError(error, setErrors)
+
+		// Handle error (bisa tambahkan toast/notification)
+	} finally {
+		loadingStore.stop();
+	}
+}
 </script>

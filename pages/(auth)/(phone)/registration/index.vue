@@ -15,12 +15,8 @@
 			<FormMessageError v-if="errors.otp" :message="errors.otp" class="justify-center" />
 		</div>
 
-    <p class="text-xs mb-10 md:text-sm text-[#1E293B] dark:text-[#94A3B8]">
-      Tidak menerima kode verifikasi?
-      <NuxtLink to="//registration" class="text-primary font-bold pl-0.5"
-        >Kirim ulang</NuxtLink
-      >
-    </p>
+		<p class="mb-10 text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span @click="sendOtp" class="text-primary font-bold pl-0.5">Kirim ulang</span></p>
+
     <!-- Form Login Password -->
     <div class="flex flex-col gap-5 mb-2.5">
       <h3
@@ -417,6 +413,26 @@ const onSubmit = handleSubmit(
     console.log("Validation errors:", errors);
   }
 );
+
+const sendOtp = async () => {
+	loadingStore.start();
+
+	try {
+		const response = await apiService.post('/auth/login/phone', {
+				phone: registrationStore.phone
+		});
+		const { data, message } = response;
+
+		notify.success(message);
+
+	} catch (error: any) {
+		handleValidationError(error, setErrors)
+
+		// Handle error (bisa tambahkan toast/notification)
+	} finally {
+		loadingStore.stop();
+	}
+}
 
 onMounted(() => {
   getAddressOptions();
