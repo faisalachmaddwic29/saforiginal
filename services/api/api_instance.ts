@@ -3,7 +3,7 @@ import axios, { type AxiosInstance } from 'axios';
 
 // Create Axios Instance
 const ApiInstance: AxiosInstance = axios.create({
-    baseURL: process.env.API_ORENPAY || 'http://157.15.124.158:8080/api',
+    baseURL: process.env.apiUrl || 'https://saf-api.mandatech.co.id/api',
     timeout: 30000,
     headers: {
         'Accept': 'application/json',
@@ -14,10 +14,10 @@ const ApiInstance: AxiosInstance = axios.create({
 // Request Interceptor
 ApiInstance.interceptors.request.use(
     async function (config) {
-        // Add API Key to all requests
-        if (process.env.API_ORENPAY_API_KEY) {
-            config.headers['x-api-key'] = process.env.API_ORENPAY_API_KEY;
-        }
+        // // Add API Key to all requests
+        // if (process.env.api_API_KEY) {
+        //     config.headers['x-api-key'] = process.env.api_API_KEY;
+        // }
 
         // Log request in development
         if (process.env.NODE_ENV === 'development') {

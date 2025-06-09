@@ -65,6 +65,7 @@ export default defineNuxtConfig({
 		injectRegister: 'auto',
 		includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
 		workbox: {
+			cleanupOutdatedCaches: true,
 			// navigateFallback: '/',
 			// navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/], // Menolak rute tertentu
 			// globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
@@ -77,17 +78,30 @@ export default defineNuxtConfig({
 			//     },
 			// 	}
 			// ]
-			navigateFallback: '/', // Fallback ke root hanya untuk rute yang tidak cocok
-			// navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/], // Tolak fallback pada rute auth
-			navigateFallbackDenylist: [/^\/\//], // Tolak fallback pada semua rute di bawah /
+			navigateFallback: '/',
+			navigateFallbackAllowlist: [/^\/$/], // Memastikan root di-cache
+			navigateFallbackDenylist: [/^\/api\//], // Mencegah fallback untuk API
+			// globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+			// runtimeCaching: [
+			// 	{
+			// 		urlPattern: /^\/api\/.*$/, // Contoh: cache API dengan NetworkFirst
+			// 		handler: 'NetworkFirst',
+			// 		options: {
+			// 			cacheName: 'api-cache',
+			// 			networkTimeoutSeconds: 10,
+			// 			cacheableResponse: {
+			// 				statuses: [0, 200],
+			// 			},
+			// 		},
+			// 	},
+			// ],
 			globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
 			runtimeCaching: [
 				{
-					urlPattern: /^\/api\/.*$/, // Contoh: cache API dengan NetworkFirst
+					urlPattern: /^\/$/,
 					handler: 'NetworkFirst',
 					options: {
-						cacheName: 'api-cache',
-						networkTimeoutSeconds: 10,
+						cacheName: 'root-cache',
 						cacheableResponse: {
 							statuses: [0, 200],
 						},
