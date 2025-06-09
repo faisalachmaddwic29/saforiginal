@@ -27,7 +27,7 @@ export const useAuthStore = defineStore("auth", {
 
 	actions: {
 		// Simpan token ke cookie dan state
-		saveToken(data: { access_token: string; expires_in: number; token_type: string; }) {
+		async saveToken(data: { access_token: string; expires_in: number; token_type: string; }) {
 			// Hitung waktu kedaluwarsa absolut
 			const expirationTimestamp = Date.now() + data.expires_in * 1000;
 
@@ -42,6 +42,8 @@ export const useAuthStore = defineStore("auth", {
 			this.expiresIn = expirationTimestamp; // Simpan sebagai timestamp
 			this.tokenType = data.token_type;
 			this.isAuthenticated = true;
+
+			await this.getProfile(data.expires_in);
 		},
 
 		// Ambil token dari cookie saat aplikasi dimuat
@@ -80,11 +82,54 @@ export const useAuthStore = defineStore("auth", {
 			}
 		},
 
+		async getProfile(expires_in: number) {
+			const loadingStore = useLoadingStore();
+			try {
+				loadingStore.start();
+
+				const response = await apiService.get('/auth/profile', {});
+
+				const { data } = response;
+				// this.user = data?.user ?? null;
+				this.setUser(data?.user ?? null, expires_in ?? 0);
+			} catch (error) {
+				console.error('Get Profile API error:', error);
+				// Tetap lanjutkan logout meskipun API gagal
+			} finally {
+				loadingStore.stop();
+			}
+		},
+
+		// Simpan data pengguna ke state dan cookie
+		setUser(user: any, expiresInSeconds: number) {
+			this.user = user;
+
+			const userCookie = useCookie("user", {
+				maxAge: expiresInSeconds,
+				secure: true,
+				sameSite: "strict",
+			});
+
+			userCookie.value = user; // Simpan object langsung, Nuxt otomatis JSON.stringify
+		},
+
+		getUser() {
+			const userCookie = useCookie("user");
+			if (userCookie.value) {
+				this.user = userCookie.value; // Sudah object, jangan parse
+			} else {
+				this.user = null;
+			}
+			return this.user;
+		},
+
 		// Helper method untuk clear semua auth data
 		clearAuthData() {
 			// Hapus cookie
 			const cookie = useCookie("access_token");
+			const userCookie = useCookie("user");
 			cookie.value = null;
+			userCookie.value = null;
 
 			// Reset state
 			this.accessToken = "";
@@ -109,11 +154,6 @@ export const useAuthStore = defineStore("auth", {
 				await this.logout({ redirectTo: '/login' });
 				return false;
 			}
-		},
-
-		// Method untuk set user data
-		setUser(userData: any) {
-			this.user = userData;
 		},
 
 		// Method untuk auto-logout saat token expired

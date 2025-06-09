@@ -1,20 +1,31 @@
-
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 
 definePageMeta({
-	layout: 'default',
-	middleware: 'auth',
+  layout: 'default',
+  middleware: 'auth', // Middleware untuk memastikan user login
 });
 
+// Ambil instance authStore
+const authStore = useAuthStore();
 
-const route = useRoute();
+// Ambil data user dari store
+const user = computed(() => authStore.user);
 
+// Jalankan logika untuk memuat data pengguna
+onMounted(() => {
+  if (!authStore.user) {
+    // Pulihkan user dari cookie jika hilang
+    authStore.getUser();
+  }
+});
+
+// Menu untuk halaman akun
 const items = ref([
   {
     label: "Ubah data akun",
     to: "/",
-		icon: "/images/items/user.svg",
+    icon: "/images/items/user.svg",
   },
   {
     label: "Ubah password",
@@ -22,7 +33,7 @@ const items = ref([
     icon: "/images/items/lock-open.svg",
   },
   {
-    label: "Prefrensi anda",
+    label: "Preferensi Anda",
     to: "/merchandise",
     icon: "/images/items/bookmark-square.svg",
   },
@@ -38,13 +49,12 @@ const items = ref([
   },
 ]);
 
-// handle logout
-const authStore = useAuthStore();
+// Fungsi logout
 const handleLogout = () => {
-	authStore.logout({ redirectTo: '/login', callApi: true });
+  authStore.logout({ redirectTo: '/login', callApi: true });
 };
-
 </script>
+
 
 <template>
 	<div class="relative pb-[60px]">
@@ -63,8 +73,8 @@ const handleLogout = () => {
 					/>
 
 					<div class="flex flex-col flex-1 gap-0">
-						<h3 class="font-bold text-lg">Faisal Achmad Dwi Cahyono</h3>
-						<p class="text-sm text-[#94A3B8]">faisalachmaddwic@gmail.com</p>
+						<h3 class="font-bold text-lg">{{ user?.name }}</h3>
+						<p class="text-sm text-[#94A3B8]">{{ user?.email }}</p>
 					</div>
 				</div>
 				<AppToggleDarkMode size="lg" />

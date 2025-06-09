@@ -111,7 +111,7 @@ const onSubmit = handleSubmit(async (values) => {
 		const { data } = response;
 
     // Simpan token ke cookie dan state
-    authStore.saveToken({
+    await authStore.saveToken({
       access_token: data.access_token,
       expires_in: data.expires_in,
       token_type: data.token_type,
