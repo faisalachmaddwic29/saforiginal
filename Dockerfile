@@ -62,6 +62,6 @@ RUN mkdir -p logs
 EXPOSE 3001
 
 # Jalankan dengan PM2 menggunakan ecosystem.config.js
-# CMD ["pm2-runtime", "start", "ecosystem.config.js"]
-CMD ["pm2-runtime", "start", "ecosystem.config.mjs"]
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+# CMD ["pm2-runtime", "start", "ecosystem.config.mjs"]
 
