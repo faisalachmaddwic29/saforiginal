@@ -3,7 +3,8 @@ version: '3.8'
 services:
   saforiginal-fe:
     build: .
-    container_name: saforiginal-fe
+    image: saforiginal_fe
+		container_name: saforiginal-fe
     environment:
       - HOST=0.0.0.0
       - PORT=3001
