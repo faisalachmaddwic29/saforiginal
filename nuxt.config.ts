@@ -98,10 +98,10 @@ export default defineNuxtConfig({
 			globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
 			runtimeCaching: [
 				{
-					urlPattern: /^\/$/,
+					urlPattern: /^\/(?!api\/).*/,  // Semua URL yang bukan API
 					handler: 'NetworkFirst',
 					options: {
-						cacheName: 'root-cache',
+						cacheName: 'pages-cache',
 						cacheableResponse: {
 							statuses: [0, 200],
 						},
