@@ -1,16 +1,21 @@
 // services/api/api_instance.ts
 import axios, { type AxiosInstance } from 'axios';
-
-const config = useRuntimeConfig()
 // Create Axios Instance
-const ApiInstance: AxiosInstance = axios.create({
-    baseURL: config.public.apiUrl || 'https://saf-api.mandatech.co.id/api',
+let ApiInstance: AxiosInstance = axios.create({
+    // baseURL: 'https://saf-api.mandatech.co.id/api',
     timeout: 30000,
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     },
 });
+
+export function setApiBaseUrl(newBaseUrl: string) {
+	ApiInstance = axios.create({
+		...ApiInstance.defaults,
+		baseURL: newBaseUrl,
+	});
+}
 
 // Request Interceptor
 ApiInstance.interceptors.request.use(
@@ -65,4 +70,4 @@ ApiInstance.interceptors.response.use(
     }
 );
 
-export default ApiInstance;
+export { ApiInstance }

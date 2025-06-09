@@ -24,7 +24,7 @@ onMounted(() => {
 const items = ref([
   {
     label: "Ubah data akun",
-    to: "/",
+    to: "/account/change-account",
     icon: "/images/items/user.svg",
   },
   {
@@ -86,6 +86,7 @@ const handleLogout = () => {
 						<NuxtLink
 							v-for="item in items"
 							:key="item.label"
+							:to="item.to"
 							class="w-full">
 							<ListItem :label="item.label" :isIcon="false">
 								<template #icon>

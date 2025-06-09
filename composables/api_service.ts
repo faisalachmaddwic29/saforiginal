@@ -1,6 +1,6 @@
 // services/api/api_service.ts
 import { type AxiosResponse } from 'axios';
-import ApiInstance from '~/services/api/api_instance';
+import {ApiInstance,setApiBaseUrl} from '~/services/api/api_instance';
 import { ApiResponseHandler } from '~/services/api/api_response';
 import type { ApiService, ApiResponseType, AuthToken } from '~/types/api';
 
@@ -59,7 +59,8 @@ class ApiServiceImpl implements ApiService {
 			const headers = { ...authHeaders, ...(customHeaders || {}) };
 
 			const finalEndpoint = this.buildEndpointUrl(endpoint);
-
+			const config = useRuntimeConfig()
+			setApiBaseUrl(config.public.apiUrl);
 			const response: AxiosResponse = await ApiInstance.request({
 				method,
 				url: finalEndpoint,
