@@ -338,7 +338,7 @@ const getAddressOptions = async () => {
   isLoadingAddress.value = true;
 
   try {
-    const response = await apiService.get("/v1/locations");
+    const response = await apiService.get("/locations");
 		const data = response?.data?.locations ?? [];
 		if (data) {
 			locations.value = data?.map((location: any) => ({

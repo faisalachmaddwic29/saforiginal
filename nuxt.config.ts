@@ -9,10 +9,10 @@ export default defineNuxtConfig({
 	// 	preset: process.env.NITRO_PRESET || undefined,
 	// },
 	runtimeConfig: {
-		apiUrl: process.env.NUXT_API_URL,
-		apiVersion: process.env.NUXT_API_VERSION,
 		public: {
 			api: process.env.NUXT_API_FRONTEND,
+			apiUrl: process.env.NUXT_API_URL,
+			apiVersion: process.env.NUXT_API_VERSION,
 		},
 	},
 	modules: [
