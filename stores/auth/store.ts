@@ -17,7 +17,8 @@ export const useAuthStore = defineStore("auth", {
 		isLoggedIn: (state) => Boolean(state.accessToken && state.isAuthenticated),
 
 		// Getter untuk mendapatkan full authorization header
-		authHeader: (state) => state.accessToken ? `${state.tokenType} ${state.accessToken}` : "",
+		// authHeader: (state) => state.accessToken ? `${state.tokenType} ${state.accessToken}` : "",
+		authHeader: (state) => state.accessToken ? `Bearer ${state.accessToken}` : "",
 
 		// Getter untuk cek apakah token expired (jika diperlukan)
 		isTokenExpired: (state) => {
@@ -33,26 +34,34 @@ export const useAuthStore = defineStore("auth", {
 			// Hitung waktu kedaluwarsa absolut
 			const expirationTimestamp = Date.now() + data.expires_in * 1000;
 
-			const cookie = useCookie("access_token", {
+			const appAuth = useCookie("appAuth", {
 				maxAge: data.expires_in, // Tetap gunakan nilai detik untuk cookie
 				secure: false,
 				sameSite: "strict",
 			});
 
-			cookie.value = data.access_token;
+			appAuth.value = JSON.stringify({
+				access_token: data.access_token,
+				expires_in: expirationTimestamp,
+				token_type: data.token_type,
+			});
+
 			this.accessToken = data.access_token;
 			this.expiresIn = expirationTimestamp; // Simpan sebagai timestamp
 			this.tokenType = data.token_type;
 			this.isAuthenticated = true;
 
-			await this.getProfile(data.expires_in);
+			await this.getProfile();
 		},
 
 		// Ambil token dari cookie saat aplikasi dimuat
 		loadToken() {
-			const cookie = useCookie("access_token");
+			const cookie = useCookie("appAuth");
 			if (cookie.value) {
-				this.accessToken = cookie.value;
+				const { access_token, expires_in, token_type } = JSON.parse(cookie.value);
+				this.accessToken = access_token;
+				this.expiresIn = expires_in;
+				this.tokenType = token_type;
 				this.isAuthenticated = true;
 				// TODO: Validasi token dengan server jika diperlukan
 			}
@@ -84,7 +93,7 @@ export const useAuthStore = defineStore("auth", {
 			}
 		},
 
-		async getProfile(expires_in: number) {
+		async getProfile() {
 			const loadingStore = useLoadingStore();
 			try {
 				loadingStore.start();
@@ -93,7 +102,7 @@ export const useAuthStore = defineStore("auth", {
 
 				const { data } = response;
 				// this.user = data?.user ?? null;
-				this.setUser(data?.user ?? null, expires_in ?? 0);
+				this.setUser(data?.user ?? null);
 			} catch (error) {
 				console.error('Get Profile API error:', error);
 				// Tetap lanjutkan logout meskipun API gagal
@@ -103,11 +112,11 @@ export const useAuthStore = defineStore("auth", {
 		},
 
 		// Simpan data pengguna ke state dan cookie
-		setUser(user: any, expiresInSeconds: number) {
+		setUser(user: any) {
 			this.user = user;
 
 			const userCookie = useCookie("user", {
-				maxAge: expiresInSeconds,
+				maxAge: this.expiresIn,
 				secure: true,
 				sameSite: "strict",
 			});
@@ -128,7 +137,7 @@ export const useAuthStore = defineStore("auth", {
 		// Helper method untuk clear semua auth data
 		clearAuthData() {
 			// Hapus cookie
-			const cookie = useCookie("access_token");
+			const cookie = useCookie("appAuth");
 			const userCookie = useCookie("user");
 			cookie.value = null;
 			userCookie.value = null;

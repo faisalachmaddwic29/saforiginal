@@ -5,6 +5,7 @@ export interface TypeLocation {
     city_type: string;
     city_name: string;
   };
+	text?: string;
   subdistrict?: string; // Optional field if it exists
 }
 
