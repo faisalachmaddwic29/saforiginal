@@ -64,7 +64,7 @@ const handleLogout = () => {
 				<div class="flex items-center gap-3 w-full">
 					<!--profile -->
 					<div class="flex-1 flex items-center gap-3" w-full>
-						<ProfilePhoto :name="user?.name ?? ''" />
+						<ProfilePhoto :name="user?.name ?? ''" :image-url="user?.avatar_url"/>
 
 						<div class="flex flex-col flex-1 gap-0 w-full">
 							<h3 class="font-bold text-base md:text-lg line-clamp-2">{{ user?.name }}</h3>

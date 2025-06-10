@@ -58,7 +58,7 @@ export const useAuthStore = defineStore("auth", {
 		loadToken() {
 			const cookie = useCookie("appAuth");
 			if (cookie.value) {
-				const { access_token, expires_in, token_type } = JSON.parse(cookie.value);
+				const { access_token, expires_in, token_type } = cookie.value as any;
 				this.accessToken = access_token;
 				this.expiresIn = expires_in;
 				this.tokenType = token_type;
