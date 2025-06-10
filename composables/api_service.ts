@@ -27,16 +27,16 @@ class ApiServiceImpl implements ApiService {
 	 * Build endpoint URL with version prefix
 	 */
 	private buildEndpointUrl(endpoint: string): string {
-		 const config = useRuntimeConfig()
 		if (endpoint.includes('/auth')) {
 			return endpoint;
 		}
 
-		const apiVersion = config.public.apiVersion;
+		// const config = useRuntimeConfig()
+		// const apiVersion = config.public.apiVersion;
 
-		if (apiVersion) {
-			return `/${apiVersion}${endpoint}`;
-		}
+		// if (apiVersion) {
+		// 	return `/${apiVersion}${endpoint}`;
+		// }
 
 		return endpoint;
 	}
