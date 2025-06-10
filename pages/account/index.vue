@@ -34,7 +34,7 @@ const items = ref([
   },
   {
     label: "Preferensi Anda",
-    to: "/merchandise",
+    to: "/event",
     icon: "/images/items/bookmark-square.svg",
   },
   {
@@ -75,7 +75,7 @@ const handleLogout = () => {
 				</div>
 
 				<!-- Verified Email And Phone-->
-				<div class="my-5" v-if="user?.email_verified_at == null || user?.phone_verified_at == null">
+				<div class="my-5 flex flex-col gap-4" v-if="user?.email_verified_at == null || user?.phone_verified_at == null">
 					<div v-if="!user?.email_verified_at" class="w-full border border-[rgba(220,76,100,0.1)] bg-[rgba(220,76,100,0.05)] rounded-xl p-3 bg">
 						<div class="flex items-center gap-3 w-full justify-between">
 							<div class="flex items-center w-full gap-3">
@@ -110,7 +110,7 @@ const handleLogout = () => {
 				<TitleSection>Data Pribadi</TitleSection>
 
 
-				<div class="mt-4 md:mt-8 mb-15">
+				<div class="mt-6 md:mt-8 mb-15">
 					<ul class="flex flex-col justify-between items-center gap-8 md:gap-10">
 						<NuxtLink
 							v-for="item in items"

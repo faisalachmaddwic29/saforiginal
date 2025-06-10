@@ -65,49 +65,49 @@ export default defineNuxtConfig({
 		injectRegister: 'auto',
 		includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
 		workbox: {
-			cleanupOutdatedCaches: true,
+			// cleanupOutdatedCaches: true,
+			// // navigateFallback: '/',
+			// // navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/], // Menolak rute tertentu
+			// // globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+			// // runtimeCaching: [
+			// // 	{
+			// // 		urlPattern: '/',
+			// // 		handler: 'NetworkFirst',
+			// // 		options: {
+			// //       cacheName: 'start-page',
+			// //     },
+			// // 	}
+			// // ]
 			// navigateFallback: '/',
-			// navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/], // Menolak rute tertentu
+			// navigateFallbackAllowlist: [/^\/$/], // Memastikan root di-cache
+			// navigateFallbackDenylist: [/^\/api\//], // Mencegah fallback untuk API
+			// // globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+			// // runtimeCaching: [
+			// // 	{
+			// // 		urlPattern: /^\/api\/.*$/, // Contoh: cache API dengan NetworkFirst
+			// // 		handler: 'NetworkFirst',
+			// // 		options: {
+			// // 			cacheName: 'api-cache',
+			// // 			networkTimeoutSeconds: 10,
+			// // 			cacheableResponse: {
+			// // 				statuses: [0, 200],
+			// // 			},
+			// // 		},
+			// // 	},
+			// // ],
 			// globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
 			// runtimeCaching: [
 			// 	{
-			// 		urlPattern: '/',
+			// 		urlPattern: /^\/(?!api\/).*/,  // Semua URL yang bukan API
 			// 		handler: 'NetworkFirst',
 			// 		options: {
-			//       cacheName: 'start-page',
-			//     },
-			// 	}
-			// ]
-			navigateFallback: '/',
-			navigateFallbackAllowlist: [/^\/$/], // Memastikan root di-cache
-			navigateFallbackDenylist: [/^\/api\//], // Mencegah fallback untuk API
-			// globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
-			// runtimeCaching: [
-			// 	{
-			// 		urlPattern: /^\/api\/.*$/, // Contoh: cache API dengan NetworkFirst
-			// 		handler: 'NetworkFirst',
-			// 		options: {
-			// 			cacheName: 'api-cache',
-			// 			networkTimeoutSeconds: 10,
+			// 			cacheName: 'pages-cache',
 			// 			cacheableResponse: {
 			// 				statuses: [0, 200],
 			// 			},
 			// 		},
 			// 	},
 			// ],
-			globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
-			runtimeCaching: [
-				{
-					urlPattern: /^\/(?!api\/).*/,  // Semua URL yang bukan API
-					handler: 'NetworkFirst',
-					options: {
-						cacheName: 'pages-cache',
-						cacheableResponse: {
-							statuses: [0, 200],
-						},
-					},
-				},
-			],
 		},
 		devOptions: {
 			enabled: true,
