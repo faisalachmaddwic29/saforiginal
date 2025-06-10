@@ -58,31 +58,60 @@ const handleLogout = () => {
 
 <template>
 	<div class="relative pb-[60px]">
-		<div class="px-4 pt-[38px] pb-5">
+		<div class="px-4 pt-[38px] pb-5 w-full">
 
-			<!-- profile -->
-			<div class="flex items-center gap-3">
-				<!--profile -->
-				<div class="flex-1 flex items-center gap-3">
-					<ProfilePhoto :name="user?.name ?? ''" />
+			<ClientOnly>
+				<div class="flex items-center gap-3 w-full">
+					<!--profile -->
+					<div class="flex-1 flex items-center gap-3" w-full>
+						<ProfilePhoto :name="user?.name ?? ''" />
 
-					<div class="flex flex-col flex-1 gap-0">
-						<h3 class="font-bold text-lg">{{ user?.name }}</h3>
-						<p class="text-sm text-[#94A3B8]">{{ user?.email }}</p>
+						<div class="flex flex-col flex-1 gap-0 w-full">
+							<h3 class="font-bold text-base md:text-lg line-clamp-2">{{ user?.name }}</h3>
+							<p class="text-xs md:text-sm text-[#94A3B8] line-clamp-1">{{ user?.email }}</p>
+						</div>
+					</div>
+					<AppToggleDarkMode size="lg" />
+				</div>
+
+				<!-- Verified Email And Phone-->
+				<div class="my-5" v-if="user?.email_verified_at == null || user?.phone_verified_at == null">
+					<div v-if="!user?.email_verified_at" class="w-full border border-[rgba(220,76,100,0.1)] bg-[rgba(220,76,100,0.05)] rounded-xl p-3 bg">
+						<div class="flex items-center gap-3 w-full justify-between">
+							<div class="flex items-center w-full gap-3">
+								<NuxtImg src="/images/icons/info-circle.svg" class="w-8 h-8 text-[#DC4C64]" />
+								<div class="flex flex-col flex-1 gap-0 w-full">
+									<h3 class="font-bold text-base line-clamp-2">Email</h3>
+									<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">{{ user?.email }}</p>
+								</div>
+							</div>
+							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent py-1 px-3" size="sm">Verifikasi</Button>
+						</div>
+					</div>
+
+					<div v-if="!user?.phone_verified_at" class="w-full border border-[rgba(220,76,100,0.1)] bg-[rgba(220,76,100,0.05)] rounded-xl p-3 bg">
+						<div class="flex items-center gap-3 w-full justify-between">
+							<div class="flex items-center w-full gap-3">
+								<NuxtImg src="/images/icons/info-circle.svg" class="w-8 h-8 text-[#DC4C64]" />
+								<div class="flex flex-col flex-1 gap-0 w-full">
+									<h3 class="font-bold text-base line-clamp-2">No Handphone</h3>
+									<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">{{ user?.phone }}</p>
+								</div>
+							</div>
+							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent py-2 px-3" size="sm">Verifikasi</Button>
+						</div>
 					</div>
 				</div>
-				<AppToggleDarkMode size="lg" />
-
-			</div>
+			</ClientOnly>
 
 
 			<!-- list -->
-			<div class="mt-5">
+			<div class="">
 				<TitleSection>Data Pribadi</TitleSection>
 
 
-				<div class="mt-6 mb-12">
-					<ul class="flex flex-col justify-between items-center gap-10">
+				<div class="mt-4 md:mt-8 mb-15">
+					<ul class="flex flex-col justify-between items-center gap-8 md:gap-10">
 						<NuxtLink
 							v-for="item in items"
 							:key="item.label"
@@ -119,7 +148,7 @@ const handleLogout = () => {
 						</DialogHeader>
 					<DialogFooter class="mt-8">
 						<div class="flex items-center justify-between gap-4 max-w-full overflow-hidden">
-							<DialogClose as-child class="flex-1 shrink-0 w-full">
+							<DialogClose as-child class="flex-1 w-full">
 								<Button variant="outline" class="w-full">Batal</Button>
 							</DialogClose>
 							<Button class="flex-1 w-full" @click="handleLogout">Keluar</Button>
@@ -129,7 +158,23 @@ const handleLogout = () => {
 				</Dialog>
 			</div>
 
+
+			<div class="w-full border border-[rgba(148,163,184,0.1)] bg-[rgba(148,163,184,0.05)] rounded-xl p-3 bg mt-5 mb-[85px]">
+				<div class="flex items-center gap-3 w-full justify-between">
+					<div class="flex items-center w-full gap-3">
+						<NuxtImg src="/images/logos/logo-square.png" class="w-10 h-10 aspect-square" />
+						<div class="flex flex-col flex-1 gap-0 w-full">
+							<h3 class="font-bold text-base line-clamp-1">Instal SAF Original</h3>
+							<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">lebih mudah akses SAF Original di smartphone kamu.</p>
+						</div>
+					</div>
+					<Button variant="outline" class="text-xs h-full border !border-secondary bg-transparent py-1 px-3" size="sm">Instal</Button>
+				</div>
+			</div>
+
+
 		</div>
+			<p class="font-inter text-[#647294] text-xs md:text-sm m-auto text-center">Copyright © 2025 saf-original, All rights reserved</p>
 		<AppToolbarMenus />
 			<!-- <div class="flex gap-3 flex-col">
 				<Button @click="() => {notify.success('Data berhasil disimpan!')}" >Toast Success</Button>

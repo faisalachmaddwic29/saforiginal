@@ -338,7 +338,7 @@ const getAddressOptions = async () => {
   isLoadingAddress.value = true;
 
   try {
-    const response = await apiService.get("/locations");
+    const response = await apiService.get("/v1/locations");
 		const data = response?.data?.locations ?? [];
 		if (data) {
 			locations.value = data?.map((location: any) => ({
@@ -373,8 +373,8 @@ const onSubmit = handleSubmit(
 			"name": values.name,
 			"email": values.email,
 			"phone": registrationStore.phone,
-			"password": values.password,
-			"password_confirmation": values.password_confirmation,
+			// "password": values.password,
+			// "password_confirmation": values.password_confirmation,
 			"location_id": values.address?.value,
 			"gender": values.gender
 		});

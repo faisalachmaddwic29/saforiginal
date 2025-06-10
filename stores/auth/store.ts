@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { useCookie, navigateTo } from "#app";
+// services/api/api_response.ts
+import type { TypeUser } from '~/types/auth/user';
 
 export const useAuthStore = defineStore("auth", {
 	state: () => ({
@@ -7,7 +9,7 @@ export const useAuthStore = defineStore("auth", {
 		expiresIn: 0 as number,
 		tokenType: "" as string,
 		isAuthenticated: false as boolean,
-		user: null as any, // Bisa disesuaikan dengan interface User
+		user: null as TypeUser | null, // Bisa disesuaikan dengan interface User
 	}),
 
 	getters: {
@@ -116,7 +118,7 @@ export const useAuthStore = defineStore("auth", {
 		getUser() {
 			const userCookie = useCookie("user");
 			if (userCookie.value) {
-				this.user = userCookie.value; // Sudah object, jangan parse
+				this.user = userCookie.value as unknown as TypeUser; // Sudah object, jangan parse
 			} else {
 				this.user = null;
 			}

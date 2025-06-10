@@ -18,7 +18,7 @@
 					:class="[
 						isDark
 							? 'bg-slate-700 translate-x-8'
-							: 'bg-sky-300 translate-x-0.5',
+							: 'bg-[#A8F2FF] translate-x-0.5',
 						'hover:scale-110'
 					]"
 				>
