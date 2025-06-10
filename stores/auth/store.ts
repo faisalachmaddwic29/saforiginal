@@ -17,8 +17,8 @@ export const useAuthStore = defineStore("auth", {
 		isLoggedIn: (state) => Boolean(state.accessToken && state.isAuthenticated),
 
 		// Getter untuk mendapatkan full authorization header
-		// authHeader: (state) => state.accessToken ? `${state.tokenType} ${state.accessToken}` : "",
-		authHeader: (state) => state.accessToken ? `Bearer ${state.accessToken}` : "",
+		authHeader: (state) => state.accessToken ? `${state.tokenType} ${state.accessToken}` : "",
+		// authHeader: (state) => state.accessToken ? `Bearer ${state.accessToken}` : "",
 
 		// Getter untuk cek apakah token expired (jika diperlukan)
 		isTokenExpired: (state) => {
