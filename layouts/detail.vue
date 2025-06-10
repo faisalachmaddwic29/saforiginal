@@ -1,6 +1,6 @@
 <template>
   <AppWrapper>
-		<AppToolbarDetail :title="props.title" />
+		<AppToolbarDetail :title="layoutData?.title" />
 
 		<AppMain :clean="true" class="pt-[70px] pb-[76px]">
 			<slot />
@@ -8,11 +8,5 @@
   </AppWrapper>
 </template>
 <script setup>
-// Define props
-const props = defineProps({
-	title: {
-		type: String,
-		default: null
-	}
-})
+const layoutData = useState('layoutData', () => null)
 </script>
