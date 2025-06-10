@@ -98,7 +98,7 @@ const handleLogout = () => {
 									<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">{{ user?.phone }}</p>
 								</div>
 							</div>
-							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent py-2 px-3" size="sm">Verifikasi</Button>
+							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent py-1 px-3" size="sm">Verifikasi</Button>
 						</div>
 					</div>
 				</div>
