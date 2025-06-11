@@ -52,7 +52,7 @@ const typeClass = {
 
 <template>
   <div
-    class="relative flex items-center w-xs p-5 mb-4 pb-6 text-gray-500 bg-white rounded-lg shadow-sm border dark:text-gray-400 dark:bg-gray-800"
+    class="relative flex items-center w-xs p-5 mb-4 mx-auto pb-6 text-gray-500 bg-white rounded-lg shadow-sm border dark:text-gray-400 dark:bg-gray-800"
     role="alert"
   >
     <!-- Icon -->

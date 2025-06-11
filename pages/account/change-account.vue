@@ -129,6 +129,8 @@ import { Check } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
+
+const dialog = useDialog()
 const title = "Ubah Data Akun";
 useHead({title: title});
 const layoutData = useState('layoutData')
@@ -244,36 +246,41 @@ onBeforeMount(() => {
 
 // Handle form submission
 const onSubmit = handleSubmit(async (values) => {
-	loadingStore.start();
-	isLoading.value = true
+	dialog.show({
+		title : 'Simpan perubahan profile',
+		buttonConfirmLabel: 'Simpan',
+		onConfirm :async () => {
+			try {
+				loadingStore.start();
+				isLoading.value = true
+				const response = await apiService.post('/auth/profile', {
+					avatar_url : selectedFile.value,
+					metadata : JSON.stringify({
+						"name": values.name,
+						"location_id": values.address?.value,
+						"gender": values.gender
+					}),
+					_method : 'PUT'
+				},undefined,{'Content-Type': 'multipart/form-data'});
 
-	try {
-		const response = await apiService.post('/auth/profile', {
-			avatar_url : selectedFile.value,
-			metadata : JSON.stringify({
-				"name": values.name,
-				"location_id": values.address?.value,
-				"gender": values.gender
-			}),
-			_method : 'PUT'
-		},undefined,{'Content-Type': 'multipart/form-data'});
+				const { data, message } = response;
+				notify.success(message);
+				authStore.setUser(data?.user);
 
-		const { data, message } = response;
-		notify.success(message);
-		authStore.setUser(data?.user);
+			} catch (error: any) {
+				if(error?.code >= 500){
+					notify.error(error?.message)
+				}else{
+					handleValidationError(error, setErrors)
+				}
 
-	} catch (error: any) {
-		if(error?.code >= 500){
-			notify.error(error?.message)
-		}else{
-			handleValidationError(error, setErrors)
-		}
-
-		// Handle error (bisa tambahkan toast/notification)
-	} finally {
-		isLoading.value = false
-		loadingStore.stop();
-	}
+				// Handle error (bisa tambahkan toast/notification)
+			} finally {
+				isLoading.value = false
+				loadingStore.stop();
+			}
+		},
+	})
 }, (errors) => {
 	addressTouched.value = true
 	genderTouched.value = true

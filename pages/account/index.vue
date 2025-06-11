@@ -28,9 +28,9 @@ const items = ref([
     icon: "/images/items/user.svg",
   },
   {
-    label: "Ubah password",
-    to: "/event",
-    icon: "/images/items/lock-open.svg",
+    label: "Keamaman & Akun",
+    to: "/account/security",
+    icon: "/images/items/shield-tick.svg",
   },
   {
     label: "Preferensi Anda",
