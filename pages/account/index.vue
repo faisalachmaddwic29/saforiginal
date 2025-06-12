@@ -106,7 +106,7 @@ const handleLogout = () => {
 
 
 			<!-- list -->
-			<div class="">
+			<div class="list_items">
 				<TitleSection>Data Pribadi</TitleSection>
 
 
@@ -159,18 +159,7 @@ const handleLogout = () => {
 			</div>
 
 
-			<div class="w-full border border-[rgba(148,163,184,0.1)] bg-[rgba(148,163,184,0.05)] rounded-xl p-3 bg mt-5 mb-[85px]">
-				<div class="flex items-center gap-3 w-full justify-between">
-					<div class="flex items-center w-full gap-3">
-						<NuxtImg src="/images/logos/logo-square.png" class="w-10 h-10 aspect-square" />
-						<div class="flex flex-col flex-1 gap-0 w-full">
-							<h3 class="font-bold text-base line-clamp-1">Instal SAF Original</h3>
-							<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">lebih mudah akses SAF Original di smartphone kamu.</p>
-						</div>
-					</div>
-					<Button variant="outline" class="text-xs h-full border !border-secondary bg-transparent py-1 px-3" size="sm">Instal</Button>
-				</div>
-			</div>
+			<InstallApps />
 
 
 		</div>

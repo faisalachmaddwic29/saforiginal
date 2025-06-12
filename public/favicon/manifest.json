@@ -1,6 +1,9 @@
 {
-	"name": "SafOriginal",
+	"name": "SAF ORIGINAL",
 	"short_name": "SAF+",
+	"scope": "/",
+	"description": "SAF ORIGINAL adalah aplikasi untuk mempermudah akses konten.",
+	"categories": ["entertainment", "utilities"],
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#ffffff",
