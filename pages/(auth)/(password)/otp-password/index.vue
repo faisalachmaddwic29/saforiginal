@@ -30,6 +30,25 @@ definePageMeta({
 	middleware: 'guest'
 });
 
+useSeoMeta({
+	title: 'OTP Password',
+});
+
+// Di script setup
+const router = useRouter();
+
+onMounted(() => {
+  if (!registrationStore.phone) {
+    // Balik ke halaman sebelumnya
+    if (history.length > 1) {
+      router.back();
+    } else {
+      // Kalau ga ada history, ke register
+      navigateTo('/register-password');
+    }
+  }
+});
+
 const isLoading = ref(false);
 
 // Schema validasi Zod - hanya required
@@ -53,6 +72,7 @@ const [otp] = defineField('otp')
 const loadingStore = useLoadingStore();
 const registrationStore = useRegistrationStore();
 const authStore = useAuthStore();
+const preferences = ref([]);
 
 // Handle submit dengan vee-validate
 const onSubmit = handleSubmit(async (values) => {
@@ -64,8 +84,6 @@ const onSubmit = handleSubmit(async (values) => {
 				phone: registrationStore.phone,
 				otp: values.otp
 		});
-		loadingStore.toggle();
-
 
 		const { data } = response;
 
@@ -79,7 +97,16 @@ const onSubmit = handleSubmit(async (values) => {
 
     // Redirect ke halaman berikutnya
 		registrationStore.reset();
-    navigateTo("/");
+
+		await getPreferenceOptions();
+
+		// check apakah sudah ada preferences
+		if (preferences.value.length <= 0) {
+			navigateTo("/preferences", { replace: true });
+		} else{
+			navigateTo("/", { replace: true });
+		}
+
 
 		// Redirect setelah berhasil
 		// await navigateTo('/');
@@ -93,6 +120,21 @@ const onSubmit = handleSubmit(async (values) => {
 	}
 })
 
+
+const getPreferenceOptions = async () => {
+  try {
+    const response = await apiService.get("/v1/preferences");
+		const data = response?.data?.preferences ?? [];
+		if (data) {
+			preferences.value = data;
+		} else {
+			preferences.value = [];
+		}
+  } catch (error: any) {
+    handleValidationError(error, setErrors);
+    // Handle error (bisa tambahkan toast/notification)
+  }
+};
 const sendOtp = async () => {
 	loadingStore.start();
 

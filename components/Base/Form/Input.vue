@@ -1,6 +1,6 @@
 <template>
   <div class="relative flex flex-col">
-    <label v-if="labelText" :for="id" class="mb-1 font-normal">
+    <label v-if="labelText" :for="id" class="mb-1 font-lato font-bold text-sm text-[#1E293B] dark:text-[#94A3B8]">
       {{ labelText }}<span v-if="isRequiredLabel" class="text-red-500 ms-1">*</span>
     </label>
     <div class="relative">
@@ -21,7 +21,7 @@
       <div
         v-if="isIcon"
         :class="[
-          'absolute top-1/2 transform -translate-y-1/2 text-xl text-subtle',
+          'absolute top-1/2 mt-0.5 transform -translate-y-1/2 text-xl text-subtle',
           iconPosition === 'left' ? 'left-3' : 'right-3',
         ]"
       >
@@ -63,6 +63,7 @@ const computedClasses = computed(() => {
     baseClasses,
     props.disabled ? "cursor-not-allowed" : "",
     props.readOnly ? "bg-gray-100 cursor-default" : "",
+    props.isIcon  && (props.iconPosition === "left" ? "pl-10" : "pr-10"),
     props.icon && (props.iconPosition === "left" ? "pl-10" : "pr-10"),
     props.error ? "!border-red-500 !focus:ring-red-200 !focus:border-red-500" : "",
     props.className,

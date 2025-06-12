@@ -87,7 +87,7 @@ onMounted(() => {
             v-model="data[index]"
             type="text"
             maxlength="1"
-            class="font-manrope text-bold text-3xl w-[46.5px] h-[50px] rounded-md border text-center focus:border-secondary focus:outline-none"
+            class="font-manrope text-bold text-3xl w-[36px] h-[40px] md:w-[46.5px] md:h-[50px] rounded-md border text-center focus:border-secondary focus:outline-none"
             @input="handleOtpInput($event, index)"
             @paste="index === 0 && handlePaste($event)"
 						:class="props.isError ? '!border-red-500' : 'border-[#C5C5C5]'"

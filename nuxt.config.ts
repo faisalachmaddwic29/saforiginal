@@ -65,19 +65,22 @@ export default defineNuxtConfig({
 		injectRegister: 'auto',
 		includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
 		workbox: {
-			// cleanupOutdatedCaches: true,
-			// // navigateFallback: '/',
-			// // navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/], // Menolak rute tertentu
-			// // globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
-			// // runtimeCaching: [
-			// // 	{
-			// // 		urlPattern: '/',
-			// // 		handler: 'NetworkFirst',
-			// // 		options: {
-			// //       cacheName: 'start-page',
-			// //     },
-			// // 	}
-			// // ]
+			cleanupOutdatedCaches: true,
+			navigateFallback: '/',
+			navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/,  /^\/\/preferences/], // Menolak rute tertentu
+			globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+			runtimeCaching: [
+				{
+					urlPattern: '/',
+					handler: 'NetworkFirst',
+					options: {
+						cacheName: 'start-page',
+						networkTimeoutSeconds: 10,
+						cacheableResponse: {
+							statuses: [0, 200],
+						}},
+				}
+			]
 			// navigateFallback: '/',
 			// navigateFallbackAllowlist: [/^\/$/], // Memastikan root di-cache
 			// navigateFallbackDenylist: [/^\/api\//], // Mencegah fallback untuk API
@@ -125,11 +128,11 @@ export default defineNuxtConfig({
 		pageTransition: { name: 'page', mode: 'out-in' },
 		layoutTransition: { name: 'layout', mode: 'out-in' },
 		head: {
-			htmlAttrs: { lang: 'id' },
+      htmlAttrs: { lang: 'id' },
 			meta: [
 				{ charset: 'utf-8' },
 				{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
-				{ name: 'description', content: 'SAFORIGINAL' },
+				{ name: 'description', content: 'SAF ORIGINAL' },
 				{ name: 'mobile-web-app-capable', content: 'yes' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
 				{ name: 'application-name', content: 'SAF ORIGINAL' },

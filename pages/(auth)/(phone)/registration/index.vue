@@ -214,7 +214,27 @@ definePageMeta({
 	middleware: 'guest'
 });
 
+useSeoMeta({
+	title: 'Registrasi',
+});
+
+// Di script setup
+const router = useRouter();
+
+onMounted(() => {
+  if (!registrationStore.phone) {
+    // Balik ke halaman sebelumnya
+    if (history.length > 1) {
+      router.back();
+    } else {
+      // Kalau ga ada history, ke register
+      navigateTo('/login');
+    }
+  }
+});
+
 const locations = ref<AddressOption[]>([]);
+const preferences = ref([]);
 
 const isLoading = ref(false);
 const isLoadingAddress = ref(false);
@@ -355,6 +375,23 @@ const getAddressOptions = async () => {
   }
 };
 
+const getPreferenceOptions = async () => {
+
+  try {
+    const response = await apiService.get("/v1/preferences");
+		const data = response?.data?.preferences ?? [];
+		if (data) {
+			preferences.value = data;
+		} else {
+			preferences.value = [];
+		}
+  } catch (error: any) {
+    handleValidationError(error, setErrors);
+
+    // Handle error (bisa tambahkan toast/notification)
+  }
+};
+
 const loadingStore = useLoadingStore();
 const authStore = useAuthStore();
 const registrationStore = useRegistrationStore();
@@ -391,7 +428,15 @@ const onSubmit = handleSubmit(
 
     // Redirect ke halaman berikutnya
 		registrationStore.reset();
-    navigateTo("/");
+
+		await getPreferenceOptions();
+
+		// check apakah sudah ada preferences
+		if (preferences.value.length <= 0) {
+			navigateTo("/preferences", { replace: true });
+		} else{
+			navigateTo("/", { replace: true });
+		}
 
       // Redirect setelah berhasil
       // await navigateTo(props.redirectTo)

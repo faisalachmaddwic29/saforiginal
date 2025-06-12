@@ -68,8 +68,11 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 
 definePageMeta({
-  layout: "default",
-	middleware: 'guest'
+	middleware: 'guest',
+});
+
+useSeoMeta({
+	title: 'Login',
 });
 
 const isLoading = ref(false)

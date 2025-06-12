@@ -171,6 +171,7 @@ import { z } from 'zod'
 
 definePageMeta({
 	layout: 'detail',
+	middleware: 'guest'
 });
 
 const locations = ref<AddressOption[]>([]);
@@ -310,7 +311,7 @@ const onSubmit = handleSubmit(async (values) => {
 		notify.success(message);
 
 		// Redirect setelah berhasil
-		await registrationStore.setPhone(values.phone);
+		registrationStore.setPhone(values.phone);
 		await navigateTo('/otp-password')
 
 	} catch (error: any) {

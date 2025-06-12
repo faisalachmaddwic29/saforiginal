@@ -32,6 +32,26 @@ definePageMeta({
 	middleware: 'guest'
 });
 
+useSeoMeta({
+	title: 'Login',
+});
+
+
+// Di script setup
+const router = useRouter();
+
+onMounted(() => {
+  if (!loginStore.phone) {
+    // Balik ke halaman sebelumnya
+    if (history.length > 1) {
+      router.back();
+    } else {
+      // Kalau ga ada history, ke register
+      navigateTo('/login');
+    }
+  }
+});
+
 const isLoading = ref(false);
 
 // Schema validasi Zod - hanya required
@@ -55,6 +75,25 @@ const [otp] = defineField('otp')
 const loadingStore = useLoadingStore();
 const loginStore = useLoginStore();
 const authStore = useAuthStore();
+const preferences = ref([]);
+
+
+const getPreferenceOptions = async () => {
+
+  try {
+    const response = await apiService.get("/v1/preferences");
+		const data = response?.data?.preferences ?? [];
+		if (data) {
+			preferences.value = data;
+		} else {
+			preferences.value = [];
+		}
+  } catch (error: any) {
+    handleValidationError(error, setErrors);
+
+    // Handle error (bisa tambahkan toast/notification)
+  }
+};
 
 // Handle submit dengan vee-validate
 const onSubmit = handleSubmit(async (values) => {
@@ -79,7 +118,14 @@ const onSubmit = handleSubmit(async (values) => {
 
     // Redirect ke halaman berikutnya
 		loginStore.reset();
-    navigateTo("/");
+		await getPreferenceOptions();
+
+		// check apakah sudah ada preferences
+		if (preferences.value.length <= 0) {
+			navigateTo("/preferences", { replace: true });
+		} else{
+			navigateTo("/", { replace: true });
+		}
 
 		// Redirect setelah berhasil
 		// await navigateTo('/');

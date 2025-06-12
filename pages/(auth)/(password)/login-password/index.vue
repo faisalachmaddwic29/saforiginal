@@ -35,7 +35,7 @@
 			</div>
 		</div>
 
-		<NuxtLink to="/" class=" mb-8 text-xs md:text-sm text-primary font-bold">Lupa password?</NuxtLink>
+		<NuxtLink to="/forgot-password" class=" mb-8 text-xs md:text-sm text-primary font-bold">Lupa password?</NuxtLink>
 
 		<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Belum punya akun? <NuxtLink to="/registration-password" class="text-primary font-bold pl-0.5">Daftar sekarang</NuxtLink></p>
 
@@ -54,6 +54,11 @@ import { z } from 'zod'
 
 definePageMeta({
 	layout: 'detail',
+	middleware: 'guest',
+});
+
+useSeoMeta({
+	title: 'Login Password',
 });
 
 const showPassword = ref(false)

@@ -78,27 +78,27 @@ const handleLogout = () => {
 				<div class="my-5 flex flex-col gap-4" v-if="user?.email_verified_at == null || user?.phone_verified_at == null">
 					<div v-if="!user?.email_verified_at" class="w-full border border-[rgba(220,76,100,0.1)] bg-[rgba(220,76,100,0.05)] rounded-xl p-3 bg">
 						<div class="flex items-center gap-3 w-full justify-between">
-							<div class="flex items-center w-full gap-3">
+							<div class="flex items-center w-full gap-3 flex-grow">
 								<NuxtImg src="/images/icons/info-circle.svg" class="w-8 h-8 text-[#DC4C64]" />
 								<div class="flex flex-col flex-1 gap-0 w-full">
 									<h3 class="font-bold text-base line-clamp-2">Email</h3>
-									<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">{{ user?.email }}</p>
+									<p class="text-sm text-[#1E293B] dark:text-white line-clamp-1">{{ user?.email }}</p>
 								</div>
 							</div>
-							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent py-1 px-3" size="sm">Verifikasi</Button>
+							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent whitespace-nowrap py-1 px-3" size="sm">Verifikasi</Button>
 						</div>
 					</div>
 
 					<div v-if="!user?.phone_verified_at" class="w-full border border-[rgba(220,76,100,0.1)] bg-[rgba(220,76,100,0.05)] rounded-xl p-3 bg">
 						<div class="flex items-center gap-3 w-full justify-between">
-							<div class="flex items-center w-full gap-3">
+							<div class="flex items-center w-full gap-3 flex-grow">
 								<NuxtImg src="/images/icons/info-circle.svg" class="w-8 h-8 text-[#DC4C64]" />
 								<div class="flex flex-col flex-1 gap-0 w-full">
 									<h3 class="font-bold text-base line-clamp-2">No Handphone</h3>
 									<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">{{ user?.phone }}</p>
 								</div>
 							</div>
-							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent py-1 px-3" size="sm">Verifikasi</Button>
+							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent whitespace-nowrap py-1 px-3" size="sm">Verifikasi</Button>
 						</div>
 					</div>
 				</div>
@@ -134,24 +134,24 @@ const handleLogout = () => {
 							</template>
 						</ListItem>
 					</DialogTrigger>
-					<DialogContent class="sm:max-w-[425px] p-4">
+					<DialogContent class="sm:max-w-[425px] p-4 text-center">
 						<DialogHeader>
-							<DialogTitle class="mb-5">
-									<div class="inline-flex p-3.5 items-center justify-center shrink-0 size-15 rounded-full text-danger bg-danger-foreground">
+							<DialogTitle class="mb-5 m-auto">
+									<div class="text-center inline-flex p-3.5 items-center justify-center shrink-0 size-15 rounded-full text-danger bg-danger-foreground">
 										<Icon name="solar:danger-triangle-outline" class="text-4xl" />
 									</div>
 							</DialogTitle>
 							<DialogDescription>
-								<p class="font-inter text-lg md:text-2xl font-bold mb-2 text-[#171717] dark:text-white">Keluar dari SAF Original</p>
-								<p class="font-inter text-sm md:text-base text-[#737373]">Apakah Kamu yakin ingin keluar?</p>
+								<p class="text-center font-inter text-lg md:text-2xl font-bold mb-2 text-[#171717] dark:text-white">Keluar dari SAF Original</p>
+								<p class="text-center font-inter text-sm md:text-base text-[#737373]">Apakah Kamu yakin ingin keluar?</p>
 							</DialogDescription>
 						</DialogHeader>
 					<DialogFooter class="mt-8">
-						<div class="flex items-center justify-between gap-4 max-w-full overflow-hidden">
-							<DialogClose as-child class="flex-1 w-full">
+						<div class="flex items-center justify-between gap-4 w-full overflow-hidden !ring-none">
+							<DialogClose as-child class="flex-1 w-full focus-visible:ring-0 focus-visible:outline-none">
 								<Button variant="outline" class="w-full">Batal</Button>
 							</DialogClose>
-							<Button class="flex-1 w-full" @click="handleLogout">Keluar</Button>
+							<Button class="flex-1 w-full focus-visible:ring-0 focus-visible:outline-none" @click="handleLogout">Keluar</Button>
 						</div>
 					</DialogFooter>
 					</DialogContent>
@@ -174,7 +174,7 @@ const handleLogout = () => {
 
 
 		</div>
-			<p class="font-inter text-[#647294] text-xs md:text-sm m-auto text-center">Copyright © 2025 saf-original, All rights reserved</p>
+			<p class="font-inter text-[#647294] text-xs md:text-sm m-auto text-center mb-5">Copyright © 2025 saf-original, All rights reserved</p>
 		<AppToolbarMenus />
 			<!-- <div class="flex gap-3 flex-col">
 				<Button @click="() => {notify.success('Data berhasil disimpan!')}" >Toast Success</Button>
