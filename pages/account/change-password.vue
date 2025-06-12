@@ -91,8 +91,6 @@ const isLoading = ref(false);
 const showOldPassword = ref(false);
 const showNewConfirmPassword = ref(false);
 const showNewPassword = ref(false);
-const authStore = useAuthStore();
-const user = computed(() => authStore.user);
 
 const registrationSchema = z.object({
 	old_password: z.string()
