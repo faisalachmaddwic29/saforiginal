@@ -1,18 +1,9 @@
 <template>
-	<div
-		v-if="showInstallPrompt"
-		class="w-full border border-[rgba(148,163,184,0.1)] bg-[rgba(148,163,184,0.05)] rounded-xl p-3 mt-5 mb-[85px]"
-	>
-		<div class="flex items-center gap-3 w-full justify-between">
-			<div class="flex items-center w-full gap-3">
-				<NuxtImg src="/images/logos/logo-square.png" class="w-10 h-10 aspect-square" />
-				<div class="flex flex-col flex-1 gap-0 w-full">
-					<h3 class="font-bold text-base line-clamp-1">Instal SAF Original</h3>
-					<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">
-						Lebih mudah akses SAF Original di smartphone kamu.
-					</p>
-				</div>
-			</div>
+	<ItemsListButton v-if="showInstallPrompt" title="Instal SAF Original" subtitle="Lebih mudah akses SAF Original di smartphone kamu.">
+		<template #icon>
+			<NuxtImg src="/images/logos/logo-square.png" class="w-10 h-10 aspect-square" />
+		</template>
+		<template #actions>
 			<Button
 				variant="outline"
 				@click="installApp"
@@ -21,8 +12,8 @@
 			>
 				Instal
 			</Button>
-		</div>
-	</div>
+		</template>
+	</ItemsListButton>
 </template>
 
 <script setup>
@@ -33,8 +24,7 @@ let deferredPrompt = null
 
 // Cek apakah app sudah terinstall
 const isAppInstalled = () => {
-	return window.matchMedia('(display-mode: standalone)').matches ||
-		   window.navigator.standalone === true
+	return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
 }
 
 // Handle beforeinstallprompt event

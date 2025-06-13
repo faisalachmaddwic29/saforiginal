@@ -9,7 +9,7 @@
 			<FormMessageError v-if="errors.otp" :message="errors.otp" class="justify-center" />
 		</div>
 
-		<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span @click="sendOtp" class="text-primary font-bold pl-0.5">Kirim ulang</span></p>
+		<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span @click="sendOtp" class="cursor-pointer text-primary font-bold pl-0.5">Kirim ulang</span></p>
 
 
 		<div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">

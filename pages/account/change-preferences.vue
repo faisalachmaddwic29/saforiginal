@@ -3,8 +3,8 @@
 		<div class="px-4 py-5">
 			<!-- title -->
 			<div class="text-center m-auto">
-				<h2 class="font-black text-2xl">Pilih kategori kesukaan kamu</h2>
-				<p class="mt-2.5 text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Dapatkan rekomendasi event sesuai pilihan kamu</p>
+				<!-- <h2 class="font-black text-2xl">Sesuaikan kategori kesukaan kamu</h2> -->
+				<p class=" text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Dapatkan rekomendasi event sesuai pilihan kamu</p>
 			</div>
 
 			<div class="mt-5 flex flex-col gap-3">
@@ -29,7 +29,7 @@
 					</label>
 				</div>
 
-				<template v-else v-for="n in 4" :key="n">
+				<template v-else v-for="n in 10" :key="n">
 					<Skeleton class="w-full h-[64px]" />
 				</template>
 
@@ -43,8 +43,7 @@
 
 		<div class="fixed w-full z-10 bottom-0 left-0 bg-background shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
 			<AppContainer class="flex w-full gap-3">
-				<Button type="button" variant="outline" class="flex-1 border-primary" :disabled="isLoading">Skip</Button>
-				<Button type="submit" class="flex-1" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Simpan' }}</Button>
+				<Button type="submit" class="flex-1" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Perbarui' }}</Button>
 			</AppContainer>
 		</div>
 	</form>
@@ -57,7 +56,8 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 
 
-const title = "Pilih Preferensi";
+const title = "Preferensi Anda";
+
 definePageMeta({
   layout: "detail",
 	middleware: 'auth'
@@ -67,8 +67,15 @@ useSeoMeta({
 	title: title,
 });
 
+const layoutData = useState('layoutData');
+layoutData.value = {
+	title: title
+}
+
 const isLoading = ref(false);
 const isLoadingCategory = ref(false);
+const preferences = ref([]);
+const router = useRouter();
 
 type CategoryOption = {
   value: string | number;
@@ -115,6 +122,28 @@ watch(
   { immediate: true, deep: true }
 );
 
+const getPreferenceOptions = async () => {
+
+  try {
+    const response = await apiService.get("/v1/preferences");
+		const data = response?.data?.preferences ?? [];
+		if (data) {
+			preferences.value = data;
+
+			selectedCategories.value = preferences.value.map((preference: any) => ({
+				value: preference.id,
+				label: preference.name
+			}))
+		} else {
+			preferences.value = [];
+		}
+  } catch (error: any) {
+    handleValidationError(error, setErrors);
+
+    // Handle error (bisa tambahkan toast/notification)
+  }
+};
+
 const getCategoryOptions = async () => {
   isLoadingCategory.value = true;
 
@@ -126,6 +155,8 @@ const getCategoryOptions = async () => {
         value: tag.id,
         label: tag.name,
       }));
+
+			getPreferenceOptions();
     }
   } catch (error: any) {
     handleValidationError(error, setErrors);
@@ -137,8 +168,6 @@ const getCategoryOptions = async () => {
 const loadingStore = useLoadingStore();
 
 const onSubmit = handleSubmit(async (values) => {
-	console.log(values.category.map((cat) => cat.value));
-	console.log("Form data:", values);
   loadingStore.start();
   isLoading.value = true;
 
@@ -149,9 +178,11 @@ const onSubmit = handleSubmit(async (values) => {
       tags: values.category.map((cat) => cat.value),
     });
 
-		const { data, message } = response;
+		const { message } = response;
 
-		navigateTo("/", { replace: true });
+		notify.success(message);
+
+		router.back();
   } catch (error: any) {
     handleValidationError(error, setErrors);
   } finally {

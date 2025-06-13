@@ -10,7 +10,7 @@
         <NuxtImg src="/images/logos/logo.svg" alt="Logo" class="h-[30px]" />
       </div>
 
-      <h2 v-else class="flex text-2xl font-manrope font-extrabold text-title">{{ title }}</h2>
+      <h2 v-else class="flex text-lg md:text-xl font-manrope font-extrabold text-title">{{ title }}</h2>
 
       <!-- Kolom kanan kosong (buat balance) -->
       <div />

@@ -15,7 +15,7 @@
 			<FormMessageError v-if="errors.otp" :message="errors.otp" class="justify-center" />
 		</div>
 
-		<p class="mb-10 text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span @click="sendOtp" class="text-primary font-bold pl-0.5">Kirim ulang</span></p>
+		<p class="mb-10 text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span @click="sendOtp" class="cursor-pointer text-primary font-bold pl-0.5">Kirim ulang</span></p>
 
     <!-- Form Login Password -->
     <div class="flex flex-col gap-5 mb-2.5">

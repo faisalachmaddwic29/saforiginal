@@ -1,12 +1,16 @@
 <template>
-  <AppWrapper>
-		<AppToolbarDetail :title="layoutData?.title" />
+  <AppWrapper :key="layoutKey">
+    <AppToolbarDetail :title="layoutData?.title" />
 
-		<AppMain :clean="true" class="pt-[70px] pb-[76px]">
-			<slot />
-		</AppMain>
+    <AppMain :clean="true" class="pt-[70px] pb-[76px]">
+      <slot />
+    </AppMain>
   </AppWrapper>
 </template>
+
 <script setup>
-const layoutData = useState('layoutData', () => null)
+import { computed } from 'vue';
+
+const layoutData = useState('layoutData', () => null);
+const layoutKey = computed(() => (layoutData.value ? layoutData.value.id : 'default'));
 </script>

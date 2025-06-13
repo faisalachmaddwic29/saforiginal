@@ -34,7 +34,7 @@
 
 						<FormMessageError v-if="otpForm.errors.value.otp" :message="otpForm.errors.value.otp" class="justify-center" />
           </div>
-					<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span @click="onSubmitPhone" class="text-primary font-bold pl-0.5">Kirim ulang</span></p>
+					<p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span @click="onSubmitPhone" class="cursor-pointer text-primary font-bold pl-0.5">Kirim ulang</span></p>
         </div>
       </div>
       <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">

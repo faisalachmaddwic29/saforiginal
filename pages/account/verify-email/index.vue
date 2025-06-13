@@ -1,7 +1,6 @@
 <template>
 	<form @submit.prevent="onSubmit" class="flex flex-col min-dvh-screen px-4 py-5 relative">
-		<h2 class="text-2xl md:text-3xl font-manrope font-extrabold mb-2.5 text-[#1E293B] dark:text-[#94A3B8]">Masuk</h2>
-		<p class="text-xs md:text-base text-[#1E293B] dark:text-[#94A3B8]">Silahkan masukkan kode OTP yang telah kami kirimkan ke nomor WhatsApp anda</p>
+		<p class="text-xs md:text-base text-[#1E293B] dark:text-[#94A3B8]">Silahkan masukkan kode OTP yang telah kami kirimkan ke email anda</p>
 
 		<div class="my-5">
 			<FormOtp v-model="otp" :fields="6" :isError="Boolean(errors.otp)" />
@@ -15,8 +14,7 @@
 
 		<div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
 			<AppContainer>
-				<Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Masuk' }}</Button>
-				<!-- <NuxtLink to="//registration" class="w-full">Masuk</NuxtLink> -->
+				<Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Verify' }}</Button>
 			</AppContainer>
 		</div>
 	</form>
@@ -27,32 +25,24 @@ import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 
+
+const title = "Verify Email";
 definePageMeta({
 	layout: 'detail',
-	middleware: 'guest'
+	middleware: 'auth'
 });
 
 useSeoMeta({
-	title: 'Login',
+	title: title,
 });
 
-
-// Di script setup
-const router = useRouter();
-
-onMounted(() => {
-  if (!loginStore.phone) {
-    // Balik ke halaman sebelumnya
-    if (history.length > 1) {
-      router.back();
-    } else {
-      // Kalau ga ada history, ke register
-      navigateTo('/login');
-    }
-  }
-});
+const layoutData = useState('layoutData');
+layoutData.value = {
+	title: title
+}
 
 const isLoading = ref(false);
+const router = useRouter();
 
 // Schema validasi Zod - hanya required
 const schema = z.object({
@@ -73,27 +63,8 @@ const { defineField, handleSubmit, errors, setErrors } = useForm({
 // Define fields dengan vee-validate
 const [otp] = defineField('otp')
 const loadingStore = useLoadingStore();
-const loginStore = useLoginStore();
 const authStore = useAuthStore();
-const preferences = ref([]);
 
-
-const getPreferenceOptions = async () => {
-
-  try {
-    const response = await apiService.get("/v1/preferences");
-		const data = response?.data?.preferences ?? [];
-		if (data) {
-			preferences.value = data;
-		} else {
-			preferences.value = [];
-		}
-  } catch (error: any) {
-    handleValidationError(error, setErrors);
-
-    // Handle error (bisa tambahkan toast/notification)
-  }
-};
 
 // Handle submit dengan vee-validate
 const onSubmit = handleSubmit(async (values) => {
@@ -101,31 +72,19 @@ const onSubmit = handleSubmit(async (values) => {
 	isLoading.value = true
 
 	try {
-		const response = await apiService.post('/auth/login/otp', {
-				phone: loginStore.phone,
+		const response = await apiService.post('/auth/email/verify/confirm', {
 				otp: values.otp
 		});
 
-		const { data } = response;
-
-    // Simpan token ke cookie dan state
-    await authStore.saveToken({
-      access_token: data.access_token,
-      expires_in: data.expires_in,
-      token_type: data.token_type,
-    });
+		const { data, message } = response;
+		notify.success(message);
 
 
-    // Redirect ke halaman berikutnya
-		loginStore.reset();
-		await getPreferenceOptions();
+		await authStore.getProfile();
 
-		// check apakah sudah ada preferences
-		if (preferences.value.length <= 0) {
-			navigateTo("/preferences", { replace: true });
-		} else{
-			navigateTo("/", { replace: true });
-		}
+		// Redirect setelah berhasil
+		router.back();
+
 
 		// Redirect setelah berhasil
 		// await navigateTo('/');
@@ -139,13 +98,11 @@ const onSubmit = handleSubmit(async (values) => {
 	}
 })
 
-const sendOtp = async () => {
+const sendOtp = async (values : any) => {
 	loadingStore.start();
 
 	try {
-		const response = await apiService.post('/auth/login/phone', {
-				phone: loginStore.phone
-		});
+		const response = await apiService.post('/auth/email/verify/send', {});
 		const { data, message } = response;
 
 		notify.success(message);

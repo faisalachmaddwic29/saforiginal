@@ -34,12 +34,12 @@ const items = ref([
   },
   {
     label: "Preferensi Anda",
-    to: "/event",
+    to: "/account/change-preferences",
     icon: "/images/items/bookmark-square.svg",
   },
   {
     label: "Rekening Bank",
-    to: "/my-event",
+    to: "/account/rekening",
     icon: "/images/items/building-library.svg",
   },
   {
@@ -53,6 +53,11 @@ const items = ref([
 const handleLogout = () => {
   authStore.logout({ redirectTo: '/login', callApi: true });
 };
+
+
+const verifyEmail = () => {
+	navigateTo('/account/verify-email');
+}
 </script>
 
 
@@ -76,37 +81,29 @@ const handleLogout = () => {
 
 				<!-- Verified Email And Phone-->
 				<div class="my-5 flex flex-col gap-4" v-if="user?.email_verified_at == null || user?.phone_verified_at == null">
-					<div v-if="!user?.email_verified_at" class="w-full border border-[rgba(220,76,100,0.1)] bg-[rgba(220,76,100,0.05)] rounded-xl p-3 bg">
-						<div class="flex items-center gap-3 w-full justify-between">
-							<div class="flex items-center w-full gap-3 flex-grow">
-								<NuxtImg src="/images/icons/info-circle.svg" class="w-8 h-8 text-[#DC4C64]" />
-								<div class="flex flex-col flex-1 gap-0 w-full">
-									<h3 class="font-bold text-base line-clamp-2">Email</h3>
-									<p class="text-sm text-[#1E293B] dark:text-white line-clamp-1">{{ user?.email }}</p>
-								</div>
-							</div>
-							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent whitespace-nowrap py-1 px-3" size="sm">Verifikasi</Button>
-						</div>
-					</div>
+					<ItemsListButton v-if="!user?.email_verified_at" title="Email" :subtitle="user?.email" type="danger">
+						<template #icon>
+							<NuxtImg src="/images/icons/info-circle.svg" class="w-8 h-8 text-[#DC4C64]" />
+						</template>
+						<template #actions>
+							<Button @click="verifyEmail" variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent whitespace-nowrap py-1 px-3" size="sm">Verifikasi</Button>
+						</template>
+					</ItemsListButton>
 
-					<div v-if="!user?.phone_verified_at" class="w-full border border-[rgba(220,76,100,0.1)] bg-[rgba(220,76,100,0.05)] rounded-xl p-3 bg">
-						<div class="flex items-center gap-3 w-full justify-between">
-							<div class="flex items-center w-full gap-3 flex-grow">
-								<NuxtImg src="/images/icons/info-circle.svg" class="w-8 h-8 text-[#DC4C64]" />
-								<div class="flex flex-col flex-1 gap-0 w-full">
-									<h3 class="font-bold text-base line-clamp-2">No Handphone</h3>
-									<p class="text-sm text-[#1E293B] dark:text-white line-clamp-2">{{ user?.phone }}</p>
-								</div>
-							</div>
+					<ItemsListButton v-if="!user?.phone_verified_at" title="Phone" :subtitle="user?.phone" type="danger">
+						<template #icon>
+							<NuxtImg src="/images/icons/info-circle.svg" class="w-8 h-8 text-[#DC4C64]" />
+						</template>
+						<template #actions>
 							<Button variant="outline" class="text-xs h-full border !border-[#DC4C64] bg-transparent whitespace-nowrap py-1 px-3" size="sm">Verifikasi</Button>
-						</div>
-					</div>
+						</template>
+					</ItemsListButton>
 				</div>
 			</ClientOnly>
 
 
 			<!-- list -->
-			<div class="list_items">
+			<div class="list_items mb-5 mt-10">
 				<TitleSection>Data Pribadi</TitleSection>
 
 
@@ -117,22 +114,22 @@ const handleLogout = () => {
 							:key="item.label"
 							:to="item.to"
 							class="w-full">
-							<ListItem :label="item.label" :isIcon="false">
+							<ItemsList :label="item.label" :isIcon="false">
 								<template #icon>
 									<NuxtImg :src="item.icon" class="w-6 h-6" />
 								</template>
-							</ListItem>
+							</ItemsList>
 						</NuxtLink>
 					</ul>
 				</div>
 
 				<Dialog>
 					<DialogTrigger as-child>
-						<ListItem label="Keluar akun" :isIcon="false" :isRed="true" >
+						<ItemsList label="Keluar akun" :isIcon="false" :isRed="true" >
 							<template #icon>
 								<NuxtImg src="/images/items/logout.svg" class="w-6 h-6" />
 							</template>
-						</ListItem>
+						</ItemsList>
 					</DialogTrigger>
 					<DialogContent class="sm:max-w-[425px] p-4 text-center">
 						<DialogHeader>
@@ -162,14 +159,10 @@ const handleLogout = () => {
 			<InstallApps />
 
 
+			<p class="font-inter text-[#647294] mt-[85px] text-xs md:text-sm m-auto text-center mb-5">Copyright © 2025 saf-original, All rights reserved</p>
 		</div>
-			<p class="font-inter text-[#647294] text-xs md:text-sm m-auto text-center mb-5">Copyright © 2025 saf-original, All rights reserved</p>
 		<AppToolbarMenus />
-			<!-- <div class="flex gap-3 flex-col">
-				<Button @click="() => {notify.success('Data berhasil disimpan!')}" >Toast Success</Button>
-				<Button @click="() => {notify.info('Data berhasil disimpan!')}" >Toast Info</Button>
-				<Button @click="() => {notify.warning('Data berhasil disimpan!')}" >Toast Warning</Button>
-				<Button @click="() => {notify.error('Data berhasil disimpan!')}" >Toast Error</Button>
-			</div> -->
 	</div>
 </template>
+
+
