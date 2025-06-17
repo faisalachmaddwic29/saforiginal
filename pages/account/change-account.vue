@@ -1,126 +1,126 @@
 <template>
-	<div>
-		<form @submit="onSubmit" class="relative pb-[60px]">
-		<div class="px-4 pt-[38px] pb-5 w-full">
-			<div class="flex flex-col gap-4">
-				<div class="flex flex-col gap-2">
-					<div class="text-title text-sm font-bold">Foto</div>
-					<div class="flex items-center gap-3" w-full>
-						<ProfilePhoto :name="user?.name ?? ''" :width="100" :height="100" :imageUrl="imageUrl" />
-						<div class="flex flex-col flex-1 gap-2 w-full">
-							<div class="text-title text-sm">
-								Upload gambar dengan format PNG atau JPG. dan berukuran tidak lebih dari 2 MB
-							</div>
-							<div class="w-auto">
-							<input ref="fileInput" type="file" @change="handleFileChange" accept="image/png, image/jpg, image/jpeg" class="hidden" />
-							<Button variant="outline-secondary" size="md" type="button" @click="triggerFileInput">Upload</Button>
-							</div>
-						</div>
-						<FormMessageError v-if="errors.avatar_url" :message="errors.avatar_url" />
-					</div>
-				</div>
-				<div class="flex flex-col gap-2">
-					<div class="text-title text-sm font-bold">Nama</div>
-					<FormInput
-						type="text"
-						id="name"
-						name="name"
-						placeholder="Nama lengkap"
-						v-model="name"
-						:error="errors.name"
-					/>
-				</div>
-				<div class="flex flex-col gap-2">
-					<div class="text-title text-sm font-bold">Domisili</div>
-					<div>
-						<Combobox v-model="location_id" by="label">
-							<ComboboxAnchor as-child class="w-full">
-								<ComboboxTrigger as-child>
-									<button
-										type="button"
-										class="relative font-manrope ring-none border transition duration-300 ease-in-out rounded-lg outline-none px-4 py-3 appearance-none"
-										:class="[
-											(errors.address && addressTouched)
-												? 'border-red-500 dark:border-red-400'
-												: 'border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)]',
-											{ 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !location_id }
-										]"
-									>
-										<p class="font-manrope text-sm md:text-base text-start">
-											{{ location_id?.label ?? "Cari kota" }}
-										</p>
-										<Icon
-											name="material-symbols:arrow-drop-down-rounded"
-											class="absolute top-[8px] right-2 text-3xl text-subtle cursor-pointer"
-										/>
-									</button>
-								</ComboboxTrigger>
-							</ComboboxAnchor>
-
-							<!-- Dropdown -->
-							<ComboboxList
-								align="start"
-								side="bottom"
-								:prioritizePosition="true"
-								:sideOffset="0"
-								:alignOffset="0"
-							>
-								<div class="relative w-full items-center text-sm md:text-base text-[#1E293B] dark:text-[#94A3B8]">
-									<ComboboxInput
-										class="font-manrope ring-none placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition duration-300 ease-in-out rounded-none outline-none px-4 py-3 appearance-none h-10"
-										placeholder="Cari kota..."
-									/>
-									<span class="absolute left-0 inset-y-0 flex items-center justify-center px-3">
-										<!-- <Search class="size-4 text-muted-foreground" /> -->
-									</span>
+	<div class="px-4 py-5 w-full">
+		<form @submit="onSubmit" class="relative">
+			<div class="">
+				<div class="flex flex-col gap-4">
+					<div class="flex flex-col gap-2">
+						<div class="text-title text-sm font-bold">Foto</div>
+						<div class="flex items-center gap-3" w-full>
+							<ProfilePhoto :name="user?.name ?? ''" :width="100" :height="100" :imageUrl="imageUrl" />
+							<div class="flex flex-col flex-1 gap-2 w-full">
+								<div class="text-title text-sm">
+									Upload gambar dengan format PNG atau JPG. dan berukuran tidak lebih dari 2 MB
 								</div>
-
-								<ComboboxEmpty class="p-4 text-sm md:text-base text-[#1E293B] dark:text-[#94A3B8] font-manrope">
-									Cari nama kota tempat tinggal anda.
-								</ComboboxEmpty>
-
-								<ComboboxGroup class="h-60 overflow-y-scroll">
-									<ComboboxItem
-										v-for="location in locations"
-										:key="location.value"
-										:value="location"
-										class="font-manrope text-[#1E293B] dark:text-[#94A3B8] flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full"
-									>
-										{{ location.label }}
-										<ComboboxItemIndicator>
-											<Check class="ml-auto h-4 w-4" />
-										</ComboboxItemIndicator>
-									</ComboboxItem>
-								</ComboboxGroup>
-							</ComboboxList>
-						</Combobox>
-
-						<!-- Error message for address -->
-						<FormMessageError v-if="errors.address && addressTouched" :message="errors.address" />
+								<div class="w-auto">
+								<input ref="fileInput" type="file" @change="handleFileChange" accept="image/png, image/jpg, image/jpeg" class="hidden" />
+								<Button variant="outline-secondary" size="md" type="button" @click="triggerFileInput">Upload</Button>
+								</div>
+							</div>
+							<FormMessageError v-if="errors.avatar_url" :message="errors.avatar_url" />
+						</div>
 					</div>
-				</div>
-				<div class="flex flex-col gap-2">
-					<div class="text-title text-sm font-bold">Jenis Kelamin</div>
-					<div class="gender">
-						<FormRadio
-							v-model="genderValue"
-							:options="[
-								{ value: 'L', label: 'Laki-laki' },
-								{ value: 'P', label: 'Perempuan' },
-							]"
+					<div class="flex flex-col gap-2">
+						<div class="text-title text-sm font-bold">Nama</div>
+						<FormInput
+							type="text"
+							id="name"
+							name="name"
+							placeholder="Nama lengkap"
+							v-model="name"
+							:error="errors.name"
 						/>
-						<!-- Error message for gender -->
-						<FormMessageError v-if="errors.gender && genderTouched" :message="errors.gender" />
+					</div>
+					<div class="flex flex-col gap-2">
+						<div class="text-title text-sm font-bold">Domisili</div>
+						<div>
+							<Combobox v-model="location_id" by="label">
+								<ComboboxAnchor as-child class="w-full">
+									<ComboboxTrigger as-child>
+										<button
+											type="button"
+											class="relative font-manrope ring-none border transition duration-300 ease-in-out rounded-lg outline-none px-4 py-3 appearance-none"
+											:class="[
+												(errors.address && addressTouched)
+													? 'border-red-500 dark:border-red-400'
+													: 'border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)]',
+												{ 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !location_id }
+											]"
+										>
+											<p class="font-manrope text-sm md:text-base text-start">
+												{{ location_id?.label ?? "Cari kota" }}
+											</p>
+											<Icon
+												name="material-symbols:arrow-drop-down-rounded"
+												class="absolute top-[8px] right-2 text-3xl text-subtle cursor-pointer"
+											/>
+										</button>
+									</ComboboxTrigger>
+								</ComboboxAnchor>
 
+								<!-- Dropdown -->
+								<ComboboxList
+									align="start"
+									side="bottom"
+									:prioritizePosition="true"
+									:sideOffset="0"
+									:alignOffset="0"
+								>
+									<div class="relative w-full items-center text-sm md:text-base text-[#1E293B] dark:text-[#94A3B8]">
+										<ComboboxInput
+											class="font-manrope ring-none placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition duration-300 ease-in-out rounded-none outline-none px-4 py-3 appearance-none h-10"
+											placeholder="Cari kota..."
+										/>
+										<span class="absolute left-0 inset-y-0 flex items-center justify-center px-3">
+											<!-- <Search class="size-4 text-muted-foreground" /> -->
+										</span>
+									</div>
+
+									<ComboboxEmpty class="p-4 text-sm md:text-base text-[#1E293B] dark:text-[#94A3B8] font-manrope">
+										Cari nama kota tempat tinggal anda.
+									</ComboboxEmpty>
+
+									<ComboboxGroup class="h-60 overflow-y-scroll">
+										<ComboboxItem
+											v-for="location in locations"
+											:key="location.value"
+											:value="location"
+											class="font-manrope text-[#1E293B] dark:text-[#94A3B8] flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full"
+										>
+											{{ location.label }}
+											<ComboboxItemIndicator>
+												<Check class="ml-auto h-4 w-4" />
+											</ComboboxItemIndicator>
+										</ComboboxItem>
+									</ComboboxGroup>
+								</ComboboxList>
+							</Combobox>
+
+							<!-- Error message for address -->
+							<FormMessageError v-if="errors.address && addressTouched" :message="errors.address" />
+						</div>
+					</div>
+					<div class="flex flex-col gap-2">
+						<div class="text-title text-sm font-bold">Jenis Kelamin</div>
+						<div class="gender">
+							<FormRadio
+								v-model="genderValue"
+								:options="[
+									{ value: 'L', label: 'Laki-laki' },
+									{ value: 'P', label: 'Perempuan' },
+								]"
+							/>
+							<!-- Error message for gender -->
+							<FormMessageError v-if="errors.gender && genderTouched" :message="errors.gender" />
+
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
-			<AppContainer>
-				<Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Simpan Perubahan' }}</Button>
-			</AppContainer>
-		</div>
+			<div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
+				<AppContainer>
+					<Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Simpan Perubahan' }}</Button>
+				</AppContainer>
+			</div>
 		</form>
 	</div>
 </template>

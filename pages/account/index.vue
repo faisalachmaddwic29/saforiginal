@@ -28,7 +28,7 @@ const items = ref([
     icon: "/images/items/user.svg",
   },
   {
-    label: "Keamaman & Akun",
+    label: "Keamanan & Akun",
     to: "/account/security",
     icon: "/images/items/shield-tick.svg",
   },
@@ -156,7 +156,7 @@ const verifyEmail = () => {
 			</div>
 
 
-			<InstallApps />
+			<!-- <InstallApps /> -->
 
 
 			<p class="font-inter text-[#647294] mt-[85px] text-xs md:text-sm m-auto text-center mb-5">Copyright © 2025 saf-original, All rights reserved</p>

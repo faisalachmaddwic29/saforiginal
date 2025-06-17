@@ -131,7 +131,7 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'id' },
 			meta: [
 				{ charset: 'utf-8' },
-				{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
+				{ name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' },
 				{ name: 'description', content: 'SAF ORIGINAL' },
 				{ name: 'mobile-web-app-capable', content: 'yes' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },

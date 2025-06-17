@@ -9,7 +9,8 @@
             class="inline-flex items-center justify-center shrink-0 w-15 h-15 rounded-full"
             :class="typeClass[props.type].iconColor"
           >
-            <Icon :icon="typeClass[props.type].icon" width="40" height="40" />
+						<Icon v-if="!props.isCustomIcon" :icon="typeClass[props.type].icon" width="40" height="40" />
+						<slot v-else name="icon" />
           </div>
         </DialogTitle>
         <DialogDescription>
@@ -22,11 +23,12 @@
         </DialogDescription>
       </DialogHeader>
       <DialogFooter class="mt-4">
-        <div class="flex items-center justify-between gap-4 max-w-full overflow-hidden">
+        <div class="flex items-center justify-between gap-4 max-w-full overflow-hidden" :class="props.contentFooterClass"
+>
           <DialogClose as-child>
             <Button
               variant="outline"
-              class="flex-1 w-full"
+              class="flex-1 w-full font-bold py-2.5 text-lg"
               :class="props.buttonCancelClass"
               @click="handleCancel"
             >
@@ -35,7 +37,7 @@
           </DialogClose>
           <DialogClose as-child>
             <Button
-              class="flex-1 w-full"
+              class="flex-1 w-full font-bold py-2.5 text-lg"
               :class="props.buttonConfirmClass"
               @click="handleConfirm"
             >
@@ -56,6 +58,8 @@ const props = defineProps<{
   open?: boolean
   title?: string
   message?: string
+	isCustomIcon?: boolean
+	contentFooterClass?: string
   buttonConfirmTitle?: string
   buttonConfirmClass?: string
   buttonCancelTitle?: string
@@ -108,9 +112,9 @@ const typeClass = {
     barColor: 'bg-warning',
   },
   error: {
-    icon: 'iconamoon:sign-times-circle-thin',
+    icon: 'solar:danger-triangle-outline',
     iconColor: 'text-danger bg-danger-foreground',
     barColor: 'bg-danger',
-  },
+  }
 }
 </script>

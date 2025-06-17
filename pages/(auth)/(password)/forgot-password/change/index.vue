@@ -68,7 +68,6 @@ import { toTypedSchema } from '@vee-validate/zod'
 
 definePageMeta({
 	layout: 'detail',
-	middleware: 'guest'
 });
 
 const title = 'Ubah Password'

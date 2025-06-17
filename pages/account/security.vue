@@ -1,6 +1,6 @@
 <template>
-	<div class="relative pb-[60px]">
-		<div class="px-4 pt-[38px] pb-5 w-full">
+	<div class="relative px-4 py-5 w-full">
+		<div class="">
 			<div class="flex flex-col gap-8 text-title text-sm">
 				<NuxtLink to="/account/change-email" class="flex justify-between gap-3 items-center">
 					<div>Email</div>

@@ -1,6 +1,6 @@
 <template>
-	<form @submit="onSubmit" class="relative pb-[60px]">
-		<div class="px-4 pt-[38px] pb-5 w-full">
+	<form @submit="onSubmit" class="relative">
+		<div class="px-4 py-5 w-full">
 			<div class="flex flex-col gap-4">
 					<div class="text-title text-sm">Silakan masukan password sekarang untuk mengubah password</div>
 					<div class="flex flex-col gap-2">
@@ -21,7 +21,12 @@
 							</template>
 						</FormInput>
 					</div>
-					<NuxtLink to="#" class="text-xs md:text-sm text-primary font-bold">Lupa password?</NuxtLink>
+					<!-- <NuxtLink to="#" class="text-xs md:text-sm text-primary font-bold">Lupa password?</NuxtLink> -->
+					<!-- <div class="text-xs md:text-sm text-primary font-bold cursor-pointer">Lupa password</div> -->
+					<button
+						class="text-xs md:text-sm text-primary font-bold cursor-pointer text-left inline-block w-fit"
+						type="button"
+						@click="handleForgotPassword">Lupa password</button>
 					<hr/>
 					<TitleInfo type="warning">Pastikan data yang diisi sesuai, e-tiket akan di kirimkan ke alamat email dan nomor telepon yang dicantumkan</TitleInfo>
 					<div class="flex flex-col gap-2">
@@ -169,4 +174,44 @@ const onSubmit = handleSubmit(async (values) => {
 }, (errors) => {
 	//to do
 })
+
+const forgotPasswordStore = useForgotPasswordStore();
+const authStore = useAuthStore();
+
+const user = computed(() => authStore.user);
+
+// Jalankan logika untuk memuat data pengguna
+onMounted(() => {
+  if (!authStore.user) {
+    // Pulihkan user dari cookie jika hilang
+    authStore.getUser();
+  }
+});
+
+
+const handleForgotPassword = async () => {
+	loadingStore.start();
+
+	try {
+		const response = await apiService.post('/auth/forgot-password', {
+				identifier: user.value.phone,
+		});
+
+		const { data, message } = response;
+
+		forgotPasswordStore.setIdentifier(user.value.phone);
+		notify.success(message);
+
+
+		// Redirect setelah berhasil
+		await navigateTo('/forgot-password/change')
+
+	} catch (error: any) {
+		handleValidationError(error, setErrors)
+
+		// Handle error (bisa tambahkan toast/notification)
+	} finally {
+		loadingStore.stop();
+	}
+}
 </script>

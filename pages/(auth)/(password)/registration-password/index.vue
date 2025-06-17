@@ -270,7 +270,7 @@ watch(genderValue, (newValue) => {
 	if (newValue) {
 		genderTouched.value = true;
 	}
-}, { immediate: true, deep: true });
+}, { deep: true });
 
 // Toggle password visibility
 const togglePassword = () => {

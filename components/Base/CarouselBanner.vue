@@ -5,35 +5,38 @@
 			class="relative w-full overflow-hidden rounded-md"
 >
 				<!-- Tombol Geser Kiri -->
-			<button
+			<!-- <button
 				class="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 bg-white bg-opacity-60 hover:bg-opacity-90 rounded-full p-2 shadow-md"
 				@click="prevSlide"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 				</svg>
-			</button>
+			</button> -->
 
 			<!-- Tombol Geser Kanan -->
-			<button
+			<!-- <button
 				class="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 bg-white bg-opacity-60 hover:bg-opacity-90 rounded-full p-2 shadow-md"
 				@click="nextSlide"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 				</svg>
-			</button>
+			</button> -->
 
-			<!--  transform: `translateX(calc(-${currentIndex * (slideWidth + gap)}px + ${
-            hasStarted ? peekLeft : 0
-          }px))`, -->
+			 <!-- transform: `translateX(calc(-${currentIndex * (slideWidth + gap)}px + ${
+            peekLeft
+          }px))`,
+          transitionProperty: transitioning ? 'transform' : 'none', -->
+
+
       <div
         class="flex transition-transform duration-500 ease-in-out cursor-grabbing"
         :style="{
-          transform: `translateX(calc(-${currentIndex * (slideWidth + gap)}px + ${
-            peekLeft
+					transform: `translateX(calc(-${currentIndex * (slideWidth + gap)}px + ${
+            hasStarted ? peekLeft : 0
           }px))`,
-          transitionProperty: transitioning ? 'transform' : 'none',
+					transitionProperty: transitioning ? 'transform' : 'none',
         }"
         @transitionend="handleTransitionEnd"
 				@mousedown="handleTouchStart"
@@ -45,17 +48,17 @@
 				@touchend="handleTouchEnd"
       >
 
-			<!-- 					:class="{ 'pl-4': !hasStarted && image === slides[1] }" -->
         <div
           v-for="(image, index) in slides"
           :key="index"
           class="flex-shrink-0"
           :style="{ width: slideWidth + 'px', marginRight: gap + 'px' }"
+					:class="{ 'pl-4': !hasStarted && image === slides[1] }"
 
         >
           <NuxtImg
             :src="image"
-            class="w-full h-52 md:h-64 object-cover rounded-xl shadow-[0px_0px_4px_2px_rgba(0,0,0,0.09)] my-2"
+            class="w-full h-36 md:h-48 object-cover rounded-xl shadow-[0px_0px_4px_2px_rgba(0,0,0,0.09)] my-2"
             alt="carousel image"
             loading="lazy"
 						draggable="false"

@@ -7,9 +7,20 @@
 				<p class=" text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Dapatkan rekomendasi event sesuai pilihan kamu</p>
 			</div>
 
-			<div class="mt-5 flex flex-col gap-3">
+			<div
+					v-if="isLoadingCategory"
+					class="mt-5 flex flex-col gap-3"
+				>
+				<template v-for="n in 10" :key="n">
+					<Skeleton class="w-full h-[64px]" />
+				</template>
+			</div>
+
+			<div
+				v-else-if="categories && categories.length > 0"
+				class="mt-5 flex flex-col gap-3"
+			>
 				<div
-					v-if="categories.length > 0"
 					v-for="category in categories"
 					:key="category.value"
 					class="relative"
@@ -29,15 +40,14 @@
 					</label>
 				</div>
 
-				<template v-else v-for="n in 10" :key="n">
-					<Skeleton class="w-full h-[64px]" />
-				</template>
-
 				<!-- Error message -->
 				<FormMessageError
 					v-if="errors.category && categoryTouched"
 					:message="errors.category"
 				/>
+			</div>
+			<div v-else="categories.length == 0 && !isLoadingCategory">
+				<p class="text-center mt-4 font-poppins text-sm">Tidak ada kategori</p>
 			</div>
 		</div>
 
@@ -81,7 +91,7 @@ type CategoryOption = {
   value: string | number;
   label: string;
 };
-const categories = ref<CategoryOption[]>([]);
+const categories = ref<CategoryOption[]>(null);
 const selectedCategories = ref<CategoryOption[]>([]);
 const categoryTouched = ref(false);
 
@@ -107,7 +117,6 @@ const { handleSubmit, errors, setFieldValue, setErrors } = useForm({
 watch(
   selectedCategories,
   (newValue) => {
-		console.log(newValue);
        // Transform to array of numbers
     // const selectedObjects = newValue.map((category: CategoryOption) => category.value);
     // console.log(selectedObjects);
@@ -172,7 +181,6 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
 
   try {
-    console.log("Form data:", values);
 
     const response = await apiService.post("/v1/preferences", {
       tags: values.category.map((cat) => cat.value),
