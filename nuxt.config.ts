@@ -72,9 +72,7 @@ export default defineNuxtConfig({
 		},
 	},
 	pwa: {
-		strategies: sw ? 'injectManifest' : 'generateSW',
-		srcDir: sw ? 'service-worker' : undefined,
-		filename: sw ? 'sw.ts' : undefined,
+		strategies: 'generateSW',
 		registerType: 'autoUpdate',
 		manifest: {
 			"id": "/",
@@ -152,9 +150,6 @@ export default defineNuxtConfig({
 					handler: 'NetworkFirst',
 				},
 			],
-		},
-		injectManifest: {
-			globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
 		},
 		client: {
 			installPrompt: true,
