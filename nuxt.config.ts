@@ -8,6 +8,28 @@ export default defineNuxtConfig({
 	compatibilityDate: '2025-05-15',
 	devtools: { enabled: false },
 	ssr: true,
+	nitro: {
+		preset: process.env.NITRO_PRESET || undefined,
+		// Add static file handling
+		publicAssets: [
+			{
+				baseURL: '/',
+				dir: 'public'
+			}
+		],
+		// Handle PWA routes
+		routeRules: {
+			'/manifest.json': {
+				headers: { 'Content-Type': 'application/json' }
+			},
+			'/sw.js': {
+				headers: { 'Content-Type': 'application/javascript' }
+			},
+			'/workbox-*.js': {
+				headers: { 'Content-Type': 'application/javascript' }
+			}
+		}
+	},
 	runtimeConfig: {
 		public: {
 			api: process.env.NUXT_API_FRONTEND,
@@ -33,11 +55,6 @@ export default defineNuxtConfig({
 			}
 		],
 		'@vite-pwa/nuxt',
-		(_ : any, nuxt : any) => {
-			nuxt.hook('pwa:beforeBuildServiceWorker', (options : any) => {
-				console.log('pwa:beforeBuildServiceWorker: ', options.base)
-			})
-		},
 		'@nuxtjs/color-mode'
 	],
 	colorMode: {
@@ -60,6 +77,8 @@ export default defineNuxtConfig({
 	pwa: {
 		strategies: 'generateSW',
 		registerType: 'autoUpdate',
+		// Disable PWA in development to avoid issues
+		disable: process.env.NODE_ENV === 'development',
 		manifest: {
 			id: "/",
 			name: "SAF ORIGINAL",
@@ -167,7 +186,16 @@ export default defineNuxtConfig({
 		},
 		workbox: {
 			cleanupOutdatedCaches: true,
-			// Tambahkan runtime caching untuk performa yang lebih baik
+			skipWaiting: true,
+			clientsClaim: true,
+			// Add globIgnores to prevent certain files from being precached
+			globIgnores: [
+				'**/node_modules/**/*',
+				'sw.js',
+				'workbox-*.js',
+				'**/builds/meta/**/*'
+			],
+			// Runtime caching untuk performa yang lebih baik
 			runtimeCaching: [
 				{
 					urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -177,7 +205,7 @@ export default defineNuxtConfig({
 						expiration: {
 							maxEntries: 10,
 							maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
-						},
+						}
 					}
 				},
 				{
@@ -201,6 +229,31 @@ export default defineNuxtConfig({
 							maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
 						}
 					}
+				},
+				// Add runtime caching for API calls
+				{
+					urlPattern: /\/api\/.*/,
+					handler: 'NetworkFirst',
+					options: {
+						cacheName: 'api-cache',
+						networkTimeoutSeconds: 3,
+						expiration: {
+							maxEntries: 50,
+							maxAgeSeconds: 60 * 5 // 5 minutes
+						}
+					}
+				},
+				// Cache for Nuxt build files
+				{
+					urlPattern: /\/_nuxt\/.*/,
+					handler: 'CacheFirst',
+					options: {
+						cacheName: 'nuxt-build-cache',
+						expiration: {
+							maxEntries: 100,
+							maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+						}
+					}
 				}
 			]
 		},
@@ -215,6 +268,8 @@ export default defineNuxtConfig({
 			navigateFallback: '/',
 			navigateFallbackAllowlist: [/^\/$/],
 			type: 'module',
+			// Reduce console noise in development
+			disableDevLogs: true,
 		},
 	},
 	// Hapus hooks build:before karena sudah ada di pwa.manifest
