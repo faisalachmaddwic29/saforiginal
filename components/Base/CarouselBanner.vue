@@ -122,52 +122,55 @@ const startX = ref(0)
 const currentX = ref(0)
 const isDragging = ref(false)
 
-const handleTouchStart = (e: MouseEvent | TouchEvent) => {
-  isDragging.value = true
-  startX.value = 'touches' in e ? e.touches[0].clientX : e.clientX
-}
-
-const handleTouchMove = (e: MouseEvent | TouchEvent) => {
-  if (!isDragging.value) return
-  currentX.value = 'touches' in e ? e.touches[0].clientX : e.clientX
-}
-
-const handleTouchEnd = () => {
-  if (!isDragging.value) return
-  const diffX = currentX.value - startX.value
-
-  const threshold = 50 // minimal pixel untuk dianggap swipe
-
-  if (diffX > threshold) {
-    // geser ke kiri → slide sebelumnya
-    prevSlide()
-  } else if (diffX < -threshold) {
-    // geser ke kanan → slide berikutnya
-    nextSlide()
-  }
-
-  // Reset
-  isDragging.value = false
-  startX.value = 0
-  currentX.value = 0
-  resetInterval()
-}
-
 const preventScroll = (e: TouchEvent) => {
   if (isDragging.value) {
-    e.preventDefault()
+    e.preventDefault(); // Tetap diperlukan untuk drag
   }
-}
+};
+
+const handleTouchStart = (e: TouchEvent | MouseEvent) => {
+  isDragging.value = true;
+  startX.value = 'touches' in e ? e.touches[0].clientX : e.clientX;
+};
+
+const handleTouchMove = (e: TouchEvent | MouseEvent) => {
+  if (!isDragging.value) return;
+  currentX.value = 'touches' in e ? e.touches[0].clientX : e.clientX;
+};
+
+const handleTouchEnd = () => {
+  if (!isDragging.value) return;
+  const diffX = currentX.value - startX.value;
+
+  const threshold = 50; // Minimal jarak untuk dianggap swipe
+  if (diffX > threshold) {
+    prevSlide();
+  } else if (diffX < -threshold) {
+    nextSlide();
+  }
+
+  isDragging.value = false;
+  startX.value = 0;
+  currentX.value = 0;
+  resetInterval();
+};
+
 onMounted(() => {
   if (carouselContainer.value) {
-    carouselContainer.value.addEventListener('touchmove', preventScroll, { passive: false })
+    // Hanya tambahkan listener jika benar-benar diperlukan
+    carouselContainer.value.addEventListener('touchstart', handleTouchStart, { passive: true });
+    carouselContainer.value.addEventListener('touchmove', preventScroll, { passive: false });
+    carouselContainer.value.addEventListener('touchend', handleTouchEnd, { passive: true });
   }
-})
+});
+
 onBeforeUnmount(() => {
   if (carouselContainer.value) {
-    carouselContainer.value.removeEventListener('touchmove', preventScroll)
+    carouselContainer.value.removeEventListener('touchstart', handleTouchStart);
+    carouselContainer.value.removeEventListener('touchmove', preventScroll);
+    carouselContainer.value.removeEventListener('touchend', handleTouchEnd);
   }
-})
+});
 
 
 // end handle drag
@@ -260,3 +263,13 @@ onMounted(() => {
   })
 })
 </script>
+
+
+<style scoped>
+.carousel {
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+</style>

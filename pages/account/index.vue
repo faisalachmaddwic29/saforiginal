@@ -156,7 +156,9 @@ const verifyEmail = () => {
 			</div>
 
 
-			<!-- <InstallApps /> -->
+			<InstallApps />
+			<PwaInstalButton />
+
 
 
 			<p class="font-inter text-[#647294] mt-[85px] text-xs md:text-sm m-auto text-center mb-5">Copyright © 2025 saf-original, All rights reserved</p>

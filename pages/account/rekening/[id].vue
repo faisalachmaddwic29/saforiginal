@@ -54,7 +54,7 @@
             <ComboboxGroup class="h-60 overflow-y-scroll">
               <ComboboxItem
                 v-for="bank in banks"
-                :key="bank.id"
+                :key="bank.value"
                 :value="bank"
                 class="font-manrope text-[#1E293B] dark:text-[#94A3B8] flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full"
               >
@@ -145,11 +145,11 @@ const banks = ref<BankOption[]>([]);
 
 // Ambil data dari query params
 const route = useRoute();
-const bankIdValue = route.query.bank_id || null;
-const bankNameValue = route.query.bank_name || null;
-const branchValue = route.query.branch || '';
-const accountValue = route.query.account || '';
-const accountNameValue = route.query.account_name || '';
+const bankIdValue = route.query.bank_id as string || null;
+const bankNameValue = route.query.bank_name as string || null;
+const branchValue = route.query?.branch as string | '';
+const accountValue = route.query?.account as string | '';
+const accountNameValue = route.query?.account_name as string | '';
 
 // Zod Schema Validation
 const bankSchema = z.object({

@@ -1,4 +1,9 @@
 import tailwindcss from '@tailwindcss/vite'
+import process from 'node:process'
+
+const sw = process.env.SW === 'true'
+// console.log(sw);
+
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -13,6 +18,7 @@ export default defineNuxtConfig({
 			api: process.env.NUXT_API_FRONTEND,
 			apiUrl: process.env.NUXT_API_URL,
 			apiVersion: process.env.NUXT_API_VERSION,
+			sw: process.env.SW || 'false',
 		},
 	},
 	modules: [
@@ -32,6 +38,11 @@ export default defineNuxtConfig({
 			}
 		],
 		'@vite-pwa/nuxt',
+		(_, nuxt) => {
+			nuxt.hook('pwa:beforeBuildServiceWorker', (options) => {
+				console.log('pwa:beforeBuildServiceWorker: ', options.base)
+			})
+		},
 		'@nuxtjs/color-mode'
 	],
 	colorMode: {
@@ -61,62 +72,165 @@ export default defineNuxtConfig({
 		},
 	},
 	pwa: {
+		strategies: sw ? 'injectManifest' : 'generateSW',
+		srcDir: sw ? 'service-worker' : undefined,
+		filename: sw ? 'sw.ts' : undefined,
 		registerType: 'autoUpdate',
-		injectRegister: 'auto',
-		includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+		manifest: {
+			"id": "/",
+			"name": "SAF ORIGINAL",
+			"short_name": "SAF+",
+			"scope": "/",
+			"description": "SAF ORIGINAL adalah aplikasi untuk mempermudah akses konten.",
+			"categories": ["entertainment", "utilities"],
+			"start_url": "/",
+			"display": "standalone",
+			"background_color": "#ffffff",
+			"theme_color": "#A07C4b",
+			"lang": "id",
+			"screenshots": [
+				{
+					"src": "/favicon/screenshots/home.png",
+					"sizes": "512x512",
+					"type": "image/png",
+					"form_factor": "wide"
+				},
+				{
+					"src": "/favicon/screenshots/home.png",
+					"sizes": "512x512",
+					"type": "image/png",
+					"form_factor": "narrow"
+				}
+			],
+			"icons": [
+				{
+					"src": "/favicon/android/android-icon-36x36.png",
+					"sizes": "36x36",
+					"type": "image/png",
+				},
+				{
+					"src": "/favicon/android/android-icon-48x48.png",
+					"sizes": "48x48",
+					"type": "image/png"
+				},
+				{
+					"src": "/favicon/android/android-icon-72x72.png",
+					"sizes": "72x72",
+					"type": "image/png",
+				},
+				{
+					"src": "/favicon/android/android-icon-96x96.png",
+					"sizes": "96x96",
+					"type": "image/png",
+				},
+				{
+					"src": "/favicon/android/android-icon-144x144.png",
+					"sizes": "144x144",
+					"type": "image/png",
+				},
+				{
+					"src": "/favicon/android/android-icon-192x192.png",
+					"sizes": "192x192",
+					"type": "image/png",
+				}
+			]
+		},
 		workbox: {
 			cleanupOutdatedCaches: true,
-			navigateFallback: '/',
-			navigateFallbackDenylist: [/^\/\/login-password/, /^\/\/login/,  /^\/\/preferences/], // Menolak rute tertentu
-			globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+			navigateFallback: '/', // Pastikan fallback ke halaman utama jika URL tidak ditemukan
+			globPatterns: ['**/*.{js,css,html,png,svg,ico,json,vue}'], // Tambahkan semua ekstensi file yang dibutuhkan
+			additionalManifestEntries: [
+				{ url: '/', revision: null }, // Tambahkan root URL
+			],
+			globIgnores: [
+				'**/node_modules/**',  // Abaikan `node_modules`
+				'**/.cache/**',        // Abaikan file cache lokal
+			],
 			runtimeCaching: [
 				{
 					urlPattern: '/',
 					handler: 'NetworkFirst',
-					options: {
-						cacheName: 'start-page',
-						networkTimeoutSeconds: 10,
-						cacheableResponse: {
-							statuses: [0, 200],
-						}},
-				}
-			]
-			// navigateFallback: '/',
-			// navigateFallbackAllowlist: [/^\/$/], // Memastikan root di-cache
-			// navigateFallbackDenylist: [/^\/api\//], // Mencegah fallback untuk API
-			// // globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
-			// // runtimeCaching: [
-			// // 	{
-			// // 		urlPattern: /^\/api\/.*$/, // Contoh: cache API dengan NetworkFirst
-			// // 		handler: 'NetworkFirst',
-			// // 		options: {
-			// // 			cacheName: 'api-cache',
-			// // 			networkTimeoutSeconds: 10,
-			// // 			cacheableResponse: {
-			// // 				statuses: [0, 200],
-			// // 			},
-			// // 		},
-			// // 	},
-			// // ],
-			// globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
-			// runtimeCaching: [
-			// 	{
-			// 		urlPattern: /^\/(?!api\/).*/,  // Semua URL yang bukan API
-			// 		handler: 'NetworkFirst',
-			// 		options: {
-			// 			cacheName: 'pages-cache',
-			// 			cacheableResponse: {
-			// 				statuses: [0, 200],
-			// 			},
-			// 		},
-			// 	},
-			// ],
+				},
+			],
+		},
+		injectManifest: {
+			globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+		},
+		client: {
+			installPrompt: true,
 		},
 		devOptions: {
 			enabled: true,
 			suppressWarnings: true,
+			navigateFallback: '/',
+			navigateFallbackAllowlist: [/^\/$/],
 			type: 'module',
-		}
+		},
+	},
+	hooks: {
+		'build:before': () => {
+			const fs = require('fs');
+			const manifest = {
+				"id": "/",
+				"name": "SAF ORIGINAL",
+				"short_name": "SAF+",
+				"scope": "/",
+				"description": "SAF ORIGINAL adalah aplikasi untuk mempermudah akses konten.",
+				"categories": ["entertainment", "utilities"],
+				"start_url": "/",
+				"display": "standalone",
+				"background_color": "#ffffff",
+				"theme_color": "#A07C4b",
+				"lang": "id",
+				"screenshots": [
+					{
+						"src": "/favicon/screenshots/home.png",
+						"sizes": "512x512",
+						"type": "image/png",
+						"form_factor": "wide"
+					},
+					{
+						"src": "/favicon/screenshots/home.png",
+						"sizes": "512x512",
+						"type": "image/png",
+						"form_factor": "narrow"
+					}
+				],
+				"icons": [
+					{
+						"src": "/favicon/android/android-icon-36x36.png",
+						"sizes": "36x36",
+						"type": "image/png",
+					},
+					{
+						"src": "/favicon/android/android-icon-48x48.png",
+						"sizes": "48x48",
+						"type": "image/png"
+					},
+					{
+						"src": "/favicon/android/android-icon-72x72.png",
+						"sizes": "72x72",
+						"type": "image/png",
+					},
+					{
+						"src": "/favicon/android/android-icon-96x96.png",
+						"sizes": "96x96",
+						"type": "image/png",
+					},
+					{
+						"src": "/favicon/android/android-icon-144x144.png",
+						"sizes": "144x144",
+						"type": "image/png",
+					},
+					{
+						"src": "/favicon/android/android-icon-192x192.png",
+						"sizes": "192x192",
+						"type": "image/png",
+					}
+				]
+			};
+			fs.writeFileSync('./public/manifest.json', JSON.stringify(manifest, null, 2));
+		},
 	},
 	components: {
 		dirs: ['~/components/Base', 'utils'],
@@ -128,7 +242,7 @@ export default defineNuxtConfig({
 		pageTransition: { name: 'page', mode: 'out-in' },
 		layoutTransition: { name: 'layout', mode: 'out-in' },
 		head: {
-      htmlAttrs: { lang: 'id' },
+			htmlAttrs: { lang: 'id' },
 			meta: [
 				{ charset: 'utf-8' },
 				{ name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' },
@@ -157,7 +271,8 @@ export default defineNuxtConfig({
 				{ rel: 'icon', type: 'image/png', sizes: '96x96', href: '/favicon/android/favicon-96x96.png' },
 				{ rel: 'icon', type: 'image/png', sizes: '144x144', href: '/favicon/android/android-icon-144x144.png' },
 				{ rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicon/android/android-icon-192x192.png' },
-				{ rel: 'manifest', href: '/favicon/manifest.json' } // Pastikan file ini valid!
+				{ rel: 'manifest', href: '/manifest.json' } // Pastikan file ini valid!
+
 			]
 		}
 	}

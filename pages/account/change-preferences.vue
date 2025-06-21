@@ -91,7 +91,7 @@ type CategoryOption = {
   value: string | number;
   label: string;
 };
-const categories = ref<CategoryOption[]>(null);
+const categories = ref<CategoryOption[] | null>(null);
 const selectedCategories = ref<CategoryOption[]>([]);
 const categoryTouched = ref(false);
 

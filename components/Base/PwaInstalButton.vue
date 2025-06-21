@@ -1,19 +1,14 @@
 <template>
-  <ItemsListButton v-if="canInstall" type="default" title="Instal SAF Original" subtitle="Lebih mudah akses SAF Original di smartphone kamu.">
-		<template #icon>
-			<NuxtImg src="/images/logos/logo-square.png" class="w-10 h-10 aspect-square" />
-		</template>
-		<template #actions>
-			<Button
-				variant="outline"
-				class="text-xs h-full border !border-secondary bg-transparent py-1 px-3 transition hover:bg-secondary hover:text-white"
-				size="sm"
-				@click="installPWA"
-			>
-				Instal
-			</Button>
-		</template>
-	</ItemsListButton>
+  <div v-if="canInstall" class="pwa-install-container">
+    <button
+      @click="installPWA"
+      class="install-button"
+      :disabled="isInstalling"
+    >
+      <Icon name="mdi:download" class="w-5 h-5 mr-2" />
+      {{ isInstalling ? 'Installing...' : 'Install App to Desktop' }}
+    </button>
+  </div>
 </template>
 
 <script setup>
@@ -85,5 +80,5 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
   window.removeEventListener('appinstalled', handleAppInstalled)
-});
+})
 </script>
