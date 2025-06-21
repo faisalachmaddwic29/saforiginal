@@ -55,6 +55,11 @@ export default defineNuxtConfig({
 			}
 		],
 		'@vite-pwa/nuxt',
+		(_: any, nuxt: any) => {
+			nuxt.hook('pwa:beforeBuildServiceWorker', (options: any) => {
+				console.log('pwa:beforeBuildServiceWorker: ', options.base)
+			})
+		},
 		'@nuxtjs/color-mode'
 	],
 	colorMode: {
@@ -75,7 +80,9 @@ export default defineNuxtConfig({
 		},
 	},
 	pwa: {
-		strategies: 'generateSW',
+		strategies: sw ? 'injectManifest' : 'generateSW',
+		srcDir: sw ? 'service-worker' : undefined,
+		filename: sw ? 'sw.ts' : undefined,
 		registerType: 'autoUpdate',
 		// Disable PWA in development to avoid issues
 		disable: process.env.NODE_ENV === 'development',
