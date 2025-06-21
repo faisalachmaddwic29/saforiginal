@@ -135,21 +135,6 @@ export default defineNuxtConfig({
 		},
 		workbox: {
 			cleanupOutdatedCaches: true,
-			navigateFallback: '/', // Pastikan fallback ke halaman utama jika URL tidak ditemukan
-			globPatterns: ['**/*.{js,css,html,png,svg,ico,json,vue}'], // Tambahkan semua ekstensi file yang dibutuhkan
-			additionalManifestEntries: [
-				{ url: '/', revision: null }, // Tambahkan root URL
-			],
-			globIgnores: [
-				'**/node_modules/**',  // Abaikan `node_modules`
-				'**/.cache/**',        // Abaikan file cache lokal
-			],
-			runtimeCaching: [
-				{
-					urlPattern: '/',
-					handler: 'NetworkFirst',
-				},
-			],
 		},
 		client: {
 			installPrompt: true,
