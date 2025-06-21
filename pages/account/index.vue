@@ -157,7 +157,6 @@ const verifyEmail = () => {
 
 
 			<InstallApps />
-			<PwaInstalButton />
 
 
 
