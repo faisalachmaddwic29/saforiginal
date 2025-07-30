@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  saforiginal-fe:
+    build: .
+    container_name: saforiginal-fe
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3001
+    expose:
+      - "3001"
+    networks:
+      - saforiginal-net
+      - caddy
+    labels:
+      caddy: saf-baru.mandatech.co.id
+      caddy.reverse_proxy: "{{upstreams 3001}}"
+    restart: always
+
+networks:
+  saforiginal-net:
+    driver: bridge
+  caddy:
+    external: true
