@@ -15,6 +15,11 @@ export enum ProductType {
   MERCHANDISE = 'merchandise'
 }
 
+export function toProductType(value: string): ProductType | null {
+  const values = Object.values(ProductType);
+  return values.includes(value as ProductType) ? (value as ProductType) : null;
+}
+
 export enum ProductDateFilter {
   ALL = 'all',
   TODAY = 'today',

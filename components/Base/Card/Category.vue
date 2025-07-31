@@ -1,12 +1,12 @@
 <template>
-  <div class="relative min-w-24 min-h-24 md:min-w-32 md:min-h-32 w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden cursor-pointer" @click="handleClick">
+  <div class="relative min-w-24 min-h-24 md:min-w-32 md:min-h-32 w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden cursor-pointer" @click="detailCategoryOthers(props.slug)">
     <!-- Background Image -->
     <NuxtImg v-if="props.image" :src="props.image" :alt="props.name" class="absolute inset-0 w-full h-full object-cover" />
     <div v-else class="absolute inset-0 w-full h-full bg-primary"></div>
     <!-- Background Color -->
 
     <!-- Overlay semi-transparan biar teks lebih terbaca -->
-    <div class="absolute inset-0 opacity-60 w-full h-full" :style="{ backgroundColor: props.color }" />
+    <div class="absolute inset-0 opacity-60 w-full h-full" :style="{ backgroundColor: props.color ?? '#000000' }" />
 
     <!-- Text -->
     <div class="relative z-10 p-2.5 h-full">
@@ -20,12 +20,9 @@
 <script setup lang="ts">
 interface Props {
   name: string;
+  slug: string;
   image?: string | null;
-  color?: string;
-}
-
-interface Emits {
-  (e: 'click', payload?: unknown): void;
+  color?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -33,11 +30,22 @@ const props = withDefaults(defineProps<Props>(), {
   image: null,
 });
 
-console.log(props.color);
-
-const emit = defineEmits<Emits>();
-
-const handleClick = () => {
-  emit('click');
+const detailCategoryOthers = (category: string) => {
+  navigateTo({
+    path: '/event/',
+    query: {
+      category,
+    },
+  });
 };
+
+// interface Emits {
+//   (e: 'click', payload?: unknown): void;
+// }
+
+// const emit = defineEmits<Emits>();
+
+// const handleClick = () => {
+//   emit('click');
+// };
 </script>

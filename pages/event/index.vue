@@ -6,14 +6,10 @@
         <div class="flex items-center flex-1 rounded-full border border-[rgba(151,151,151,0.2)] text-[rgba(77,77,77,0.03)] h-[48px] px-4">
           <Icon name="iconamoon:search" class="text-2xl text-[#627086] mr-2" />
 
-          <input
-            type="text"
-            placeholder="Masukan pencarian kamu"
-            class="font-manrope bg-transparent placeholder-[#B0B4C0] text-[#4B5563] dark:placeholder-[#4B5563] dark:text-[#B0B4C0] text-base focus:outline-none w-full"
-          />
+          <input type="text" placeholder="Masukan pencarian kamu" class="font-manrope bg-transparent placeholder-menu/30 text-menu text-base focus:outline-none w-full" />
         </div>
 
-        <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6" />
+        <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6 cursor-pointer" @click="handleFilter" />
       </div>
     </AppToolbar>
     <div class="p-4">
@@ -21,7 +17,7 @@
 
       <!-- Shimmer loading state -->
       <div class="py-4">
-        <CardLoading v-if="isFirstLoading" :rows="2" :length="5" />
+        <CardLoading v-if="isFirstLoading" :rows="2" :length="4" />
 
         <div v-else class="grid grid-cols-2 gap-4">
           <CardProduct
@@ -32,8 +28,7 @@
             :thumbnail="product.cover"
             :title="product.title"
             :slug="product.slug"
-            :type="product.type"
-            @click="goToDetail(product.slug, product.type)"
+            :type="toProductType(product.type)"
           />
         </div>
       </div>
@@ -44,7 +39,7 @@
 <script setup lang="ts">
 import { CardProduct } from '#components';
 import { useIntersectionObserver } from '@vueuse/core';
-import { ProductType, type Product, type ProductsResponse } from '~/types/api';
+import { toProductType, type Product, type ProductsResponse } from '~/types/api';
 
 const title = 'Event';
 definePageMeta({
@@ -59,7 +54,10 @@ useSeoMeta({
   title: title,
 });
 
-const router = useRouter();
+const route = useRoute();
+const type = computed(() => (route.query.type as string | undefined) ?? null);
+const category = computed(() => (route.query.category as string | undefined) ?? null);
+
 const events = ref<Product[]>([]);
 const page = ref(1);
 const isLoading = ref(false);
@@ -72,7 +70,9 @@ const fetchEvents = async () => {
   isLoading.value = true;
 
   try {
-    const { data } = await apiSaforiginal.get<ProductsResponse>(`/v1/products?page=${page.value}&per_page=10&sort=-created_at`);
+    // const { data } = await apiSaforiginal.get<ProductsResponse>(`/v1/products?type=${type}&page=${page.value}&per_page=10&sort=-created_at`);
+
+    const { data } = await apiSaforiginal.get<ProductsResponse>(`/v1/products?${buildParams({ type: type.value, category: category.value })}`);
 
     if (data.products && data.products.length > 0) {
       events.value.push(...data.products);
@@ -88,6 +88,46 @@ const fetchEvents = async () => {
   }
 };
 
+const buildParams = ({
+  type = null,
+  category = null,
+}: {
+  type?: string | null;
+  category?: string | null;
+} = {}) => {
+  const params = new URLSearchParams();
+
+  if (category) {
+    params.append('category', category);
+  }
+
+  if (type) {
+    params.append('type', type);
+  }
+
+  params.append('page', String(page.value));
+  params.append('per_page', '10');
+  params.append('sort', '-created_at');
+
+  return params.toString();
+};
+
+// Watch type changes
+
+watch(
+  () => route.query.type,
+  () => {
+    // Reset data
+    events.value = [];
+    page.value = 1;
+    isLastPage.value = false;
+    isFirstLoading.value = true;
+
+    fetchEvents();
+  },
+  { immediate: true, deep: true }
+);
+
 // Observer untuk infinite scroll
 useIntersectionObserver(
   loadMoreTrigger,
@@ -99,17 +139,7 @@ useIntersectionObserver(
   { rootMargin: '0px', threshold: 1.0 }
 );
 
-onMounted(async () => {
-  await fetchEvents();
-});
-
-function goToDetail(slug: string, type: string) {
-  if (type === ProductType.OFFLINE_EVENT) {
-    router.push(`/event/offline/${slug}`);
-  } else if (type === ProductType.ONLINE_EVENT) {
-    router.push(`/event/online/${slug}`);
-  } else {
-    router.push(`/event/series/${slug}`);
-  }
-}
+const handleFilter = () => {
+  console.log('handleFilter');
+};
 </script>

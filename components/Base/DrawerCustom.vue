@@ -3,7 +3,7 @@
     <DrawerTrigger>
       <slot name="trigger"></slot>
     </DrawerTrigger>
-    <DrawerContent class="bg-background p-4 mb-3.5" :show-indicator="props.showIndicator ?? true">
+    <DrawerContent class="p-4 mb-3.5" :show-indicator="props.showIndicator ?? true" :class="props.showIndicator ? 'bg-background' : 'bg-transparent'">
       <DrawerTitle class="sr-only">{{ props?.title ?? '-' }}</DrawerTitle>
       <DrawerDescription class="sr-only">{{ props?.description ?? '-' }}</DrawerDescription>
 

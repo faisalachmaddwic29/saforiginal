@@ -18,9 +18,7 @@
 
         <div class="overflow-x-auto flex whitespace-nowrap gap-4 pt-2.5 px-4">
           <Skeleton v-for="i in 5" v-show="!appStore.isCategoriesLoaded" :key="i" class="min-w-24 min-h-24 md:min-w-32 md:min-h-32 rounded-xl" />
-          <CardCategory v-for="category in appStore.categories" :key="category.id" :image="category.image" :name="category.name" :color="category.color" />
-          <!-- <CardCategory image="/images/category.png" name="Shirah" color="bg-[#8E5D34]" />
-          <CardCategory image="/images/category2.png" name="Ustadz Salim A Fillah" color="bg-[#0E5278]" /> -->
+          <CardCategory v-for="category in appStore.categories" :key="category.id" :image="category.image" :name="category.name" :color="category.color ?? null" :slug="category.slug" />
         </div>
       </div>
 
@@ -38,15 +36,14 @@
             :thumbnail="product.cover"
             :title="product.title"
             :slug="product.slug"
-            :type="product.type"
-            @click="goToDetail"
+            :type="toProductType(product.type)"
           />
         </div>
       </div>
 
       <!-- Newest -->
-      <div class="bg-[#B7B7B71A]/50 py-5">
-        <LabelWithOthers label="Event Terbaru" class="px-4" />
+      <div class="bg-[#B7B7B7]/10 py-5">
+        <LabelWithOthers label="Event Terbaru" class="px-4" @click="detailTypeOthers([ProductType.ONLINE_EVENT, ProductType.OFFLINE_EVENT])" />
 
         <div class="overflow-x-auto flex whitespace-nowrap gap-4 pt-2.5 px-4">
           <CardProductLoading v-if="!appStore.isProductsEventNewestLoaded" :length="5" />
@@ -57,15 +54,14 @@
             :thumbnail="product.cover"
             :title="product.title"
             :slug="product.slug"
-            :type="product.type"
-            @click="goToDetail"
+            :type="toProductType(product.type)"
           />
         </div>
       </div>
 
       <!-- Series Terbaik -->
       <div class="">
-        <LabelWithOthers label="Series Terbaik" class="px-4" />
+        <LabelWithOthers label="Series Terbaik" class="px-4" @click="detailTypeOthers([ProductType.VIDEO_SERIES])" />
 
         <div class="overflow-x-auto flex whitespace-nowrap gap-4 pt-4 px-4">
           <CardProductLoading v-if="!appStore.isProductsSeriesLoaded" :length="5" />
@@ -77,8 +73,7 @@
             :thumbnail="product.cover"
             :title="product.title"
             :slug="product.slug"
-            :type="product.type"
-            @click="goToDetail"
+            :type="toProductType(product.type)"
           />
         </div>
       </div>
@@ -89,7 +84,7 @@
 <script setup lang="ts">
 import { CardProduct, LabelWithOthers } from '#components';
 import Skeleton from '~/components/ui/skeleton/Skeleton.vue';
-import { ProductType } from '~/types/api';
+import { ProductType, toProductType } from '~/types/api';
 
 const title = 'Home';
 
@@ -104,8 +99,6 @@ useSeoMeta({
   title: title,
 });
 
-const router = useRouter();
-
 const appStore = useAppStore();
 
 onMounted(async () => {
@@ -115,7 +108,12 @@ onMounted(async () => {
   await appStore.fetchProductsSeries(ProductType.VIDEO_SERIES);
 });
 
-function goToDetail(id: string) {
-  router.push(`/event/${id}`);
-}
+const detailTypeOthers = (type: ProductType[]) => {
+  navigateTo({
+    path: '/event/',
+    query: {
+      type,
+    },
+  });
+};
 </script>

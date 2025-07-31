@@ -11,7 +11,10 @@
         <div v-if="categories.length > 0">
           <div v-for="category in categories" :key="category.value" class="relative">
             <input :id="category.value.toString()" v-model="selectedCategories" :value="category" type="checkbox" class="peer sr-only" />
-            <label :for="category.value.toString()" class="flex items-center justify-center w-full p-4 text-lg font-medium border-2 border-[#F1F1F1] rounded-lg cursor-pointer transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary hover:border-primary/40">
+            <label
+              :for="category.value.toString()"
+              class="flex items-center justify-center w-full p-4 text-lg font-medium border-2 border-[#F1F1F1] rounded-lg cursor-pointer transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary hover:border-primary/40"
+            >
               {{ category.label }}
             </label>
           </div>
@@ -120,13 +123,10 @@ const getCategoryOptions = async () => {
 const loadingStore = useLoadingStore();
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values.category.map((cat) => cat.value));
   loadingStore.start();
   isLoading.value = true;
 
   try {
-    console.log('Form data:', values);
-
     const response = await apiSaforiginal.post('/v1/preferences', {
       tags: values.category.map((cat) => cat.value),
     });

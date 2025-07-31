@@ -101,11 +101,7 @@ const onSubmit = handleSubmit(async (values) => {
       otp: values.otp,
     });
 
-    console.log(response);
-
-    const { data, message, status } = response;
-
-    console.log(data, message, status);
+    const { data } = response;
 
     // Simpan token ke cookie dan state
     await authStore.saveToken({

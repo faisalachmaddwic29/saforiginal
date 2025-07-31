@@ -111,9 +111,6 @@ const getBanks = async () => {
 const loadingStore = useLoadingStore();
 
 const editBank = (bank: AccountBank) => {
-  console.log(`Editing bank: ${bank.bank.name}`);
-  console.log(`Editing bank with ID: ${bank.id}`);
-
   // navigateTo("/account/rekening/" + bank.id, state: { data: bank });
   // Navigasi ke halaman lain dengan data bank
   navigateTo({
@@ -130,7 +127,6 @@ const editBank = (bank: AccountBank) => {
 
 const deleteBank = async (id: number | null) => {
   if (!id) notify.error('ID Bank tidak valid');
-  console.log(`Deleting bank with ID: ${id}`);
 
   loadingStore.start();
 
@@ -158,8 +154,6 @@ const selectedBank = ref(); // Untuk menyimpan data bank yang dipilih
  */
 
 const openDrawer = (bank: AccountBank) => {
-  console.log('Opening drawer for bank:', bank);
-  console.log(bank);
   selectedBank.value = bank; // Simpan data bank yang dipilih
   showDrawer.value = true; // Tampilkan drawer
 };

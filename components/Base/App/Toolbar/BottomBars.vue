@@ -6,16 +6,16 @@
           v-for="menu in menus"
           :key="menu.label"
           class="flex-1 border-t-2 relative overflow-hidden"
-          :class="
+          :class="[
+            isActive(menu.to) ? 'border-secondary' : 'border-transparent',
             isActive(menu.to)
-              ? `border-secondary
-							before:content-[''] before:absolute before:w-18 before:h-18 before:rounded-full before:m-auto before:top-[-70%] before:inset-x-0 before:bg-primary before:filter before:blur-xl  before:opacity-30`
-              : 'border-transparent'
-          "
+              ? 'before:content-[\'\'] before:absolute before:w-[72px] before:h-[72px] before:rounded-full before:m-auto before:top-[-70%] before:inset-x-0 before:bg-primary before:filter before:blur-xl before:opacity-30 before:pointer-events-none'
+              : '',
+          ]"
         >
           <NuxtLink
             :to="menu.to"
-            class="cursor-pointer flex flex-col py-[8.5px] gap-[1px] items-center font-manrope"
+            class="cursor-pointer z-10 flex flex-col py-[8.5px] gap-[1px] items-center font-manrope"
             :class="{
               'text-primary': isActive(menu.to),
               'text-menu': !isActive(menu.to),
