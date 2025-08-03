@@ -1,5 +1,5 @@
 <template>
-  <header v-if="!custom" class="fixed z-1 bg-background/80 inset-x-0 w-full top-0 left-0 shadow-[0px_2px_4px_rgba(0,0,0,0.1)] h-[70px] max-h-[70px] filter backdrop-blur">
+  <header v-if="!custom" class="fixed z-[9999] bg-background/80 inset-x-0 w-full top-0 left-0 shadow-[0px_2px_4px_rgba(0,0,0,0.1)] h-[70px] max-h-[70px] filter backdrop-blur">
     <AppContainer>
       <slot />
     </AppContainer>
