@@ -1,13 +1,13 @@
 <template>
-  <Drawer v-model:open="isOpen" @update:open="onOpenChange">
-    <DrawerTrigger>
+  <Drawer v-model:open="isOpen" trap-focus prevent-scroll @update:open="onOpenChange">
+    <DrawerTrigger as-child>
       <slot name="trigger"></slot>
     </DrawerTrigger>
-    <DrawerContent class="p-4 mb-3.5" :show-indicator="props.showIndicator ?? true" :class="props.showIndicator ? 'bg-background' : 'bg-transparent'">
+    <DrawerContent class="p-4 mb-3.5 z-50" :show-indicator="props.showIndicator ?? true" :class="[props.classes, props.showIndicator ? 'bg-background' : 'bg-transparent']">
       <DrawerTitle class="sr-only">{{ props?.title ?? '-' }}</DrawerTitle>
       <DrawerDescription class="sr-only">{{ props?.description ?? '-' }}</DrawerDescription>
 
-      <div class="flex flex-col rounded-t-2xl gap-4 font-bold">
+      <div id="drawer-combobox-wrapper" class="flex flex-col rounded-t-2xl gap-4 font-bold h-full">
         <!-- Content slot -->
         <slot></slot>
       </div>
@@ -21,6 +21,7 @@ const props = defineProps<{
   title?: string;
   description?: string;
   showIndicator: boolean;
+  classes?: string;
 }>();
 
 const emit = defineEmits(['update:open', 'cancel']); // Tambahkan 'cancel' di sini

@@ -27,9 +27,16 @@
               <Combobox v-model="location_id" by="label">
                 <ComboboxAnchor as-child class="w-full">
                   <ComboboxTrigger as-child>
-                    <button type="button" class="relative cursor-pointer font-manrope ring-none border transition duration-300 ease-in-out rounded-lg outline-none px-4 py-3 appearance-none" :class="[errors.address && addressTouched ? 'border-red-500 dark:border-red-400' : 'border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)]', { 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !location_id }]">
+                    <button
+                      type="button"
+                      class="relative cursor-pointer font-manrope ring-none border transition duration-300 ease-in-out rounded-lg outline-none px-4 py-3 appearance-none"
+                      :class="[
+                        errors.address && addressTouched ? 'border-red-500 dark:border-red-400' : 'border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)]',
+                        { 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !location_id },
+                      ]"
+                    >
                       <p class="font-manrope text-sm md:text-base text-start">
-                        {{ location_id?.label ?? 'Cari kota' }}
+                        {{ location_id?.text ?? 'Cari kota' }}
                       </p>
                       <Icon name="material-symbols:arrow-drop-down-rounded" class="absolute top-[8px] right-2 text-3xl text-subtle cursor-pointer" />
                     </button>
@@ -39,7 +46,10 @@
                 <!-- Dropdown -->
                 <ComboboxList align="start" side="bottom" :prioritize-position="true" :side-offset="0" :align-offset="0">
                   <div class="relative w-full items-center text-sm md:text-base text-title dark:text-menu">
-                    <ComboboxInput class="font-manrope ring-none placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition duration-300 ease-in-out rounded-none outline-none px-4 py-3 appearance-none h-10" placeholder="Cari kota..." />
+                    <ComboboxInput
+                      class="font-manrope ring-none placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition duration-300 ease-in-out rounded-none outline-none px-4 py-3 appearance-none h-10"
+                      placeholder="Cari kota..."
+                    />
                     <span class="absolute left-0 inset-y-0 flex items-center justify-center px-3">
                       <!-- <Search class="size-4 text-muted-foreground" /> -->
                     </span>
@@ -48,11 +58,13 @@
                   <ComboboxEmpty class="p-4 text-sm md:text-base text-title dark:text-menu font-manrope"> Cari nama kota tempat tinggal anda. </ComboboxEmpty>
 
                   <ComboboxGroup class="h-60 overflow-y-scroll">
-                    <ComboboxItem v-for="location in locations" :key="location.value" :value="location" class="font-manrope text-title dark:text-menu flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full">
-                      {{ location.label }}
-                      <ComboboxItemIndicator>
-                        <Check class="ml-auto h-4 w-4" />
-                      </ComboboxItemIndicator>
+                    <ComboboxItem
+                      v-for="location in appStore.locations"
+                      :key="location.id"
+                      :value="location"
+                      class="font-manrope text-title dark:text-menu flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full"
+                    >
+                      {{ location.text }}
                     </ComboboxItem>
                   </ComboboxGroup>
                 </ComboboxList>
@@ -87,11 +99,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 import type { UserResponse } from '~/types/auth';
+import type { Location } from '~/types/api';
 
 const dialog = useDialog();
 const title = 'Ubah Data Akun';
@@ -108,17 +120,6 @@ useSeoMeta({
   title: title,
 });
 
-type AddressOption = {
-  value: string;
-  label: string;
-};
-
-type AdressResponse = {
-  locations: AddressOption[];
-};
-
-const locations = ref<AddressOption[]>([]);
-const isLoadingAddress = ref(false);
 const isLoading = ref(false);
 
 const authStore = useAuthStore();
@@ -171,7 +172,7 @@ const { defineField, handleSubmit, errors, setFieldValue, setErrors } = useForm(
   validationSchema: toTypedSchema(registrationSchema),
   initialValues: {
     name: '',
-    address: null as AddressOption | null,
+    address: null,
     gender: '',
     avatar_url: null,
   },
@@ -185,15 +186,19 @@ const genderTouched = ref(false);
 const [name] = defineField('name');
 
 // Custom handling for address and gender (non-input fields)
-const location_id = ref<AddressOption | null>(null);
+const location_id = ref<Location | null>(null);
 const genderValue = ref('');
 
 // Watch address changes and sync with form
-watch(location_id, (newValue) => {
-  setFieldValue('address', newValue);
-  // Mark as touched when user actually selects something
+watch(location_id, (newValue: Location | null) => {
   if (newValue) {
+    setFieldValue('address', {
+      value: newValue.id,
+      label: newValue.text ?? '', // fallback kalau text null
+    });
     addressTouched.value = true;
+  } else {
+    setFieldValue('address', null);
   }
 });
 
@@ -266,24 +271,7 @@ const onSubmit = handleSubmit(
   }
 );
 
-const getAddressOptions = async () => {
-  isLoadingAddress.value = true;
-
-  try {
-    const response = await apiSaforiginal.get<AdressResponse>('/v1/locations');
-    const data = response?.data?.locations ?? [];
-    if (data) {
-      locations.value = data?.map((location: any) => ({
-        value: location.id,
-        label: location.text,
-      }));
-    }
-  } catch (error: any) {
-    handleValidationError(error, setErrors);
-  } finally {
-    isLoadingAddress.value = false;
-  }
-};
+const appStore = useAppStore();
 
 // Jalankan logika untuk memuat data pengguna
 onMounted(() => {
@@ -294,13 +282,14 @@ onMounted(() => {
   if (user.value) {
     name.value = user.value?.name;
     location_id.value = {
-      value: String(user.value?.location?.id),
-      label: user.value?.location?.text ?? '',
+      id: Number(user.value?.location?.id),
+      domicile: null,
+      text: user.value?.location?.text ?? '',
     };
     genderValue.value = user.value?.gender;
     imageUrl.value = user.value?.avatar_url;
   }
 
-  getAddressOptions();
+  appStore.fetchLocations();
 });
 </script>

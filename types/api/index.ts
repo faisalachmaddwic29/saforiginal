@@ -1,5 +1,6 @@
 export * from './base';
 export * from './product';
+export * from './location';
 export * from './preferences';
 export * from './category';
 export * from './tag';

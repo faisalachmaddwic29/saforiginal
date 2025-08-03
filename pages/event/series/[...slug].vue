@@ -1,14 +1,47 @@
+<!-- eslint-disable vue/no-v-html -->
 <template>
-  <div class="px-4 md:py-5">
-    <CardProductDetail
-      :id="product?.id"
-      :title="product?.title"
-      :thumbnail="product?.cover"
-      :type="product?.type"
-      :date="product.event_at"
-      :author="product?.store?.name"
-      :description="product?.description"
-    />
+  <div class="md:py-5 flex flex-col gap-4">
+    <div class="px-4">
+      <CardProductDetail
+        :id="product?.id"
+        :title="product?.title"
+        :thumbnail="product?.cover"
+        :type="product?.videos.length + ' Episode'"
+        :date="product.event_at"
+        :author="product?.store?.name"
+        :description="product?.description"
+      />
+    </div>
+
+    <!-- Ringkasan AND Episode -->
+    <div class="md:px-4">
+      <Tabs default-value="ringkasan" class="w-full text-menu">
+        <TabsList class="grid w-full grid-cols-2">
+          <TabsTrigger value="ringkasan"> Ringkasan </TabsTrigger>
+          <TabsTrigger value="password"> Episode </TabsTrigger>
+        </TabsList>
+        <TabsContent value="ringkasan">
+          <div class="text-sm md:text-base font-normal text-justify px-4" v-html="product.description" />
+        </TabsContent>
+        <TabsContent value="password">
+          <div class="flex flex-col gap-4 px-4 py-2">
+            <div v-for="item in product.videos" :key="item.id" class="w-full">
+              <ListItem :label="item.title" :is-icon="false" right-icon="heroicons:lock-closed" class-name="cursor-disabled border rounded-md px-4">
+                <template #icon>
+                  <Icon name="heroicons:video-camera" class="text-2xl size-6" />
+                </template>
+              </ListItem>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+      <AppContainer class="p-4">
+        <Button class="w-full" type="button" :disabled="isLoading" @click="handleBuy">{{ isLoading ? 'Loading...' : product.btn_label }}</Button>
+      </AppContainer>
+    </div>
   </div>
 </template>
 
@@ -39,4 +72,12 @@ useSeoMeta({
   twitterDescription: () => product.title?.substring(0, 150),
   twitterImage: () => product.cover,
 });
+
+const isLoading = ref(false);
+
+const handleBuy = () => {
+  isLoading.value = true;
+  alert('Maaf ini masih tahap development');
+  isLoading.value = false;
+};
 </script>

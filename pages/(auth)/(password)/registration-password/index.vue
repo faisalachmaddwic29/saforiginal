@@ -15,9 +15,16 @@
         <Combobox v-model="location_id" by="label">
           <ComboboxAnchor as-child class="w-full">
             <ComboboxTrigger as-child>
-              <button type="button" class="relative font-manrope ring-none border transition duration-300 ease-in-out rounded-lg outline-none px-4 py-3 appearance-none" :class="[errors.address && addressTouched ? 'border-red-500 dark:border-red-400' : 'border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)]', { 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !location_id }]">
+              <button
+                type="button"
+                class="relative cursor-pointer font-manrope ring-none border transition duration-300 ease-in-out rounded-lg outline-none px-4 py-3 appearance-none"
+                :class="[
+                  errors.address && addressTouched ? 'border-red-500 dark:border-red-400' : 'border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)]',
+                  { 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !location_id },
+                ]"
+              >
                 <p class="font-manrope text-sm md:text-base text-start">
-                  {{ location_id?.label ?? 'Cari kota' }}
+                  {{ location_id?.text ?? 'Cari kota' }}
                 </p>
                 <Icon name="material-symbols:arrow-drop-down-rounded" class="absolute top-[8px] right-2 text-3xl text-subtle cursor-pointer" />
               </button>
@@ -27,7 +34,10 @@
           <!-- Dropdown -->
           <ComboboxList align="start" side="bottom" :prioritize-position="true" :side-offset="0" :align-offset="0">
             <div class="relative w-full items-center text-sm md:text-base text-[#1E293B] dark:text-[#94A3B8]">
-              <ComboboxInput class="font-manrope ring-none placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition duration-300 ease-in-out rounded-none outline-none px-4 py-3 appearance-none h-10" placeholder="Cari kota..." />
+              <ComboboxInput
+                class="font-manrope ring-none placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition duration-300 ease-in-out rounded-none outline-none px-4 py-3 appearance-none h-10"
+                placeholder="Cari kota..."
+              />
               <span class="absolute left-0 inset-y-0 flex items-center justify-center px-3">
                 <!-- <Search class="size-4 text-muted-foreground" /> -->
               </span>
@@ -36,11 +46,13 @@
             <ComboboxEmpty class="p-4 text-sm md:text-base text-[#1E293B] dark:text-[#94A3B8] font-manrope"> Cari nama kota tempat tinggal anda. </ComboboxEmpty>
 
             <ComboboxGroup class="h-60 overflow-y-scroll">
-              <ComboboxItem v-for="location in locations" :key="location.value" :value="location" class="font-manrope text-[#1E293B] dark:text-[#94A3B8] flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full">
-                {{ location.label }}
-                <ComboboxItemIndicator>
-                  <Check class="ml-auto h-4 w-4" />
-                </ComboboxItemIndicator>
+              <ComboboxItem
+                v-for="location in appStore.locations"
+                :key="location.id"
+                :value="location"
+                class="font-manrope text-[#1E293B] dark:text-[#94A3B8] flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full"
+              >
+                {{ location.text }}
               </ComboboxItem>
             </ComboboxGroup>
           </ComboboxList>
@@ -66,14 +78,32 @@
         <FormMessageError v-if="errors.gender && genderTouched" :message="errors.gender" />
       </div>
 
-      <FormInput id="password" v-model="password" name="password" :type="showPassword ? 'text' : 'password'" placeholder="Password (min 8 karakter)" :is-icon="true" icon-position="right" :error="errors.password">
+      <FormInput
+        id="password"
+        v-model="password"
+        name="password"
+        :type="showPassword ? 'text' : 'password'"
+        placeholder="Password (min 8 karakter)"
+        :is-icon="true"
+        icon-position="right"
+        :error="errors.password"
+      >
         <template #icon>
           <Icon v-if="showPassword" name="heroicons:eye" class="text-xl text-subtle cursor-pointer" @click="togglePassword" />
           <Icon v-else name="heroicons:eye-slash" class="text-xl text-subtle cursor-pointer" @click="togglePassword" />
         </template>
       </FormInput>
 
-      <FormInput id="password_confirmation" v-model="password_confirmation" :type="confirmshowPassword ? 'text' : 'password'" name="password_confirmation" placeholder="Konfirm Password" :is-icon="true" icon-position="right" :error="errors.password_confirmation">
+      <FormInput
+        id="password_confirmation"
+        v-model="password_confirmation"
+        :type="confirmshowPassword ? 'text' : 'password'"
+        name="password_confirmation"
+        placeholder="Konfirm Password"
+        :is-icon="true"
+        icon-position="right"
+        :error="errors.password_confirmation"
+      >
         <template #icon>
           <Icon v-if="confirmshowPassword" name="heroicons:eye" class="text-xl text-subtle cursor-pointer" @click="toggleConfirmPassword" />
           <Icon v-else name="heroicons:eye-slash" class="text-xl text-subtle cursor-pointer" @click="toggleConfirmPassword" />
@@ -91,10 +121,10 @@
 </template>
 
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
+import type { Location } from '~/types/api';
 
 const title = 'Registrasi Password';
 useSeoMeta({
@@ -109,8 +139,7 @@ definePageMeta({
   title: title,
 });
 
-const locations = ref<AddressOption[]>([]);
-const isLoadingAddress = ref(false);
+const appStore = useAppStore();
 const isLoading = ref(false);
 const showPassword = ref(false);
 const confirmshowPassword = ref(false);
@@ -150,16 +179,6 @@ const registrationSchema = z
     path: ['password_confirmation'],
   });
 
-// Define types
-type AddressOption = {
-  value: string;
-  label: string;
-};
-
-type AdressResponse = {
-  locations: AddressOption[];
-};
-
 // Setup vee-validate
 const { defineField, handleSubmit, errors, setFieldValue, setErrors } = useForm({
   validationSchema: toTypedSchema(registrationSchema),
@@ -167,7 +186,7 @@ const { defineField, handleSubmit, errors, setFieldValue, setErrors } = useForm(
     name: '',
     email: '',
     phone: '',
-    address: null as AddressOption | null,
+    address: null,
     gender: '',
     password: '',
     password_confirmation: '',
@@ -187,20 +206,24 @@ const [password] = defineField('password');
 const [password_confirmation] = defineField('password_confirmation');
 
 // Custom handling for address and gender (non-input fields)
-const location_id = ref<AddressOption | null>(null);
+const location_id = ref<Location | null>(null);
 const genderValue = ref('');
 
 // Watch address changes and sync with form
 watch(
   location_id,
-  (newValue) => {
-    setFieldValue('address', newValue);
-    // Mark as touched when user actually selects something
+  (newValue: Location | null) => {
     if (newValue) {
+      setFieldValue('address', {
+        value: newValue.id,
+        label: newValue.text ?? '', // fallback kalau text null
+      });
       addressTouched.value = true;
+    } else {
+      setFieldValue('address', null);
     }
   },
-  { deep: true }
+  { immediate: true, deep: true }
 );
 
 // Watch gender changes and sync with form
@@ -214,7 +237,7 @@ watch(
       genderTouched.value = true;
     }
   },
-  { deep: true }
+  { immediate: true, deep: true }
 );
 
 // Toggle password visibility
@@ -277,27 +300,7 @@ const onSubmit = handleSubmit(
   }
 );
 
-const getAddressOptions = async () => {
-  isLoadingAddress.value = true;
-
-  try {
-    const response = await apiSaforiginal.get<AdressResponse>('/v1/locations');
-    const data = response?.data?.locations ?? [];
-    if (data) {
-      locations.value = data?.map((location: any) => ({
-        value: location.id,
-        label: location.text,
-      }));
-    }
-  } catch (error: any) {
-    handleValidationError(error, setErrors);
-
-    // Handle error (bisa tambahkan toast/notification)
-  } finally {
-    isLoadingAddress.value = false;
-  }
-};
 onMounted(() => {
-  getAddressOptions();
+  appStore.fetchLocations();
 });
 </script>

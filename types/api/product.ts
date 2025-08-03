@@ -8,6 +8,7 @@ import type { Video } from "./video";
 
 
 export enum ProductType {
+  EVENT = 'online_event,offline_event',
   ONLINE_EVENT = 'online_event',
   OFFLINE_EVENT = 'offline_event',
   VIDEO_SERIES = 'video_series',
@@ -20,13 +21,18 @@ export function toProductType(value: string): ProductType | null {
   return values.includes(value as ProductType) ? (value as ProductType) : null;
 }
 
-export enum ProductDateFilter {
+export enum ProductTimeType {
   ALL = 'all',
   TODAY = 'today',
   TOMORROW = 'tomorrow',
   THIS_WEEK = 'this_week',
   THIS_MONTH = 'this_month',
   NEXT_MONTH = 'next_month'
+}
+
+export function toProductTimeType(value: string): ProductTimeType | null {
+  const values = Object.values(ProductTimeType);
+  return values.includes(value as ProductTimeType) ? (value as ProductTimeType) : null;
 }
 
 

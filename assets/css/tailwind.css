@@ -183,6 +183,23 @@
     width: 100%;
     justify-content: center;
   }
+
+  [data-slot='drawer-trigger'] {
+    display: none;
+  }
+
+  /* Tailwind: custom class */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .combobox-list [data-radix-popper-content-wrapper] {
+    position: static !important; /* hindari konflik popper internal */
+  }
 }
 
 @theme {

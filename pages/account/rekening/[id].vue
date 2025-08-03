@@ -9,7 +9,14 @@
         <Combobox v-model="bank_id" by="label">
           <ComboboxAnchor as-child class="w-full">
             <ComboboxTrigger as-child>
-              <button type="button" class="relative font-manrope ring-none border transition duration-300 ease-in-out rounded-lg outline-none px-4 py-3 appearance-none" :class="[errors.bank && bankTouched ? 'border-red-500 dark:border-red-400' : 'border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)]', { 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !bank_id }]">
+              <button
+                type="button"
+                class="relative font-manrope ring-none border transition duration-300 ease-in-out rounded-lg outline-none px-4 py-3 appearance-none"
+                :class="[
+                  errors.bank && bankTouched ? 'border-red-500 dark:border-red-400' : 'border-[#C5C5C5] dark:border-[rgba(197,197,197,0.2)]',
+                  { 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !bank_id },
+                ]"
+              >
                 <p class="font-manrope text-sm md:text-base text-start">
                   {{ bank_id?.label ?? 'Pilih bank' }}
                 </p>
@@ -21,18 +28,23 @@
           <!-- Dropdown -->
           <ComboboxList align="start" side="bottom" :prioritize-position="true" :side-offset="0" :align-offset="0">
             <div class="relative w-full items-center text-sm md:text-base text-[#1E293B] dark:text-[#94A3B8]">
-              <ComboboxInput class="font-manrope ring-none placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition duration-300 ease-in-out rounded-none outline-none px-4 py-3 appearance-none h-10" placeholder="Pilih bank..." />
+              <ComboboxInput
+                class="font-manrope ring-none placeholder-[#C5C5C5] dark:placeholder-[rgba(197,197,197,0.2)] transition duration-300 ease-in-out rounded-none outline-none px-4 py-3 appearance-none h-10"
+                placeholder="Pilih bank..."
+              />
               <span class="absolute left-0 inset-y-0 flex items-center justify-center px-3"> </span>
             </div>
 
             <ComboboxEmpty class="p-4 text-sm md:text-base text-[#1E293B] dark:text-[#94A3B8] font-manrope"> Cari nama bank. </ComboboxEmpty>
 
             <ComboboxGroup class="h-60 overflow-y-scroll">
-              <ComboboxItem v-for="bank in banks" :key="bank.value" :value="bank" class="font-manrope text-[#1E293B] dark:text-[#94A3B8] flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full">
+              <ComboboxItem
+                v-for="bank in banks"
+                :key="bank.value"
+                :value="bank"
+                class="font-manrope text-[#1E293B] dark:text-[#94A3B8] flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full"
+              >
                 {{ bank.label }}
-                <ComboboxItemIndicator>
-                  <Check class="ml-auto h-4 w-4" />
-                </ComboboxItemIndicator>
               </ComboboxItem>
             </ComboboxGroup>
           </ComboboxList>
@@ -58,7 +70,6 @@
 </template>
 
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';

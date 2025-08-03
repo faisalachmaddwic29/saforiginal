@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
-import type { Categories, CategoriesResponse, ProductDateFilter, Products, ProductsResponse, ProductType } from '~/types/api';
+import type { Categories, CategoriesResponse, Locations, ProductTimeType, Products, ProductsResponse, ProductType, LocationsResponse } from '~/types/api';
 
 export const useAppStore = defineStore("app", {
   state: () => ({
+    locations: [] as Locations,
     categories: [] as Categories,
     productsEventNewest: [] as Products,
     productsSeries: [] as Products,
@@ -12,6 +13,7 @@ export const useAppStore = defineStore("app", {
     productsByDate: [] as Products,
     productsByLocation: [] as Products,
     productsByType: [] as Products,
+    isLocationsLoaded: false,
     isCategoriesLoaded: false,
     isProductsEventNewestLoaded: false,
     isProductsSeriesLoaded: false,
@@ -23,6 +25,13 @@ export const useAppStore = defineStore("app", {
     isProductsByTypeLoaded: false,
   }),
   actions: {
+    async fetchLocations() {
+      if (this.isLocationsLoaded) return;
+
+      const { data } = await apiSaforiginal.get<LocationsResponse>('/v1/locations');
+      this.locations = data?.locations ?? [];
+      this.isLocationsLoaded = true;
+    },
     async fetchCategories() {
       if (this.isCategoriesLoaded) return;
 
@@ -67,7 +76,7 @@ export const useAppStore = defineStore("app", {
     },
 
     // all, today, tomorrow, this_week, this_month, next_month
-    async fetchProductsByDate(date: ProductDateFilter) {
+    async fetchProductsByDate(date: ProductTimeType) {
       if (this.isProductsByDateLoaded) return;
 
       const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products?date=' + date + '&sort=-created_at');

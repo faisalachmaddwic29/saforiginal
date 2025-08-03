@@ -1,14 +1,6 @@
 <template>
-  <div
-    class="flex items-center justify-between w-full gap-7 cursor-pointer"
-    @click="$emit('click')"
-  >
-    <Icon
-      v-if="isIcon"
-      :name="leftIcon"
-      class="text-3xl size-6"
-      :class="isRed ? 'text-danger' : 'text-list-item'"
-    />
+  <div class="flex items-center justify-between w-full gap-7 cursor-pointer" :class="className" @click="$emit('click')">
+    <Icon v-if="isIcon" :name="leftIcon" class="text-3xl size-6" :class="isRed ? 'text-danger' : 'text-list-item'" />
     <slot v-else name="icon" />
 
     <div class="flex justify-between items-center w-full py-3.5">
@@ -40,6 +32,10 @@ defineProps({
   rightIcon: {
     type: String,
     default: 'ion:chevron-forward-outline', // Default icon
+  },
+  className: {
+    type: String,
+    default: '',
   },
 });
 

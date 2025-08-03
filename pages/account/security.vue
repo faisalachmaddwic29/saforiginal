@@ -3,21 +3,21 @@
     <div class="">
       <div class="flex flex-col gap-8 text-title text-sm">
         <NuxtLink to="/account/change-email" class="flex justify-between gap-3 items-center">
-          <div>Email</div>
+          <p class="text-base text-title">Email</p>
           <div class="flex gap-2 items-center">
-            <div>{{ user?.email }}</div>
+            <p class="text-base text-title font-semibold">{{ user?.email }}</p>
             <Icon name="material-symbols-light:arrow-forward-ios-rounded" class="w-6 h-6 text-lg" />
           </div>
         </NuxtLink>
         <NuxtLink to="/account/change-phone" class="flex justify-between gap-3 items-center">
-          <div>No Hanphone</div>
+          <p class="text-base text-title">No Hanphone</p>
           <div class="flex gap-2 items-center">
-            <div>{{ maskingPhone(user?.phone ?? '') }}</div>
+            <p class="text-base text-title font-semibold">{{ maskingPhone(user?.phone ?? '') }}</p>
             <Icon name="material-symbols-light:arrow-forward-ios-rounded" class="w-6 h-6 text-lg" />
           </div>
         </NuxtLink>
         <NuxtLink to="/account/change-password" class="flex justify-between gap-3 items-center">
-          <div>Password</div>
+          <p class="text-base text-title">Password</p>
           <Icon name="material-symbols-light:arrow-forward-ios-rounded" class="w-6 h-6 text-lg" />
         </NuxtLink>
       </div>

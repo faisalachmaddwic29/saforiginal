@@ -45,9 +45,6 @@
                 class="font-manrope text-[#1E293B] dark:text-[#94A3B8] flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full"
               >
                 {{ bank.label }}
-                <ComboboxItemIndicator>
-                  <Check class="ml-auto h-4 w-4" />
-                </ComboboxItemIndicator>
               </ComboboxItem>
             </ComboboxGroup>
           </ComboboxList>
@@ -73,7 +70,6 @@
 </template>
 
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';

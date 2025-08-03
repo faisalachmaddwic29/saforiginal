@@ -7,8 +7,8 @@
         <p class="mt-2.5 text-xs md:text-sm text-title dark:text-menu">Dapatkan rekomendasi event sesuai pilihan kamu</p>
       </div>
 
-      <div class="mt-5 flex flex-col gap-3">
-        <div v-if="categories.length > 0">
+      <div class="mt-5">
+        <div v-if="categories.length > 0" class="flex flex-col gap-3">
           <div v-for="category in categories" :key="category.value" class="relative">
             <input :id="category.value.toString()" v-model="selectedCategories" :value="category" type="checkbox" class="peer sr-only" />
             <label
