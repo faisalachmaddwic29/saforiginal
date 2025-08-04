@@ -83,14 +83,14 @@ export default defineNuxtConfig({
   },
   pwa: {
     registerType: 'autoUpdate',
-    // injectRegister: 'auto',
-    // strategies: 'generateSW',
+    injectRegister: 'auto',
+    strategies: 'generateSW',
     // injectManifest: {
     // 	swSrc: 'service-worker/sw.js'
     // },
-    strategies: 'injectManifest',
-    srcDir: 'service-worker',
-    filename: 'sw.ts',
+    // strategies: 'injectManifest',
+    // srcDir: 'service-worker',
+    // filename: 'sw.ts',
     // ⛔️ BUKAN DI DALAM `workbox`
     // navigateFallback: false, // ✅ Ini wajib ada DI SINI kalau pakai injectManifest
     manifest: {
