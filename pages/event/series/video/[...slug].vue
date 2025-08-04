@@ -59,7 +59,7 @@
               <div class="flex items-center justify-between w-full gap-4 p-3 cursor-pointer border rounded-lg" :class="playVideo === item.url ? 'border-primary' : ''" @click="changeVideo(item.url)">
                 <div class="content-list w-full flex gap-4">
                   <div class="w-[70px] h-[50px] bg-black rounded">
-                    <NuxtImg :src="product?.cover ?? ''" :alt="item?.title + '-thumbnail'" class="h-full object-fill text-center m-auto" />
+                    <NuxtImg :src="getYoutubeImageUrl(item.url) ?? ''" :alt="item?.title + '-thumbnail'" class="h-full object-fill text-center m-auto" />
                   </div>
                   <div class="flex flex-col gap-1">
                     <span class="text-xs text-menu">Episode {{ index + 1 }}</span>

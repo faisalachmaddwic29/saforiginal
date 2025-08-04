@@ -23,3 +23,29 @@ export function getYoutubeWatchUrl(mediaUrl: string): string {
     return mediaUrl;
   }
 }
+
+
+export function getYoutubeImageUrl(mediaUrl: string): string {
+  try {
+    const u = new URL(mediaUrl);
+    let videoId = '';
+
+    if (u.hostname.includes('youtube.com')) {
+      if (u.pathname.startsWith('/embed/')) {
+        videoId = u.pathname.split('/')[2];
+      } else if (u.pathname === '/watch') {
+        videoId = u.searchParams.get('v') ?? '';
+      }
+    } else if (u.hostname === 'youtu.be') {
+      videoId = u.pathname.slice(1);
+    }
+
+    if (videoId) {
+      return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    }
+
+    return '';
+  } catch {
+    return '';
+  }
+}

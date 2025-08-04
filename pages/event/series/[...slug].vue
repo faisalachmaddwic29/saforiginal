@@ -30,7 +30,7 @@
                 :label="item.title"
                 :is-icon="false"
                 :right-icon="!product.is_free ? 'heroicons:lock-closed' : 'ion:chevron-forward-outline'"
-                :class-name="'border rounded-md px-4 ' + (product.is_free ? '!cursor-not-allowed' : '')"
+                :class-name="'border rounded-md px-4 ' + (!product.is_free ? '!cursor-not-allowed' : '')"
               >
                 <template #icon>
                   <Icon name="heroicons:video-camera" class="text-2xl size-6" />
