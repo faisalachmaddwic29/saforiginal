@@ -7,12 +7,12 @@
     </div>
 
     <!-- cannot play video -->
-    <div class="border border-[#EDEDED]/80 flex items-center justify-between gap-3 rounded-md p-2">
-      <div class="flex gap-3">
+    <div class="border border-[#EDEDED]/20 flex items-center justify-between gap-3 rounded-md p-2 shadow">
+      <div class="flex gap-3 items-center">
         <Icon name="famicons:information-circle-outline" class="text-2xl size-6 text-info" />
-        <p class="text-menu text-sm">Tidak dapat memainkan video?</p>
+        <p class="text-menu text-xs md:text-sm">Tidak dapat memainkan video?</p>
       </div>
-      <a target="_blank" class="border border-danger text-danger text-sm px-2 py-1 rounded cursor-pointer tracking-wide" :href="getYoutubeWatchUrl(playVideo)">Saksikan di Youtube</a>
+      <a target="_blank" class="border border-danger text-danger text-xs md:text-sm px-2 py-1 rounded cursor-pointer" :href="getYoutubeWatchUrl(playVideo)">Saksikan di Youtube</a>
     </div>
 
     <!-- Detail  -->
