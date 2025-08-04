@@ -17,19 +17,19 @@
 
       <!-- AUTHOR -->
       <div class="flex items-start text-xs md:text-lg gap-1 md:gap-2 text-menu">
-        <Icon name="heroicons-outline:user" class="w-4 h-4 text-xl shrink-0" />
+        <Icon name="heroicons-outline:user" class="size-6 text-2xl shrink-0" />
         <span class="text-sm md:text-base">{{ props.author }}</span>
       </div>
 
       <!-- DATE -->
       <div v-if="props.date" class="flex items-start text-xs md:text-lg gap-1 md:gap-2 text-menu">
-        <Icon name="heroicons-outline:calendar" class="w-4 h-4 text-xl shrink-0" />
+        <Icon name="heroicons-outline:calendar" class="size-6 text-2xl shrink-0" />
         <span class="text-sm md:text-base">{{ formatDate(props.date) }}</span>
       </div>
 
       <!-- TYPE -->
       <div class="flex items-start text-xs md:text-lg gap-1 md:gap-2 text-menu">
-        <Icon name="mingcute:grid-line" class="w-4 h-4 text-xl shrink-0" />
+        <Icon name="mingcute:grid-line" class="size-6 text-2xl shrink-0" />
         <span class="text-sm md:text-base">{{ props.type }}</span>
       </div>
 

@@ -9,7 +9,7 @@
     <div class="absolute inset-0 opacity-60 w-full h-full" :style="{ backgroundColor: props.color ?? '#000000' }" />
 
     <!-- Text -->
-    <div class="relative z-10 p-2.5 h-full">
+    <div class="relative z-0 p-2.5 h-full">
       <p class="font-semibold font-poppins text-xs md:text-base text-white leading-tight break-words text-wrap" style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)">
         {{ props.name }}
       </p>

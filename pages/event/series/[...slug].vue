@@ -18,20 +18,25 @@
       <Tabs default-value="ringkasan" class="w-full text-menu">
         <TabsList class="grid w-full grid-cols-2">
           <TabsTrigger value="ringkasan"> Ringkasan </TabsTrigger>
-          <TabsTrigger value="password"> Episode </TabsTrigger>
+          <TabsTrigger value="episode"> Episode </TabsTrigger>
         </TabsList>
         <TabsContent value="ringkasan">
           <div class="text-sm md:text-base font-normal text-justify px-4" v-html="product.description" />
         </TabsContent>
-        <TabsContent value="password">
+        <TabsContent value="episode">
           <div class="flex flex-col gap-4 px-4 py-2">
-            <div v-for="item in product.videos" :key="item.id" class="w-full">
-              <ListItem :label="item.title" :is-icon="false" right-icon="heroicons:lock-closed" class-name="cursor-disabled border rounded-md px-4">
+            <NuxtLink v-for="item in product.videos" :key="item.id" :to="!isLocked ? `/event/series/video/${product.slug}` : undefined" class="w-full block">
+              <ListItem
+                :label="item.title"
+                :is-icon="false"
+                :right-icon="isLocked ? 'heroicons:lock-closed' : 'ion:chevron-forward-outline'"
+                :class-name="'border rounded-md px-4 ' + (isLocked ? '!cursor-not-allowed' : '')"
+              >
                 <template #icon>
                   <Icon name="heroicons:video-camera" class="text-2xl size-6" />
                 </template>
               </ListItem>
-            </div>
+            </NuxtLink>
           </div>
         </TabsContent>
       </Tabs>
@@ -80,4 +85,6 @@ const handleBuy = () => {
   alert('Maaf ini masih tahap development');
   isLoading.value = false;
 };
+
+const isLocked = ref(false);
 </script>

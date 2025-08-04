@@ -6,7 +6,7 @@
         :id="product?.id"
         :title="product?.title"
         :thumbnail="product?.cover"
-        :type="product?.type"
+        :type="product?.address + ', ' + product?.location?.text"
         :date="product.event_at"
         :author="product?.store?.name"
         :description="product?.description"

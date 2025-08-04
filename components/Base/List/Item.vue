@@ -4,7 +4,9 @@
     <slot v-else name="icon" />
 
     <div class="flex justify-between items-center w-full py-3.5">
-      <p class="text-sm md:text-base" :class="isRed ? 'text-danger' : ''">{{ label }}</p>
+      <p v-if="!customLabel" class="text-sm md:text-base" :class="isRed ? 'text-danger' : ''">{{ label }}</p>
+      <slot v-else name="label" />
+
       <!-- Right Arrow -->
       <Icon :name="rightIcon" class="text-2xl size-6" :class="isRed ? 'text-danger' : ''" />
     </div>
@@ -18,6 +20,10 @@ defineProps({
     default: 'Label',
   },
   isRed: {
+    type: Boolean,
+    default: false,
+  },
+  customLabel: {
     type: Boolean,
     default: false,
   },
