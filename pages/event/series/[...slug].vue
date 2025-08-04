@@ -25,12 +25,12 @@
         </TabsContent>
         <TabsContent value="episode">
           <div class="flex flex-col gap-4 px-4 py-2">
-            <NuxtLink v-for="item in product.videos" :key="item.id" :to="!isLocked ? `/event/series/video/${product.slug}` : undefined" class="w-full block">
+            <NuxtLink v-for="item in product.videos" :key="item.id" :to="product.is_free ? `/event/series/video/${product.slug}` : undefined" class="w-full block">
               <ListItem
                 :label="item.title"
                 :is-icon="false"
-                :right-icon="isLocked ? 'heroicons:lock-closed' : 'ion:chevron-forward-outline'"
-                :class-name="'border rounded-md px-4 ' + (isLocked ? '!cursor-not-allowed' : '')"
+                :right-icon="!product.is_free ? 'heroicons:lock-closed' : 'ion:chevron-forward-outline'"
+                :class-name="'border rounded-md px-4 ' + (product.is_free ? '!cursor-not-allowed' : '')"
               >
                 <template #icon>
                   <Icon name="heroicons:video-camera" class="text-2xl size-6" />
@@ -85,6 +85,4 @@ const handleBuy = () => {
   alert('Maaf ini masih tahap development');
   isLoading.value = false;
 };
-
-const isLocked = ref(false);
 </script>
