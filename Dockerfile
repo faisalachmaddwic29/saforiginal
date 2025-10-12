@@ -1,39 +1,27 @@
-# Gunakan base image Node.js versi stabil (alpine lebih ringan)
-FROM node:22-alpine AS builder
+# Menggunakan node versi stabil
+FROM node:22-alpine
 
 # Set working directory
 WORKDIR /usr/src/app
 
-# Salin package.json dan lock file saja dulu untuk caching layer yang efisien
+# Copy package.json dan package-lock.json
 COPY package*.json ./
 
-# Hapus lock file lama jika perlu (misal supaya install clean)
-RUN rm -f package-lock.json
+RUN unlink package-lock.json
+# Install dependencies
+RUN rm -rf node_modules && npm install --omit=dev
 
-# Install dependency secara clean (tanpa devDependencies)
-RUN npm ci --omit=dev || npm install --omit=dev --legacy-peer-deps
-
-# Copy semua file proyek
+# Copy semua file
 COPY . .
 
-# Build Nuxt (output akan di .output/)
-RUN npm run build
+# Build aplikasi dengan verbose output
+RUN npm run build --verbose
 
-# ============================
-# Stage 2: Runtime environment
-# ============================
-FROM node:22-alpine AS runner
+# Install PM2 globally
+RUN npm install pm2 -g
 
-WORKDIR /usr/src/app
+# Jalankan dengan PM2
+# CMD ["pm2-runtime","start", "ecosystem.config.js"]
+# CMD ["node", "./.output/server/index.mjs"]
 
-# Install PM2 globally untuk manajemen proses
-RUN npm install -g pm2
-
-# Copy hasil build dan dependency yang sudah diinstall dari tahap sebelumnya
-COPY --from=builder /usr/src/app ./
-
-# Expose port default Nuxt
-EXPOSE 3000
-
-# Jalankan aplikasi menggunakan PM2 runtime (lebih stabil untuk container)
-CMD ["pm2-runtime", "./.output/server/index.mjs"]
+CMD ["npx", "pm2-runtime", "./.output/server/index.mjs"]
