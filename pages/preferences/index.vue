@@ -43,6 +43,7 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 import type { TagItem, TagsResponse } from '~/types/api';
+import { urlApiPreferences, urlApiTags } from '~/constants';
 
 const title = 'Pilih Preferensi';
 
@@ -105,7 +106,7 @@ const getCategoryOptions = async () => {
   isLoadingCategory.value = true;
 
   try {
-    const response = await apiSaforiginal.get<TagsResponse>('/v1/tags');
+    const response = await apiSaforiginal.get<TagsResponse>(urlApiTags);
     const data: TagItem[] = response?.data?.tags ?? [];
     if (data) {
       categories.value = data.map((tag: TagItem) => ({
@@ -127,7 +128,7 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
 
   try {
-    const response = await apiSaforiginal.post('/v1/preferences', {
+    const response = await apiSaforiginal.post(urlApiPreferences, {
       tags: values.category.map((cat) => cat.value),
     });
 

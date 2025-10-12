@@ -110,9 +110,12 @@
         </template>
       </FormInput>
     </div>
-    <p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Sudah punya akun? <NuxtLink to="/login-password" class="text-primary font-bold pl-0.5">Masuk disini</NuxtLink></p>
+    <p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">
+      Sudah punya akun?
+      <NuxtLink to="/login-password" class="text-primary font-bold pl-0.5">Masuk disini</NuxtLink>
+    </p>
 
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">
         <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Daftar' }}</Button>
       </AppContainer>
@@ -125,6 +128,7 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 import type { Location } from '~/types/api';
+import { urlAuthRegister } from '~/constants';
 
 const title = 'Registrasi Password';
 useSeoMeta({
@@ -169,7 +173,7 @@ const registrationSchema = z
 
     gender: z.string().min(1, 'Jenis kelamin harus dipilih'),
 
-    password: z.string().min(1, 'Password harus diisi').min(6, 'Password minimal 6 karakter'),
+    password: z.string().min(1, 'Password harus diisi').min(8, 'Password minimal 8 karakter'),
     // .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password harus mengandung huruf besar, huruf kecil, dan angka'),
 
     password_confirmation: z.string().min(1, 'Konfirmasi password harus diisi'),
@@ -265,7 +269,7 @@ const onSubmit = handleSubmit(
     isLoading.value = true;
 
     try {
-      const response = await apiSaforiginal.post('/auth/register', {
+      const response = await apiSaforiginal.post(urlAuthRegister, {
         name: values.name,
         email: values.email,
         phone: values.phone,

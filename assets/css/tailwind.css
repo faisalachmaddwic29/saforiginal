@@ -5,6 +5,7 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-footer: var(--footer);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -66,6 +67,7 @@
   --primary: #a07c4b;
   --secondary: #bd9e72;
   --background: oklch(1 0 0);
+  --footer: #F9F9F9;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -118,6 +120,7 @@
 
 .dark {
   --background: #0f172a;
+  --footer: #0D1528;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);

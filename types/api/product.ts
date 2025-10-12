@@ -1,6 +1,7 @@
 import type { PaginateData } from "./base";
 import type { Category } from "./category";
 import type { Creator } from "./creator";
+import type { Location } from "./location";
 import type { OfflineTicket } from "./offline_ticket";
 import type { Store } from "./store";
 import type { TagItem } from "./tag";

@@ -12,3 +12,5 @@ export * from './company';
 export * from './domicile';
 export * from './base';
 export * from './offline_ticket';
+export * from './bank';
+export * from './payments';

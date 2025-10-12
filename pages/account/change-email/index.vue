@@ -9,7 +9,7 @@
           </div>
         </div>
       </div>
-      <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+      <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
         <AppContainer class="p-4">
           <Button class="w-full" type="submit" :disabled="isLoading">
             {{ isLoading ? 'Loading...' : 'Selanjutnya' }}
@@ -28,10 +28,12 @@
 
             <FormMessageError v-if="otpForm.errors.value.otp" :message="otpForm.errors.value.otp" class="justify-center" />
           </div>
-          <p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span class="cursor-pointer text-primary font-bold pl-0.5" @click="onSubmitEmail">Kirim ulang</span></p>
+          <p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">
+            Tidak menerima kode verifikasi? <span class="cursor-pointer text-primary font-bold pl-0.5" @click="onSubmitEmail">Kirim ulang</span>
+          </p>
         </div>
       </div>
-      <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
+      <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
         <AppContainer>
           <Button class="w-full" type="submit" :disabled="isLoading">
             {{ isLoading ? 'Loading...' : 'Verifikasi' }}
@@ -46,7 +48,7 @@
           <div class="text-title text-lg text-center">Berhasil Melakukan Verifikasi Email</div>
         </div>
       </div>
-      <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+      <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
         <AppContainer class="p-4">
           <Button class="w-full" @click="router.back()"> Oke </Button>
         </AppContainer>
@@ -59,6 +61,7 @@
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
+import { urlAuthChangeEmail, urlAuthChangeEmailConfirm } from '~/constants';
 
 const title = ref('Ubah Email');
 const router = useRouter();
@@ -101,7 +104,7 @@ const onSubmitEmail = emaiForm.handleSubmit(async (values) => {
     loadingStore.start();
     isLoading.value = true;
 
-    const response = await apiSaforiginal.post('/auth/email/change/request', {
+    const response = await apiSaforiginal.post(urlAuthChangeEmail, {
       new_email: values.new_email,
     });
 
@@ -144,7 +147,7 @@ const onSubmitOtp = otpForm.handleSubmit(async (values) => {
     loadingStore.start();
     isLoading.value = true;
 
-    const response = await apiSaforiginal.post('/auth/email/change/confirm', {
+    const response = await apiSaforiginal.post(urlAuthChangeEmailConfirm, {
       otp: values.otp,
       new_email: new_email.value,
     });

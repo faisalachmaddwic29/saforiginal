@@ -61,7 +61,7 @@
       <FormInput id="account_name" v-model="account_name" type="text" name="account_name" label-text="Nama pemilik rekening" placeholder="Masukan nama pemilik rekening" :error="errors.account_name" />
     </div>
 
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
       <AppContainer>
         <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Simpan' }}</Button>
       </AppContainer>

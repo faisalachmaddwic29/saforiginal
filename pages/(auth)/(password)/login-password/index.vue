@@ -10,7 +10,16 @@
       </div>
 
       <div>
-        <FormInput id="password" v-model="password" :type="showPassword ? 'text' : 'password'" name="password" placeholder="Masukan Password" :is-icon="true" icon-position="right" :error="errors.password">
+        <FormInput
+          id="password"
+          v-model="password"
+          :type="showPassword ? 'text' : 'password'"
+          name="password"
+          placeholder="Masukan Password"
+          :is-icon="true"
+          icon-position="right"
+          :error="errors.password"
+        >
           <template #icon>
             <Icon v-if="showPassword" name="heroicons:eye" class="text-xl text-subtle cursor-pointer" @click="togglePassword" />
             <Icon v-else name="heroicons:eye-slash" class="text-xl text-subtle cursor-pointer" @click="togglePassword" />
@@ -36,6 +45,7 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 import type { LoginPasswordRequest, LoginPasswordResponse } from '~/types/auth';
+import { urlAuthLogin } from '~/constants';
 
 const title = 'Login Password';
 
@@ -96,7 +106,7 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
 
   try {
-    const response = await apiSaforiginal.post<LoginPasswordResponse, LoginPasswordRequest>('/auth/login', {
+    const response = await apiSaforiginal.post<LoginPasswordResponse, LoginPasswordRequest>(urlAuthLogin, {
       identifier: values.identifier,
       password: values.password,
     });

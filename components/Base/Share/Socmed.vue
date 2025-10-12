@@ -3,7 +3,7 @@
     <slot @click="handleShare" />
 
     <!-- Drawer Content -->
-    <DrawerCustom v-model:open="showDrawer" title="All Share Menu" description="Kelola Share Menu" :show-indicator="true">
+    <DrawerCustom v-model:open="showDrawer" title="All Share Menu" description="Kelola Share Menu" :show-indicator="true" classes="px-4">
       <AppContainer>
         <div class="flex flex-col gap-3.5 my-4 mx-auto justify-center">
           <h3 class="text-base font-bold">Bagikan melalui:</h3>

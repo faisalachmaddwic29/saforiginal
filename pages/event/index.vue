@@ -13,44 +13,44 @@
 
     <!-- Drawer Filter -->
     <DrawerCustom v-model:open="showDrawer" title="All Share Menu" description="Kelola Share Menu" :show-indicator="true" classes="h-full pb-0 !mb-0">
-      <AppContainer class="p-4">
-        <div class="flex flex-col justify-between h-full">
+      <AppContainer>
+        <div class="flex flex-col gap-3 justify-between h-full overflow-auto">
           <!-- Filters -->
-          <div class="flex flex-col gap-5 shrink text-title dark:text-menu">
+          <div class="flex flex-col gap-3 shrink text-title dark:text-menu">
             <!-- Header -->
-            <div class="flex justify-between items-center border-b pb-2">
+            <div class="flex justify-between items-center border-b pb-2 px-4">
               <h3 class="text-2xl font-bold">Filter</h3>
               <Button type="button" variant="link" class="text-destructive px-0" @click="resetFilter">Reset</Button>
             </div>
 
             <!-- Kategori -->
             <div>
-              <h3 class="pb-2 font-bold">Kategori</h3>
-              <div class="w-full flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <h3 class="pb-2 font-bold px-4">Kategori</h3>
+              <div class="w-full px-4 flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <FormRadio v-model="kategori" :options="kategori_data" />
               </div>
             </div>
 
             <!-- Jenis Kajian -->
             <div>
-              <h3 class="pb-2 font-bold">Jenis Kajian</h3>
-              <div class="w-full flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <h3 class="pb-2 font-bold px-4">Jenis Kajian</h3>
+              <div class="w-full px-4 flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <FormRadio v-model="jenis_kajian" :options="jenis_kajian_data" />
               </div>
             </div>
 
             <!-- Waktu -->
             <div>
-              <h3 class="pb-2 font-bold">Waktu</h3>
-              <div class="w-full flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <h3 class="pb-2 font-bold px-4">Waktu</h3>
+              <div class="w-full px-4 flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <FormRadio v-model="waktu" :options="waktu_data" />
               </div>
             </div>
 
             <!-- Lokasi -->
             <div>
-              <h3 class="pb-2 font-bold">Lokasi</h3>
-              <div ref="dropdownRef" class="mb-3 relative">
+              <h3 class="pb-2 font-bold px-4">Lokasi</h3>
+              <div ref="dropdownRef" class="mb-3 relative px-4">
                 <!-- Trigger -->
                 <button
                   type="button"
@@ -84,47 +84,50 @@
                       class="font-manrope text-title dark:text-menu flex items-center px-4 py-2 cursor-pointer hover:bg-primary w-full"
                       @click="selectLocation(location)"
                     >
-                      <p class="w-full font-normal">{{ location.domicile?.city_name + ' - ' + location.domicile?.province_name }}</p>
+                      <p class="w-full font-normal">
+                        {{ location.domicile?.city_name + ' - ' + location.domicile?.province_name }}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="w-full flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <div class="w-full px-4 flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <FormRadio v-model="lokasi" :options="lokasi_data" />
               </div>
             </div>
           </div>
 
           <!-- Submit -->
-          <Button type="button" variant="default" class="w-full" @click="applyFilter">Terapkan</Button>
+          <div class="bg-footer p-4">
+            <Button type="button" variant="default" class="w-full" @click="applyFilter">Terapkan</Button>
+          </div>
         </div>
       </AppContainer>
     </DrawerCustom>
 
     <!-- Result Cards -->
     <div class="p-4">
-      <LabelTitle label="Temukan Event yang kamu cari" />
+      <!-- Loading pertama -->
+      <CardLoading v-if="isFirstLoading" :rows="2" :length="4" />
 
-      <div class="py-4">
-        <CardLoading v-if="isFirstLoading" :rows="2" :length="4" />
+      <!-- Data ada -->
+      <div v-else-if="events.length > 0" class="grid grid-cols-2 gap-4">
+        <CardProduct
+          v-for="product in events"
+          :id="product.id + '-events'"
+          :key="product.id + '-events'"
+          :is-full="true"
+          :thumbnail="product.cover"
+          :title="product.title"
+          :slug="product.slug"
+          :type="toProductType(product.type)"
+        />
+      </div>
 
-        <div v-else class="grid grid-cols-2 gap-4">
-          <CardProduct
-            v-for="product in events"
-            :id="product.id + '-events'"
-            :key="product.id + '-events'"
-            :is-full="true"
-            :thumbnail="product.cover"
-            :title="product.title"
-            :slug="product.slug"
-            :type="toProductType(product.type)"
-          />
-        </div>
-
-        <div v-show="events.length === 0" class="mt-32">
-          <NuxtImg src="/images/empty.png" alt="Empty Article" class="aspect-auto w-full px-12" />
-        </div>
+      <!-- Data kosong -->
+      <div v-else class="mt-32">
+        <NuxtImg src="/images/empty.png" alt="Empty Article" class="aspect-auto w-full px-12" />
       </div>
     </div>
   </div>
@@ -138,6 +141,7 @@ import { onMounted, ref, computed, watch } from 'vue';
 
 // Types
 import { ProductTimeType, ProductType, toProductType, type Product, type ProductsResponse, type Location } from '~/types/api';
+import { urlApiProducts } from '~/constants';
 
 // Setup
 const title = 'Event';
@@ -205,7 +209,9 @@ const fetchEvents = async () => {
 
   try {
     const lokasiChoose = lokasiText.value ? lokasiText.value.id.toString() : lokasi.value;
-    const { data } = await apiSaforiginal.get<ProductsResponse>(`/v1/products?${buildParams({ type: jenis_kajian.value, category: kategori.value, date: waktu.value, location: lokasiChoose })}`);
+    const { data } = await apiSaforiginal.get<ProductsResponse>(
+      `${urlApiProducts}?page=${page.value}&per_page=12?${buildParams({ type: jenis_kajian.value, category: kategori.value, date: waktu.value, location: lokasiChoose })}`
+    );
 
     if (data.products?.length) {
       events.value.push(...data.products);

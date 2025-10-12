@@ -10,7 +10,7 @@
 
     <p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span class="cursor-pointer text-primary font-bold pl-0.5" @click="sendOtp">Kirim ulang</span></p>
 
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">
         <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Verify' }}</Button>
       </AppContainer>
@@ -22,6 +22,7 @@
 import { z } from 'zod';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+import { urlAuthVerifyEmailConfirm, urlAuthVerifyEmailSend } from '~/constants';
 
 const title = 'Verify Email';
 definePageMeta({
@@ -65,7 +66,7 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
 
   try {
-    const response = await apiSaforiginal.post('/auth/email/verify/confirm', {
+    const response = await apiSaforiginal.post(urlAuthVerifyEmailConfirm, {
       otp: values.otp,
     });
 
@@ -93,7 +94,7 @@ const sendOtp = async (values: any) => {
   loadingStore.start();
 
   try {
-    const response = await apiSaforiginal.post('/auth/email/verify/send', {
+    const response = await apiSaforiginal.post(urlAuthVerifyEmailSend, {
       otp: values.otp,
     });
     const { message } = response;

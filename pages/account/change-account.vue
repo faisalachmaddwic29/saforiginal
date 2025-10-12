@@ -90,7 +90,7 @@
           </div>
         </div>
       </div>
-      <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+      <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
         <AppContainer class="p-4">
           <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Simpan Perubahan' }}</Button>
         </AppContainer>
@@ -104,6 +104,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 import type { UserResponse } from '~/types/auth';
 import type { Location } from '~/types/api';
+import { urlAuthProfile } from '~/constants';
 
 const dialog = useDialog();
 const title = 'Ubah Data Akun';
@@ -230,7 +231,7 @@ const onSubmit = handleSubmit(
           loadingStore.start();
           isLoading.value = true;
           const response = await apiSaforiginal.post<UserResponse>(
-            '/auth/profile',
+            urlAuthProfile,
             {
               avatar_url: selectedFile.value,
               metadata: JSON.stringify({

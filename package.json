@@ -17,6 +17,7 @@
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "^0.11.2",
+    "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.11",
     "@vee-validate/zod": "^4.15.1",
     "@vite-pwa/nuxt": "^1.0.4",
@@ -24,6 +25,7 @@
     "axios": "1.6.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dompurify": "^3.2.7",
     "eslint": "^9.0.0",
     "lucide-vue-next": "^0.532.0",
     "nuxt": "^3.17.7",
@@ -38,7 +40,9 @@
     "vue-sonner": "^2.0.2"
   },
   "devDependencies": {
+    "@iconify-json/heroicons-outline": "^1.2.1",
     "@iconify-json/iconamoon": "^1.2.2",
+    "@iconify-json/mingcute": "^1.2.5",
     "typescript": "^5.8.3"
   }
 }

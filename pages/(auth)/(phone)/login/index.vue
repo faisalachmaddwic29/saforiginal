@@ -43,6 +43,7 @@ import { z } from 'zod';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import type { LoginPhoneRequest, LoginPhoneResponse } from '~/types/auth';
+import { urlAuthLoginPhone } from '~/constants';
 
 definePageMeta({
   layout: 'home',
@@ -84,7 +85,7 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
 
   try {
-    const response = await apiSaforiginal.post<LoginPhoneResponse, LoginPhoneRequest>('/auth/login/phone', {
+    const response = await apiSaforiginal.post<LoginPhoneResponse, LoginPhoneRequest>(urlAuthLoginPhone, {
       phone: values.phone,
     });
     const { data, message } = response;

@@ -16,7 +16,10 @@
       <div v-else-if="categories && categories.length > 0" class="mt-5 flex flex-col gap-3">
         <div v-for="category in categories" :key="category.value" class="relative">
           <input :id="category.value.toString()" v-model="selectedCategories" :value="category" type="checkbox" class="peer sr-only" />
-          <label :for="category.value.toString()" class="flex items-center justify-center w-full p-4 text-lg font-medium border-2 border-[#F1F1F1] rounded-lg cursor-pointer transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary hover:border-primary/40">
+          <label
+            :for="category.value.toString()"
+            class="flex items-center justify-center w-full p-4 text-lg font-medium border-2 border-[#F1F1F1] rounded-lg cursor-pointer transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary hover:border-primary/40"
+          >
             {{ category.label }}
           </label>
         </div>
@@ -42,6 +45,7 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 import type { Preferences, PreferencesResponse, TagsResponse } from '~/types/api';
+import { urlApiPreferences, urlApiTags } from '~/constants';
 
 const title = 'Preferensi Anda';
 
@@ -108,7 +112,7 @@ watch(
 
 const getPreferenceOptions = async () => {
   try {
-    const response = await apiSaforiginal.get<PreferencesResponse>('/v1/preferences');
+    const response = await apiSaforiginal.get<PreferencesResponse>(urlApiPreferences);
     const data = response?.data?.preferences ?? [];
     if (data) {
       preferences.value = data;
@@ -131,7 +135,7 @@ const getCategoryOptions = async () => {
   isLoadingCategory.value = true;
 
   try {
-    const response = await apiSaforiginal.get<TagsResponse>('/v1/tags');
+    const response = await apiSaforiginal.get<TagsResponse>(urlApiTags);
     const data = response?.data?.tags ?? [];
     if (data) {
       categories.value = data.map((tag: any) => ({

@@ -64,7 +64,7 @@
         </div>
       </div>
     </div>
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
       <AppContainer>
         <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Simpan Perubahan' }}</Button>
       </AppContainer>
@@ -75,6 +75,7 @@
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
+import { urlAuthChangePassword, urlAuthForgotPassword } from '~/constants';
 
 const title = 'Ubah Password';
 const dialog = useDialog();
@@ -99,9 +100,9 @@ const showNewPassword = ref(false);
 
 const registrationSchema = z
   .object({
-    old_password: z.string().min(1, 'Password harus diisi').min(6, 'Password minimal 6 karakter'),
+    old_password: z.string().min(1, 'Password harus diisi'),
 
-    new_password: z.string().min(1, 'Password harus diisi').min(6, 'Password minimal 6 karakter'),
+    new_password: z.string().min(1, 'Password harus diisi').min(8, 'Password minimal 8 karakter'),
     // .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password harus mengandung huruf besar, huruf kecil, dan angka'),
 
     new_password_confirmation: z.string().min(1, 'Konfirmasi password harus diisi'),
@@ -146,7 +147,7 @@ const onSubmit = handleSubmit(
         try {
           loadingStore.start();
           isLoading.value = true;
-          const response = await apiSaforiginal.post('/auth/change-password', {
+          const response = await apiSaforiginal.post(urlAuthChangePassword, {
             old_password: values.old_password,
             new_password: values.new_password,
             new_password_confirmation: values.new_password_confirmation,
@@ -191,7 +192,7 @@ const handleForgotPassword = async () => {
   loadingStore.start();
 
   try {
-    const response = await apiSaforiginal.post('/auth/forgot-password', {
+    const response = await apiSaforiginal.post(urlAuthForgotPassword, {
       identifier: user.value!.phone,
     });
 

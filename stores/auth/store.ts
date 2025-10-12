@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { useCookie, navigateTo } from "#app";
 import type { User } from "~/types/auth/user";
 import type { TypeAuthToken } from "~/types/auth";
+import { cookieName, cookieUser, urlAuthLogout, urlAuthProfile } from "~/constants";
 
 
 export const useAuthStore = defineStore("auth", {
@@ -35,7 +36,7 @@ export const useAuthStore = defineStore("auth", {
 			// Hitung waktu kedaluwarsa absolut
 			const expirationTimestamp = Date.now() + data?.expires_in * 1000;
 
-			const appAuth = useCookie("appAuth", {
+			const appAuth = useCookie(cookieName, {
 				maxAge: data.expires_in, // Tetap gunakan nilai detik untuk cookie
 				secure: false,
 				sameSite: "strict",
@@ -59,7 +60,7 @@ export const useAuthStore = defineStore("auth", {
 
 		// Ambil token dari cookie saat aplikasi dimuat
 		loadToken() {
-			const cookie = useCookie("appAuth");
+			const cookie = useCookie(cookieName);
 			if (cookie.value) {
 				const { access_token, expires_in, token_type } = cookie.value as unknown as { access_token: string; expires_in: number; token_type: string; };
 				this.accessToken = access_token;
@@ -79,7 +80,7 @@ export const useAuthStore = defineStore("auth", {
 				if (options.callApi && this.accessToken) {
 
 					// TODO: Panggil API logout
-					const response = await apiSaforiginal.post('/auth/logout', {});
+					const response = await apiSaforiginal.post(urlAuthLogout, {});
 					notify.success(response.message ?? '-');
 				}
 			} catch (error) {
@@ -105,7 +106,7 @@ export const useAuthStore = defineStore("auth", {
 			try {
 				loadingStore.start();
 
-				const response = await apiSaforiginal.get<UserResponse>('/auth/profile', {});
+				const response = await apiSaforiginal.get<UserResponse>(urlAuthProfile, {});
 
 				const { data } = response;
 				// this.user = data?.user ?? null;
@@ -122,7 +123,7 @@ export const useAuthStore = defineStore("auth", {
 		setUser(user: User) {
 			this.user = user;
 
-			const userCookie = useCookie("user", {
+			const userCookie = useCookie(cookieUser, {
 				maxAge: this.expiresIn,
 				secure: true,
 				sameSite: "strict",
@@ -132,7 +133,7 @@ export const useAuthStore = defineStore("auth", {
 		},
 
 		getUser() {
-			const userCookie = useCookie("user");
+			const userCookie = useCookie(cookieUser);
 			if (userCookie.value) {
 				this.user = userCookie.value as unknown as User; // Sudah object, jangan parse
 			} else {
@@ -144,8 +145,8 @@ export const useAuthStore = defineStore("auth", {
 		// Helper method untuk clear semua auth data
 		clearAuthData() {
 			// Hapus cookie
-			const cookie = useCookie("appAuth");
-			const userCookie = useCookie("user");
+			const cookie = useCookie(cookieName);
+			const userCookie = useCookie(cookieUser);
 			cookie.value = null;
 			userCookie.value = null;
 

@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
       <AppContainer>
         <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Kirim Permintaan' }}</Button>
       </AppContainer>
@@ -21,6 +21,7 @@
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
+import { urlAuthForgotPassword } from '~/constants';
 
 const title = 'Lupa Password';
 
@@ -72,7 +73,7 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
 
   try {
-    const response = await apiSaforiginal.post('/auth/forgot-password', {
+    const response = await apiSaforiginal.post(urlAuthForgotPassword, {
       identifier: values.identifier,
     });
 

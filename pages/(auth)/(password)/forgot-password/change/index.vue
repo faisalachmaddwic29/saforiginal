@@ -7,19 +7,41 @@
 
       <FormMessageError v-if="errors.otp" :message="errors.otp" class="justify-center" />
 
-      <p class="mt-2 text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span class="cursor-pointer text-primary font-bold pl-0.5" @click="sendOtp">Kirim ulang</span></p>
+      <p class="mt-2 text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">
+        Tidak menerima kode verifikasi? <span class="cursor-pointer text-primary font-bold pl-0.5" @click="sendOtp">Kirim ulang</span>
+      </p>
 
       <div class="flex flex-col gap-5 mt-8">
         <p class="text-xs md:text-base text-[#1E293B] dark:text-[#94A3B8]">Silakan masukan password baru</p>
 
-        <FormInput id="password" v-model="password" :type="showPassword ? 'text' : 'password'" name="password" placeholder="Masukkan password baru (min 8 karakter)" label-text="Password Baru" :is-icon="true" icon-position="right" :error="errors.password">
+        <FormInput
+          id="password"
+          v-model="password"
+          :type="showPassword ? 'text' : 'password'"
+          name="password"
+          placeholder="Masukkan password baru (min 8 karakter)"
+          label-text="Password Baru"
+          :is-icon="true"
+          icon-position="right"
+          :error="errors.password"
+        >
           <template #icon>
             <Icon v-if="showPassword" name="heroicons:eye" class="text-xl text-subtle cursor-pointer" @click="togglePassword" />
             <Icon v-else name="heroicons:eye-slash" class="text-xl text-subtle cursor-pointer" @click="togglePassword" />
           </template>
         </FormInput>
 
-        <FormInput id="password_confirmation" v-model="password_confirmation" :type="confirmshowPassword ? 'text' : 'password'" name="password_confirmation" placeholder="Masukan konfirmasi password baru" :is-icon="true" icon-position="right" label-text="Konfirmasi password baru" :error="errors.password_confirmation">
+        <FormInput
+          id="password_confirmation"
+          v-model="password_confirmation"
+          :type="confirmshowPassword ? 'text' : 'password'"
+          name="password_confirmation"
+          placeholder="Masukan konfirmasi password baru"
+          :is-icon="true"
+          icon-position="right"
+          label-text="Konfirmasi password baru"
+          :error="errors.password_confirmation"
+        >
           <template #icon>
             <Icon v-if="confirmshowPassword" name="heroicons:eye" class="text-xl text-subtle cursor-pointer" @click="toggleConfirmPassword" />
             <Icon v-else name="heroicons:eye-slash" class="text-xl text-subtle cursor-pointer" @click="toggleConfirmPassword" />
@@ -28,7 +50,7 @@
       </div>
     </div>
 
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">
         <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Simpan Perubahan' }}</Button>
       </AppContainer>
@@ -40,6 +62,7 @@
 import { z } from 'zod';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+import { urlAuthForgotPassword, urlAuthResetPassword } from '~/constants';
 
 const title = 'Ubah Password';
 
@@ -80,7 +103,7 @@ const schema = z
       (val) => String(val), // Konversi nilai ke string terlebih dahulu
       z.string().length(6, 'otp harus tepat 6 digit')
     ),
-    password: z.string().min(1, 'Password harus diisi').min(6, 'Password minimal 6 karakter'),
+    password: z.string().min(1, 'Password harus diisi').min(8, 'Password minimal 8 karakter'),
     // .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password harus mengandung huruf besar, huruf kecil, dan angka'),
 
     password_confirmation: z.string().min(1, 'Konfirmasi password harus diisi'),
@@ -124,7 +147,7 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
 
   try {
-    const response = await apiSaforiginal.post('/auth/reset-password', {
+    const response = await apiSaforiginal.post(urlAuthResetPassword, {
       identifier: forgotPasswordStore.identifier,
       otp: values.otp,
       password: values.password,
@@ -156,7 +179,7 @@ const sendOtp = async () => {
   loadingStore.start();
 
   try {
-    const response = await apiSaforiginal.post('/auth/forgot-password', {
+    const response = await apiSaforiginal.post(urlAuthForgotPassword, {
       identifier: forgotPasswordStore.setIdentifier,
     });
     const { message } = response;

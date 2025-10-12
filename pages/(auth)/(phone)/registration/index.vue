@@ -87,7 +87,7 @@
       </div>
     </div>
 
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">
         <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Daftar' }}</Button>
       </AppContainer>
@@ -101,6 +101,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 import type { LoginPhoneRequest, LoginPhoneResponse, RegisterPhoneOtpRequest, RegisterPhoneOtpResponse } from '~/types/auth';
 import type { Location, PreferenceItem, PreferencesResponse } from '~/types/api';
+import { urlAuthLoginPhone } from '~/constants';
 
 const title = 'Registrasi';
 
@@ -303,7 +304,7 @@ const sendOtp = async () => {
   loadingStore.start();
 
   try {
-    const response = await apiSaforiginal.post<LoginPhoneResponse, LoginPhoneRequest>('/auth/login/phone', {
+    const response = await apiSaforiginal.post<LoginPhoneResponse, LoginPhoneRequest>(urlAuthLoginPhone, {
       phone: registrationStore.phone,
     });
     const { message } = response;

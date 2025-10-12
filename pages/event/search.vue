@@ -79,6 +79,7 @@
 
 <script lang="ts" setup>
 import { watchDebounced } from '@vueuse/core';
+import { urlApiProducts } from '~/constants';
 import { toProductType, type Product, type ProductsResponse } from '~/types/api';
 
 const title = 'Pencarian';
@@ -185,7 +186,7 @@ const fetchEventsBest = async () => {
   isLoadingEventsBest.value = true;
 
   try {
-    const { data } = await apiSaforiginal.get<ProductsResponse>(`/v1/products?page=1&per_page=3`);
+    const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + `?page=1&per_page=3`);
 
     itemsEventsBest.value = data.products;
   } catch (error) {

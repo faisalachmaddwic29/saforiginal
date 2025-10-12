@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import type { Categories, CategoriesResponse, Locations, ProductTimeType, Products, ProductsResponse, ProductType, LocationsResponse } from '~/types/api';
+import { urlApiBanks, urlApiCategories, urlApiLocations, urlApiPayments, urlApiProducts } from '~/constants';
+import type { Categories, CategoriesResponse, Locations, ProductTimeType, Products, ProductsResponse, ProductType, LocationsResponse, Banks, BanksResponse, Payments, PaymentsResponse } from '~/types/api';
 
 export const useAppStore = defineStore("app", {
   state: () => ({
@@ -13,6 +14,10 @@ export const useAppStore = defineStore("app", {
     productsByDate: [] as Products,
     productsByLocation: [] as Products,
     productsByType: [] as Products,
+    banks: [] as Banks,
+    payments: [] as Payments,
+    isBanksLoaded: false,
+    isPaymentsLoaded: false,
     isLocationsLoaded: false,
     isCategoriesLoaded: false,
     isProductsEventNewestLoaded: false,
@@ -28,49 +33,49 @@ export const useAppStore = defineStore("app", {
     async fetchLocations() {
       if (this.isLocationsLoaded) return;
 
-      const { data } = await apiSaforiginal.get<LocationsResponse>('/v1/locations');
+      const { data } = await apiSaforiginal.get<LocationsResponse>(urlApiLocations);
       this.locations = data?.locations ?? [];
       this.isLocationsLoaded = true;
     },
     async fetchCategories() {
       if (this.isCategoriesLoaded) return;
 
-      const { data } = await apiSaforiginal.get<CategoriesResponse>('/v1/categories');
+      const { data } = await apiSaforiginal.get<CategoriesResponse>(urlApiCategories);
       this.categories = data?.categories ?? [];
       this.isCategoriesLoaded = true;
     },
     async fetchProductsEventNewest(type: ProductType[]) {
       if (this.isProductsEventNewestLoaded) return;
 
-      const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products?type=' + type + '&sort=-created_at');
+      const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + '?type=' + type + '&sort=-created_at');
       this.productsEventNewest = data?.products ?? [];
       this.isProductsEventNewestLoaded = true;
     },
     async fetchProductsSeries(type: ProductType) {
       if (this.isProductsSeriesLoaded) return;
 
-      const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products?type=' + type + '&sort=-created_at');
+      const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + '?type=' + type + '&sort=-created_at');
       this.productsSeries = data?.products ?? [];
       this.isProductsSeriesLoaded = true;
     },
     async fetchProductsEventSeries() {
       if (this.isProductsEventSeriesLoaded) return;
 
-      const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products');
+      const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts);
       this.productsEventSeries = data?.products ?? [];
       this.isProductsEventSeriesLoaded = true;
     },
     async fetchProductsByCategory(category: string) {
       if (this.isProductsByCategoryLoaded) return;
 
-      const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products?category=' + category + '&sort=-created_at');
+      const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + '?category=' + category + '&sort=-created_at');
       this.productsByCategory = data?.products ?? [];
       this.isProductsByCategoryLoaded = true;
     },
     async fetchProductsByTag(tag: string) {
       if (this.isProductsByTagLoaded) return;
 
-      const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products?tag=' + tag + '&sort=-created_at');
+      const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + '?tag=' + tag + '&sort=-created_at');
       this.productsByTag = data?.products ?? [];
       this.isProductsByTagLoaded = true;
     },
@@ -79,14 +84,14 @@ export const useAppStore = defineStore("app", {
     async fetchProductsByDate(date: ProductTimeType) {
       if (this.isProductsByDateLoaded) return;
 
-      const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products?date=' + date + '&sort=-created_at');
+      const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + '?date=' + date + '&sort=-created_at');
       this.productsByDate = data?.products ?? [];
       this.isProductsByDateLoaded = true;
     },
     async fetchProductsByLocation(location: string) {
       if (this.isProductsByLocationLoaded) return;
 
-      const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products?location=' + location + '&sort=-created_at');
+      const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + '?location=' + location + '&sort=-created_at');
       this.productsByLocation = data?.products ?? [];
       this.isProductsByLocationLoaded = true;
     },
@@ -95,13 +100,30 @@ export const useAppStore = defineStore("app", {
     async fetchProductsByType(type: ProductType) {
       if (this.isProductsByTypeLoaded) return;
 
-      const { data } = await apiSaforiginal.get<ProductsResponse>('/v1/products?type=' + type + '&sort=-created_at');
+      const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + '?type=' + type + '&sort=-created_at');
       this.productsByType = data?.products ?? [];
       this.isProductsByTypeLoaded = true;
+    },
+
+    async fetchBanks() {
+      if (this.isBanksLoaded) return;
+
+      const { data } = await apiSaforiginal.get<BanksResponse>(urlApiBanks);
+      this.banks = data?.banks ?? [];
+      this.isBanksLoaded = true;
+    },
+    async fetchPayments() {
+      if (this.isPaymentsLoaded) return;
+
+      const { data } = await apiSaforiginal.get<PaymentsResponse>(urlApiPayments);
+      this.payments = data?.payments ?? [];
+      this.isPaymentsLoaded = true;
     },
     // Optional reset, useful for full refresh / logout
     reset() {
       this.categories = [] as Categories;
+      this.payments = [] as Payments;
+      this.banks = [] as Banks;
       this.productsEventNewest = [] as Products;
       this.productsByCategory = [] as Products;
       this.productsByTag = [] as Products;
@@ -115,6 +137,8 @@ export const useAppStore = defineStore("app", {
       this.isProductsByDateLoaded = false;
       this.isProductsByLocationLoaded = false;
       this.isProductsByTypeLoaded = false;
+      this.isPaymentsLoaded = false;
+      this.isBanksLoaded = false;
     }
   },
 });

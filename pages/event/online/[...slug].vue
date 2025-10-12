@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-v-html -->
 <template>
   <div class="md:py-5 flex flex-col gap-4">
     <div class="px-4">
@@ -14,9 +13,9 @@
     </div>
 
     <!-- Description -->
-    <div class="text-menu text-sm md:text-base font-normal text-justify px-4" v-html="product.description" />
+    <ContentHtml class="text-menu text-sm md:text-base font-normal text-justify px-4" :content="product.description" />
 
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">
         <Button class="w-full" type="button" :disabled="isLoading" @click="handleBuy">{{ isLoading ? 'Loading...' : product.btn_label }}</Button>
       </AppContainer>
@@ -25,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+import { urlApiProducts } from '~/constants';
 import type { Product, ProductResponse } from '~/types/api';
 
 definePageMeta({
@@ -36,7 +36,7 @@ definePageMeta({
 
 const route = useRoute();
 
-const { data } = await apiSaforiginal.get<ProductResponse>('/v1/products/' + route.params.slug);
+const { data } = await apiSaforiginal.get<ProductResponse>(urlApiProducts + '/' + route.params.slug);
 const product: Product = data.product ?? {};
 // Pasang SEO langsung (server-rendered)
 

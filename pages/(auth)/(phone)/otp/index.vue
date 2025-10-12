@@ -11,7 +11,7 @@
 
     <p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">Tidak menerima kode verifikasi? <span class="cursor-pointer text-primary font-bold pl-0.5" @click="sendOtp">Kirim ulang</span></p>
 
-    <div class="fixed w-full z-10 bottom-0 left-0 bg-white dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+    <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">
         <Button class="w-full" type="submit" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'Masuk' }}</Button>
       </AppContainer>
@@ -25,10 +25,13 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import type { LoginPhoneOtpRequest, LoginPhoneOtpResponse, LoginPhoneRequest, LoginPhoneResponse } from '~/types/auth';
 import type { PreferenceItem, PreferencesResponse } from '~/types/api/preferences';
+import { urlAuthLoginOtp } from '~/constants';
 
 definePageMeta({
   layout: 'detail',
   middleware: 'guest',
+  isPaddingTop: true,
+  isPaddingBottom: true,
 });
 
 useSeoMeta({
@@ -96,7 +99,7 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
 
   try {
-    const response = await apiSaforiginal.post<LoginPhoneOtpResponse, LoginPhoneOtpRequest>('/auth/login/otp', {
+    const response = await apiSaforiginal.post<LoginPhoneOtpResponse, LoginPhoneOtpRequest>(urlAuthLoginOtp, {
       phone: loginStore.phone,
       otp: values.otp,
     });

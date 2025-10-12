@@ -10,7 +10,7 @@
           <LabelInfo type="warning">Gunakan nomor yang terdaftar pada akun whatsapp anda untuk melakukan verifikasi nomor</LabelInfo>
         </div>
       </div>
-      <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+      <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
         <AppContainer class="p-4">
           <Button class="w-full" type="submit" :disabled="isLoading">
             {{ isLoading ? 'Loading...' : 'Selanjutnya' }}
@@ -36,7 +36,7 @@
           </p>
         </div>
       </div>
-      <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
+      <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)] p-4">
         <AppContainer>
           <Button class="w-full" type="submit" :disabled="isLoading">
             {{ isLoading ? 'Loading...' : 'Verifikasi' }}
@@ -51,7 +51,7 @@
           <div class="text-title text-lg text-center">Berhasil Melakukan Verifikasi Nomor WhatsApp</div>
         </div>
       </div>
-      <div class="fixed w-full z-10 bottom-0 left-0 bg-[#F9F9F9] dark:bg-[#0F172A] shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
+      <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
         <AppContainer class="p-4">
           <Button class="w-full" @click="router.back()"> Oke </Button>
         </AppContainer>
@@ -64,6 +64,7 @@
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
+import { urlAuthPhoneChangeConfirm, urlAuthPhoneChangeRequest } from '~/constants';
 
 const title = ref('Ubah No. Handphone');
 const router = useRouter();
@@ -109,7 +110,7 @@ const onSubmitPhone = phoneForm.handleSubmit(async (values) => {
     loadingStore.start();
     isLoading.value = true;
 
-    const response = await apiSaforiginal.post('/auth/phone/change/request', {
+    const response = await apiSaforiginal.post(urlAuthPhoneChangeRequest, {
       new_phone: values.new_phone,
     });
 
@@ -152,7 +153,7 @@ const onSubmitOtp = otpForm.handleSubmit(async (values) => {
     loadingStore.start();
     isLoading.value = true;
 
-    const response = await apiSaforiginal.post('/auth/phone/change/confirm', {
+    const response = await apiSaforiginal.post(urlAuthPhoneChangeConfirm, {
       otp: values.otp,
       new_phone: new_phone.value,
     });

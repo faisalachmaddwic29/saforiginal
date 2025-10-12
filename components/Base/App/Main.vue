@@ -3,7 +3,7 @@
     class="relative z-0 w-full h-fit flex-1"
     :class="{
       'pb-[60px] pt-[70px]': props.clean,
-      'pb-[60px]': props.bottom,
+      'pb-[76px]': props.bottom,
       'pt-[70px]': props.top,
     }"
   >
