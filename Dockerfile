@@ -7,21 +7,15 @@ WORKDIR /usr/src/app
 # Copy package.json dan package-lock.json
 COPY package*.json ./
 
-# RUN unlink package-lock.json
-# # Install dependencies
-# RUN rm -rf node_modules && npm install
-
+RUN unlink package-lock.json
 # Install dependencies
-RUN npm install
+RUN rm -rf node_modules && npm install --omit=dev
 
 # Copy semua file
 COPY . .
 
 # Build aplikasi dengan verbose output
 RUN npm run build --verbose
-
-# Remove devDependencies after build to reduce image size
-RUN npm prune --production
 
 # Install PM2 globally
 RUN npm install pm2 -g
