@@ -1,27 +1,25 @@
-# Menggunakan node versi stabil
+# Gunakan versi stabil
 FROM node:22-alpine
 
 # Set working directory
 WORKDIR /usr/src/app
 
-# Copy package.json dan package-lock.json
+# Copy dependency files
 COPY package*.json ./
 
-RUN unlink package-lock.json
-# Install dependencies
-RUN rm -rf node_modules && npm install --omit=dev
+# Pastikan bersih & install dependencies
+RUN rm -f package-lock.json && \
+    rm -rf node_modules && \
+    npm install --omit=dev --legacy-peer-deps
 
-# Copy semua file
+# Copy semua file setelah install dependencies
 COPY . .
 
-# Build aplikasi dengan verbose output
+# Build aplikasi
 RUN npm run build --verbose
 
-# Install PM2 globally
-RUN npm install pm2 -g
+# Install PM2 runtime secara global
+RUN npm install -g pm2
 
-# Jalankan dengan PM2
-# CMD ["pm2-runtime","start", "ecosystem.config.js"]
-# CMD ["node", "./.output/server/index.mjs"]
-
-CMD ["npx", "pm2-runtime", "./.output/server/index.mjs"]
+# Jalankan aplikasi menggunakan PM2
+CMD ["pm2-runtime", "./.output/server/index.mjs"]
