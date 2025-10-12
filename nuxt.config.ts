@@ -1,7 +1,7 @@
 import tailwindcss from '@tailwindcss/vite'
 
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -199,108 +199,108 @@ export default defineNuxtConfig({
       type: 'module',
     }
   },
-  hooks: {
-    'build:before': () => {
-      const manifest = {
-        id: "SAFORIGINAL",
-        name: "SAFORIGINAL",
-        short_name: "SAF+",
-        scope: "/",
-        description: "SAF ORIGINAL adalah aplikasi untuk mempermudah akses konten.",
-        categories: ["entertainment", "utilities"],
-        start_url: "/",
-        display: "standalone",
-        orientation: "portrait",
-        background_color: "#ffffff",
-        theme_color: "#A07C4b",
-        lang: "id",
-        // Tambahkan edge_side_panel untuk pengalaman yang lebih baik
-        edge_side_panel: {
-          preferred_width: 412
-        },
-        protocol_handlers: [
-          {
-            protocol: 'web+saforiginal',
-            url: '/handle-protocol?q=%s'
-          }
-        ],
-        screenshots: [
-          {
-            src: "/favicon/screenshots/home.png",
-            sizes: "512x512",
-            type: "image/png",
-            form_factor: "wide",
-            label: "Homepage SAF Original - Wide"
-          },
-          {
-            src: "/favicon/screenshots/home.png",
-            sizes: "512x512",
-            type: "image/png",
-            form_factor: "narrow",
-            label: "Homepage SAF Original - Mobile"
-          }
-        ],
-        icons: [
-          // Standard icons
-          {
-            src: "/favicon/android/android-launchericon-48-48.png",
-            sizes: "48x48",
-            type: "image/png"
-          },
-          {
-            src: "/favicon/android/android-launchericon-72-72.png",
-            sizes: "72x72",
-            type: "image/png",
-          },
-          {
-            src: "/favicon/android/android-launchericon-96-96.png",
-            sizes: "96x96",
-            type: "image/png",
-          },
-          {
-            src: "/favicon/ios/144.png",
-            sizes: "144x144",
-            type: "image/png",
-          },
-          {
-            src: "/favicon/android/android-launchericon-192-192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          // Tambahkan icon yang lebih besar dan maskable
-          {
-            src: "/favicon/ios/256.png",
-            sizes: "256x256",
-            type: "image/png",
-          },
-          {
-            src: "/favicon/android/android-launchericon-512-512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any"
-          },
-          {
-            src: "/favicon/android/android-launchericon-512-512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable"
-          }
-        ],
-      };
+  // hooks: {
+  //   'build:before': () => {
+  //     const manifest = {
+  //       id: "SAFORIGINAL",
+  //       name: "SAFORIGINAL",
+  //       short_name: "SAF+",
+  //       scope: "/",
+  //       description: "SAF ORIGINAL adalah aplikasi untuk mempermudah akses konten.",
+  //       categories: ["entertainment", "utilities"],
+  //       start_url: "/",
+  //       display: "standalone",
+  //       orientation: "portrait",
+  //       background_color: "#ffffff",
+  //       theme_color: "#A07C4b",
+  //       lang: "id",
+  //       // Tambahkan edge_side_panel untuk pengalaman yang lebih baik
+  //       edge_side_panel: {
+  //         preferred_width: 412
+  //       },
+  //       protocol_handlers: [
+  //         {
+  //           protocol: 'web+saforiginal',
+  //           url: '/handle-protocol?q=%s'
+  //         }
+  //       ],
+  //       screenshots: [
+  //         {
+  //           src: "/favicon/screenshots/home.png",
+  //           sizes: "512x512",
+  //           type: "image/png",
+  //           form_factor: "wide",
+  //           label: "Homepage SAF Original - Wide"
+  //         },
+  //         {
+  //           src: "/favicon/screenshots/home.png",
+  //           sizes: "512x512",
+  //           type: "image/png",
+  //           form_factor: "narrow",
+  //           label: "Homepage SAF Original - Mobile"
+  //         }
+  //       ],
+  //       icons: [
+  //         // Standard icons
+  //         {
+  //           src: "/favicon/android/android-launchericon-48-48.png",
+  //           sizes: "48x48",
+  //           type: "image/png"
+  //         },
+  //         {
+  //           src: "/favicon/android/android-launchericon-72-72.png",
+  //           sizes: "72x72",
+  //           type: "image/png",
+  //         },
+  //         {
+  //           src: "/favicon/android/android-launchericon-96-96.png",
+  //           sizes: "96x96",
+  //           type: "image/png",
+  //         },
+  //         {
+  //           src: "/favicon/ios/144.png",
+  //           sizes: "144x144",
+  //           type: "image/png",
+  //         },
+  //         {
+  //           src: "/favicon/android/android-launchericon-192-192.png",
+  //           sizes: "192x192",
+  //           type: "image/png",
+  //         },
+  //         // Tambahkan icon yang lebih besar dan maskable
+  //         {
+  //           src: "/favicon/ios/256.png",
+  //           sizes: "256x256",
+  //           type: "image/png",
+  //         },
+  //         {
+  //           src: "/favicon/android/android-launchericon-512-512.png",
+  //           sizes: "512x512",
+  //           type: "image/png",
+  //           purpose: "any"
+  //         },
+  //         {
+  //           src: "/favicon/android/android-launchericon-512-512.png",
+  //           sizes: "512x512",
+  //           type: "image/png",
+  //           purpose: "maskable"
+  //         }
+  //       ],
+  //     };
 
-      // Path ke file manifest.json di direktori public
-      const manifestPath = path.resolve(process.cwd(), './public/manifest.json');
+  //     // Path ke file manifest.json di direktori public
+  //     const manifestPath = path.resolve(process.cwd(), './public/manifest.json');
 
-      // Buat direktori public jika belum ada
-      if (!fs.existsSync(path.dirname(manifestPath))) {
-        fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
-      }
+  //     // Buat direktori public jika belum ada
+  //     if (!fs.existsSync(path.dirname(manifestPath))) {
+  //       fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
+  //     }
 
-      // Tulis manifest.json ke folder public
-      fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
-      console.log('✅ Manifest generated at ./public/manifest.json');
-    },
-  },
+  //     // Tulis manifest.json ke folder public
+  //     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
+  //     console.log('✅ Manifest generated at ./public/manifest.json');
+  //   },
+  // },
   app: {
     head: {
       htmlAttrs: { lang: 'id' },
