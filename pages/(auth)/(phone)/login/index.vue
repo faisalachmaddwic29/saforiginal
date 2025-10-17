@@ -48,6 +48,7 @@ import { urlAuthLoginPhone } from '~/constants';
 definePageMeta({
   layout: 'home',
   middleware: 'guest',
+  isPaddingBottom: true,
 });
 
 useSeoMeta({

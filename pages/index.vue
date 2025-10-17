@@ -10,7 +10,10 @@
     </AppToolbar>
 
     <div class="flex flex-col gap-5 py-5">
-      <ContentCarouselBanner />
+      <ContentCarouselBanner v-if="appStore.isBannerSliderLoaded" :items="appStore.banners" />
+      <div v-else class="w-full py-2 px-4">
+        <Skeleton class="w-full h-36 md:h-48 rounded-xl" />
+      </div>
 
       <!-- Category -->
       <div class="py-5">
@@ -102,6 +105,7 @@ useSeoMeta({
 const appStore = useAppStore();
 
 onMounted(async () => {
+  await appStore.fetchBanners();
   await appStore.fetchCategories();
   await appStore.fetchProductsEventSeries();
   await appStore.fetchProductsEventNewest([ProductType.ONLINE_EVENT, ProductType.OFFLINE_EVENT]);

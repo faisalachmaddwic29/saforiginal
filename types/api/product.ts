@@ -95,3 +95,16 @@ export type ProductsResponse = PaginateData<Product, 'products'> & {
   message: string;
   status: number;
 };
+
+
+
+export enum ProductStatus {
+  SUKSES = 'paid',
+  GAGAL = 'failed',
+  MENUNGGU = 'pending',
+}
+
+export function toProductStatus(value: string): ProductStatus | null {
+  const values = Object.values(ProductStatus);
+  return values.includes(value as ProductStatus) ? (value as ProductStatus) : null;
+}

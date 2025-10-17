@@ -170,7 +170,7 @@ export const useAuthStore = defineStore("auth", {
 				return true;
 			} catch (error) {
 				console.error('Token refresh failed:', error);
-				await this.logout({ redirectTo: '/auth' });
+				await this.logout({ redirectTo: '/login' });
 				return false;
 			}
 		},
@@ -178,7 +178,7 @@ export const useAuthStore = defineStore("auth", {
 		// Method untuk auto-logout saat token expired
 		checkTokenExpiration() {
 			if (this.isTokenExpired) {
-				this.logout({ redirectTo: '/auth' });
+				this.logout({ redirectTo: '/login' });
 			}
 		}
 	},

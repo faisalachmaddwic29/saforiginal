@@ -14,43 +14,43 @@
     <!-- Drawer Filter -->
     <DrawerCustom v-model:open="showDrawer" title="All Share Menu" description="Kelola Share Menu" :show-indicator="true" classes="h-full pb-0 !mb-0">
       <AppContainer>
-        <div class="flex flex-col gap-3 justify-between h-full overflow-auto">
+        <div class="flex flex-col gap-3 justify-between h-full overflow-auto px-4">
           <!-- Filters -->
           <div class="flex flex-col gap-3 shrink text-title dark:text-menu">
             <!-- Header -->
-            <div class="flex justify-between items-center border-b pb-2 px-4">
+            <div class="flex justify-between items-center border-b pb-2">
               <h3 class="text-2xl font-bold">Filter</h3>
               <Button type="button" variant="link" class="text-destructive px-0" @click="resetFilter">Reset</Button>
             </div>
 
             <!-- Kategori -->
             <div>
-              <h3 class="pb-2 font-bold px-4">Kategori</h3>
-              <div class="w-full px-4 flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <h3 class="pb-2 font-bold">Kategori</h3>
+              <div class="w-full flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <FormRadio v-model="kategori" :options="kategori_data" />
               </div>
             </div>
 
             <!-- Jenis Kajian -->
             <div>
-              <h3 class="pb-2 font-bold px-4">Jenis Kajian</h3>
-              <div class="w-full px-4 flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <h3 class="pb-2 font-bold">Jenis Kajian</h3>
+              <div class="w-full flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <FormRadio v-model="jenis_kajian" :options="jenis_kajian_data" />
               </div>
             </div>
 
             <!-- Waktu -->
             <div>
-              <h3 class="pb-2 font-bold px-4">Waktu</h3>
-              <div class="w-full px-4 flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <h3 class="pb-2 font-bold">Waktu</h3>
+              <div class="w-full flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <FormRadio v-model="waktu" :options="waktu_data" />
               </div>
             </div>
 
             <!-- Lokasi -->
             <div>
-              <h3 class="pb-2 font-bold px-4">Lokasi</h3>
-              <div ref="dropdownRef" class="mb-3 relative px-4">
+              <h3 class="pb-2 font-bold">Lokasi</h3>
+              <div ref="dropdownRef" class="mb-3 relative">
                 <!-- Trigger -->
                 <button
                   type="button"
@@ -92,14 +92,14 @@
                 </div>
               </div>
 
-              <div class="w-full px-4 flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <div class="w-full flex flex-wrap gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 <FormRadio v-model="lokasi" :options="lokasi_data" />
               </div>
             </div>
           </div>
 
           <!-- Submit -->
-          <div class="bg-footer p-4">
+          <div class="bg-footer p-4 -mx-4">
             <Button type="button" variant="default" class="w-full" @click="applyFilter">Terapkan</Button>
           </div>
         </div>
@@ -108,27 +108,42 @@
 
     <!-- Result Cards -->
     <div class="p-4">
-      <!-- Loading pertama -->
+      <!-- Loading saat pertama -->
+      <div v-if="events.length" class="w-full mx-auto">
+        <div class="grid grid-cols-2 gap-4">
+          <CardProduct
+            v-for="product in events"
+            :id="product.id + '-events'"
+            :key="product.id + '-events'"
+            :is-full="true"
+            :thumbnail="product.cover"
+            :title="product.title"
+            :slug="product.slug"
+            :type="toProductType(product.type)"
+          />
+        </div>
+
+        <!-- Trigger untuk observer - HANYA tampil jika belum last page dan tidak loading -->
+        <div v-if="!isLastPage && !isLoading" ref="loadMoreTrigger" class="h-4" />
+
+        <!-- Loading indicator -->
+        <div v-if="isLoading" class="text-center py-4">
+          <div class="inline-flex items-center gap-2">
+            <div class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <span class="text-sm text-gray-600">Loading more...</span>
+          </div>
+        </div>
+
+        <!-- Sudah habis -->
+        <div v-if="isLastPage && !isLoading" class="text-center text-sm py-3"></div>
+      </div>
+
+      <!-- Empty state -->
+      <div v-else-if="!isFirstLoading && events.length === 0" class="text-center py-8">
+        <NuxtImg src="/images/empty.png" alt="Empty event" class="aspect-auto w-full px-12" />
+      </div>
+
       <CardLoading v-if="isFirstLoading" :rows="2" :length="4" />
-
-      <!-- Data ada -->
-      <div v-else-if="events.length > 0" class="grid grid-cols-2 gap-4">
-        <CardProduct
-          v-for="product in events"
-          :id="product.id + '-events'"
-          :key="product.id + '-events'"
-          :is-full="true"
-          :thumbnail="product.cover"
-          :title="product.title"
-          :slug="product.slug"
-          :type="toProductType(product.type)"
-        />
-      </div>
-
-      <!-- Data kosong -->
-      <div v-else class="mt-32">
-        <NuxtImg src="/images/empty.png" alt="Empty Article" class="aspect-auto w-full px-12" />
-      </div>
     </div>
   </div>
 </template>
@@ -209,15 +224,23 @@ const fetchEvents = async () => {
 
   try {
     const lokasiChoose = lokasiText.value ? lokasiText.value.id.toString() : lokasi.value;
-    const { data } = await apiSaforiginal.get<ProductsResponse>(
-      `${urlApiProducts}?page=${page.value}&per_page=12?${buildParams({ type: jenis_kajian.value, category: kategori.value, date: waktu.value, location: lokasiChoose })}`
-    );
+    const { data } = await apiSaforiginal.get<ProductsResponse>(`${urlApiProducts}?${buildParams({ type: jenis_kajian.value, category: kategori.value, date: waktu.value, location: lokasiChoose })}`);
 
-    if (data.products?.length) {
+    if (data.products && data.products.length > 0) {
       events.value.push(...data.products);
+
+      // Update page untuk next request
       page.value++;
+
+      // Check apakah sudah last page
+      if (data.meta && data.meta.current_page >= data.meta.last_page) {
+        isLastPage.value = true;
+        // console.log('Reached last page');
+      }
     } else {
+      // Jika tidak ada data, tandai sebagai last page
       isLastPage.value = true;
+      // console.log('No more data available');
     }
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -256,7 +279,7 @@ const buildParams = ({
   }
 
   params.append('page', String(page.value));
-  params.append('per_page', '10');
+  params.append('per_page', '2');
   params.append('sort', '-created_at');
 
   return params.toString();
@@ -304,14 +327,25 @@ watch(
   { immediate: true }
 );
 
-useIntersectionObserver(
+// ✅ Observer infinite scroll dengan proteksi lebih ketat
+const { stop: stopObserver } = useIntersectionObserver(
   loadMoreTrigger,
-  ([{ isIntersecting }]) => {
-    if (isIntersecting) fetchEvents();
+  ([entry]) => {
+    if (entry?.isIntersecting && !isLoading.value && !isLastPage.value && !isFirstLoading.value) {
+      // console.log('Intersection triggered, fetching more...');
+      fetchEvents();
+    }
   },
-  { rootMargin: '0px', threshold: 1.0 }
+  {
+    rootMargin: '100px', // Kasih jarak lebih besar
+    threshold: 0.1,
+  }
 );
 
+// ✅ Cleanup observer saat component unmount
+onUnmounted(() => {
+  stopObserver();
+});
 onMounted(async () => {
   await appStore.fetchLocations();
   await appStore.fetchCategories();

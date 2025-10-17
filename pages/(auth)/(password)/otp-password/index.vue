@@ -25,7 +25,7 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import type { LoginPhoneOtpRequest, LoginPhoneOtpResponse, LoginPhoneRequest } from '~/types/auth';
 import type { Preferences, PreferencesResponse } from '~/types/api';
-import { urlAuthRegisterOtp } from '~/constants';
+import { urlApiPreferences, urlAuthRegister, urlAuthRegisterOtp } from '~/constants';
 
 const title = 'OTP Password';
 definePageMeta({
@@ -125,7 +125,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 const getPreferenceOptions = async () => {
   try {
-    const response = await apiSaforiginal.get<PreferencesResponse>('/v1/preferences');
+    const response = await apiSaforiginal.get<PreferencesResponse>(urlApiPreferences);
     const data = response?.data?.preferences ?? [];
     if (data) {
       preferences.value = data;
@@ -141,7 +141,7 @@ const sendOtp = async () => {
   loadingStore.start();
 
   try {
-    const response = await apiSaforiginal.post<LoginPhoneOtpResponse, LoginPhoneRequest>('/auth/register', {
+    const response = await apiSaforiginal.post<LoginPhoneOtpResponse, LoginPhoneRequest>(urlAuthRegister, {
       phone: registrationStore.phone,
     });
     const { message } = response;

@@ -1,6 +1,31 @@
 <template>
-  <div class="w-full mx-auto">
+  <div v-if="items.length" class="w-full mx-auto">
     <div ref="carouselContainer" class="relative w-full overflow-hidden rounded-md">
+      <!-- Tombol Geser Kiri -->
+      <!-- <button
+				class="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 bg-white bg-opacity-60 hover:bg-opacity-90 rounded-full p-2 shadow-md"
+				@click="prevSlide"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+				</svg>
+			</button> -->
+
+      <!-- Tombol Geser Kanan -->
+      <!-- <button
+				class="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 bg-white bg-opacity-60 hover:bg-opacity-90 rounded-full p-2 shadow-md"
+				@click="nextSlide"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+			</button> -->
+
+      <!-- transform: `translateX(calc(-${currentIndex * (slideWidth + gap)}px + ${
+            peekLeft
+          }px))`,
+          transitionProperty: transitioning ? 'transform' : 'none', -->
+
       <div
         class="flex transition-transform duration-500 ease-in-out cursor-grabbing"
         :style="{
@@ -16,28 +41,32 @@
         @touchmove="handleTouchMove"
         @touchend="handleTouchEnd"
       >
-        <div v-for="(image, index) in slides" :key="index" class="flex-shrink-0" :style="{ width: slideWidth + 'px', marginRight: gap + 'px' }" :class="{ 'pl-4': !hasStarted && image === slides[1] }">
-          <NuxtImg :src="image" class="w-full h-36 md:h-48 object-cover rounded-xl shadow-[0px_0px_4px_2px_rgba(0,0,0,0.09)] my-2" alt="carousel image" loading="lazy" draggable="false" />
+        <div
+          v-for="(item, index) in slides"
+          :key="index"
+          class="flex-shrink-0"
+          :style="{ width: slideWidth + 'px', marginRight: gap + 'px' }"
+          :class="{ 'pl-4': !hasStarted && item?.file_path === slides[1].file_path }"
+        >
+          <div class="w-full h-36 md:h-48 bg-primary/40 my-2 shadow-[0px_0px_4px_2px_rgba(0,0,0,0.09)] rounded-xl overflow-hidden flex items-center">
+            <NuxtImg :src="item?.file_path" class="size-full object-cover m-auto" alt="carousel image" loading="lazy" draggable="false" @click="item?.file_path ? linkNewTab(item.file_path) : null" />
+          </div>
         </div>
       </div>
     </div>
-    <div class="flex pl-4 gap-2 mt-2.5 justify-start">
-      <span v-for="(image, index) in images" :key="index" class="w-2 h-2 rounded-full cursor-pointer" :class="currentSlide === index ? 'bg-primary' : 'bg-[#92949C]'" @click="goToSlide(index)" />
+    <div class="flex pl-5 gap-2 mt-2.5 justify-start">
+      <span v-for="(image, index) in items" :key="index" class="w-2 h-2 rounded-full cursor-pointer" :class="currentSlide === index ? 'bg-primary' : 'bg-[#c6c9d5]'" @click="goToSlide(index)" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import type { Banner } from '~/types/api';
 
-// Data gambar
-const images = [
-  'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?auto=format&fit=crop&w=800&q=80',
-  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-  'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=800&q=80',
-  'https://images.unsplash.com/photo-1495567720989-cebdbdd97913?auto=format&fit=crop&w=800&q=80',
-  'https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=800&q=80',
-];
+const props = defineProps<{
+  items: Array<Banner>;
+}>();
 
 // Gap dan peek kiri kanan (dalam px)
 const gap = 10;
@@ -47,8 +76,18 @@ const time = 5000;
 
 const carouselContainer = ref<HTMLElement | null>(null);
 
+// Final base images yang digunakan (prioritaskan props)
+const baseImages = computed(() => {
+  return props.items && props.items.length > 0 ? props.items : [];
+});
+
 // Clone last dan first supaya loop mulus
-const slides = computed(() => [images[images.length - 1], ...images, images[0]]);
+// const slides = computed(() => [images[images.length - 1], ...images, images[0]]);
+// Slides dengan clone untuk looping
+const slides = computed(() => {
+  const base = baseImages.value;
+  return [base[base.length - 1], ...base, base[0]];
+});
 
 // Index mulai dari 1 (karena clone pertama di index 0)
 const currentIndex = ref(1);
@@ -103,9 +142,15 @@ const handleTouchEnd = () => {
 onMounted(() => {
   if (carouselContainer.value) {
     // Hanya tambahkan listener jika benar-benar diperlukan
-    carouselContainer.value.addEventListener('touchstart', handleTouchStart, { passive: true });
-    carouselContainer.value.addEventListener('touchmove', preventScroll, { passive: false });
-    carouselContainer.value.addEventListener('touchend', handleTouchEnd, { passive: true });
+    carouselContainer.value.addEventListener('touchstart', handleTouchStart, {
+      passive: true,
+    });
+    carouselContainer.value.addEventListener('touchmove', preventScroll, {
+      passive: false,
+    });
+    carouselContainer.value.addEventListener('touchend', handleTouchEnd, {
+      passive: true,
+    });
   }
 });
 
@@ -179,10 +224,18 @@ const handleTransitionEnd = () => {
 };
 
 // Hitung index slide asli (0..length-1)
+// const currentSlide = computed(() => {
+//   let idx = currentIndex.value - 1;
+//   if (idx < 0) idx = images.length - 1;
+//   if (idx >= images.length) idx = 0;
+//   return idx;
+// });
+
+// dan juga ini:
 const currentSlide = computed(() => {
   let idx = currentIndex.value - 1;
-  if (idx < 0) idx = images.length - 1;
-  if (idx >= images.length) idx = 0;
+  if (idx < 0) idx = props.items.length - 1;
+  if (idx >= props.items.length) idx = 0;
   return idx;
 });
 
@@ -192,19 +245,28 @@ const resetInterval = () => {
   interval = setInterval(nextSlide, time);
 };
 
+const linkNewTab = (url: string) => {
+  window.open(url, '_blank');
+};
+let debouncedUpdate: () => void;
+
 onMounted(() => {
-  // Hitung slideWidth awal dan pasang debounce resize listener
+  // Hitung slideWidth awal
   updateSlideWidth();
-  const debouncedUpdate = debounce(updateSlideWidth, 300);
+
+  // Pasang debounce resize listener
+  debouncedUpdate = debounce(updateSlideWidth, 300);
   window.addEventListener('resize', debouncedUpdate);
 
   // Mulai interval auto-slide
   interval = setInterval(nextSlide, time);
+});
 
-  onBeforeUnmount(() => {
-    clearInterval(interval);
+onBeforeUnmount(() => {
+  clearInterval(interval);
+  if (debouncedUpdate) {
     window.removeEventListener('resize', debouncedUpdate);
-  });
+  }
 });
 </script>
 

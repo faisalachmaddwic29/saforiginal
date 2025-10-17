@@ -17,7 +17,7 @@
         </div>
         <div class="flex flex-col gap-[4px]">
           <p class="text-menu">Jenis Kelamin</p>
-          <p class="font-bold text-wrap text-ellipsis line-clamp-1">{{ user?.gender == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
+          <p class="font-bold text-wrap text-ellipsis line-clamp-1">{{ user?.gender ? (user?.gender == 'L' ? 'Laki-laki' : 'Perempuan') : '' }}</p>
         </div>
       </div>
       <div class="flex flex-col gap-[4px]">
@@ -38,9 +38,9 @@
     <div class="flex flex-col gap-2">
       <LabelSection>Masukan Kode Voucher</LabelSection>
       <div class="flex gap-2 w-full justify-between">
-        <FormInput v-model="voucher" class-name="!font-medium" class="w-full flex-1" placeholder="Masukan Kode Voucher" />
-        <div class="flex items-center">
-          <Button type="button" variant="default" class="w-full h-[44px] md:h-[48px] rounded-md" :disabled="!voucher" @click="applyVoucher">Pakai</Button>
+        <FormInput v-model="voucher_code" class-name="!font-medium" class="w-full flex-1" placeholder="Masukan Kode Voucher" :error="errors.voucher_code" />
+        <div class="flex items-start">
+          <Button type="button" variant="default" class="w-full h-[44px] md:h-[48px] rounded-md" :disabled="!voucher_code" @click="applyVoucher">Pakai</Button>
         </div>
       </div>
     </div>
@@ -60,14 +60,14 @@
                     { 'text-[#C5C5C5] dark:text-[rgba(197,197,197,0.2)]': !bank_id },
                   ]"
                 >
-                  <div class="w-full flex items-center">
+                  <div class="w-full p-1 flex items-center">
                     <div v-if="bank_id" class="bg-transparent px-2 rounded-b-md">
                       <NuxtImg :src="bank_id?.image" :alt="bank_id.name" class="w-14 h-auto" />
                     </div>
                     <div class="flex-1 px-4 text-left text-slate-600 dark:text-slate-400 text-sm" :class="bank_id?.name ? 'font-extrabold' : 'font-light'">
                       {{ bank_id?.name ?? 'Pilih Metode Pembayaran' }}
                     </div>
-                    <Icon name="material-symbols:arrow-drop-down-rounded" class="absolute top-[7px] right-2 text-3xl text-subtle cursor-pointer" />
+                    <Icon name="material-symbols:arrow-drop-down-rounded" class="absolute top-[9px] right-2 text-3xl text-subtle cursor-pointer" />
                   </div>
                   <!-- <div class="absolute top-[13px] right-2 text-sm text-subtle cursor-pointer border px-2 border-secondary rounded">
                     <p class="text-title">pilih</p>
@@ -104,7 +104,7 @@
                     <div class="flex-1 py-2 px-4 text-slate-600 dark:text-slate-400 text-sm">
                       <p class="">{{ payment.name }}</p>
                     </div>
-                    <Icon name="ion:chevron-forward-outline" class="text-xl size-6 text-title" />
+                    <!-- <Icon name="ion:chevron-forward-outline" class="text-xl size-6 text-title" /> -->
                   </div>
                 </ComboboxItem>
               </ComboboxGroup>
@@ -156,15 +156,25 @@
           <th class="py-2 text-right">Rp {{ 0 }}</th>
         </tr>
 
-        <tr>
-          <td class="py-2">Biaya admin</td>
-          <th class="py-2 text-right">Rp {{ 0 }}</th>
-        </tr>
+        <ClientOnly>
+          <tr v-if="cart?.discount">
+            <td class="py-2">Diskon</td>
+            <th class="py-2 text-right">Rp {{ cart?.discount ? currency(cart.discount) : 0 }}</th>
+          </tr>
+          <tr v-if="cart?.tax">
+            <td class="py-2">Pajak</td>
+            <th class="py-2 text-right">Rp {{ cart?.tax ? currency(cart.tax) : 0 }}</th>
+          </tr>
+          <tr v-if="cart?.admin_fee">
+            <td class="py-2">Biaya admin</td>
+            <th class="py-2 text-right">Rp {{ cart?.admin_fee ? currency(cart.admin_fee) : 0 }}</th>
+          </tr>
 
-        <tr>
-          <td class="py-2 font-semibold text-xl">Total</td>
-          <th class="py-2 text-right font-semibold text-xl">Rp {{ amount ? currency(amount) : 0 }}</th>
-        </tr>
+          <tr>
+            <td class="py-2 font-semibold text-xl">Total</td>
+            <th class="py-2 text-right font-semibold text-xl">Rp {{ cart?.grand_total ? currency(cart?.grand_total) : 0 }}</th>
+          </tr>
+        </ClientOnly>
       </tbody>
     </table>
 
@@ -181,8 +191,8 @@ import { z } from 'zod';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { LabelSection } from '#components';
-import type { Payment, Product, ProductResponse } from '~/types/api';
-import { urlApiCheckout } from '~/constants';
+import type { Cart, CartResponse, Payment, Product, ProductResponse, TransactionResponse } from '~/types/api';
+import { urlApiCart, urlApiCheckout, urlApiProducts } from '~/constants';
 
 const title = 'Checkout';
 
@@ -200,20 +210,46 @@ useSeoMeta({
 
 const appStore = useAppStore();
 const route = useRoute();
+const router = useRouter();
 const slug = computed(() => route.params.slug);
 const amountParams = route.query.amount;
 const isLoading = ref(false);
 const product = ref<Product>();
+const cart = ref<Cart>();
 
 const fetchDetailProduct = async (slug: string) => {
   // if (isLoading.value || isLastPage.value) return;
   isLoading.value = true;
 
   try {
-    const { data } = await apiSaforiginal.get<ProductResponse>('/v1/products/' + slug);
+    const { data } = await apiSaforiginal.get<ProductResponse>(urlApiProducts + '/' + slug);
     product.value = data.product ?? {};
+
+    fetchDetailCart(data.product?.id, voucher_code.value ?? '');
+    console.log('kaaln');
   } catch (error) {
-    console.error('Error fetching Radios:', error);
+    console.error('Error fetching product:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const fetchDetailCart = async (product: string | number, voucher_code?: string) => {
+  // if (isLoading.value || isLastPage.value) return;
+  isLoading.value = true;
+
+  try {
+    const params = {
+      product_id: product,
+      amount: amountParams,
+      voucher_code: voucher_code ?? '',
+    };
+    const { data } = await apiSaforiginal.post<CartResponse>(urlApiCart, params);
+    cart.value = data.cart ?? {};
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    handleValidationError(error, setErrors);
+    fetchDetailCart(product ?? 0, '');
   } finally {
     isLoading.value = false;
   }
@@ -237,13 +273,17 @@ onMounted(() => {
 });
 
 const schema = z.object({
-  amount: z.preprocess((val) => {
-    // Pastikan val selalu string dan hapus tanda titik/koma
-    const numStr = String(val).replace(/[.,\s]/g, '');
-    const num = Number(numStr);
-    return isNaN(num) ? 0 : num;
-  }, z.number({ required_error: 'Jumlah wajib diisi' }).min(10000, 'Minimal nominal adalah 10.000')),
-  voucher: z.string().optional(),
+  amount: z
+    .string()
+    .min(1, 'Jumlah wajib diisi')
+    .transform((val) => {
+      const numStr = val.replace(/[.,\s]/g, '');
+      const num = Number(numStr);
+      if (isNaN(num)) throw new Error('Nominal tidak valid');
+      return num;
+    })
+    .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
+  voucher_code: z.string().optional(),
   bank: z
     .object({
       value: z.union([z.string(), z.number()]),
@@ -259,13 +299,13 @@ const { defineField, handleSubmit, errors, setFieldValue, setErrors } = useForm(
   validationSchema: toTypedSchema(schema),
   initialValues: {
     amount: amountParams as string,
-    voucher: '',
+    voucher_code: '',
     bank: null,
   },
 });
 
 const [amount] = defineField('amount');
-const [voucher] = defineField('voucher');
+const [voucher_code] = defineField('voucher_code');
 const bank_id = ref<Payment | null>(null);
 const bankTouched = ref(false);
 const loadingStore = useLoadingStore();
@@ -283,8 +323,8 @@ watch(bank_id, (newValue: Payment | null) => {
   }
 });
 
-const applyVoucher = () => {
-  console.log('test');
+const applyVoucher = async () => {
+  await fetchDetailCart(product?.value?.id ?? 0, voucher_code.value ?? '');
 };
 
 const payments = computed(() => appStore.payments);
@@ -294,15 +334,22 @@ const onSubmit = handleSubmit(async (values) => {
     loadingStore.start();
     isLoading.value = true;
 
-    const response = await apiSaforiginal.post(urlApiCheckout, {
+    const response = await apiSaforiginal.post<TransactionResponse>(urlApiCheckout, {
       product_id: product.value?.id,
       amount: values.amount as number,
-      voucher_code: values.voucher,
+      voucher_code: values.voucher_code,
       payment_id: bank_id.value?.id,
     });
 
     const { message } = response;
     notify.success(message);
+
+    await router.replace({
+      path: '/event/payment/',
+      query: {
+        transaction_id: response.data.transaction.id,
+      },
+    });
   } catch (error: any) {
     if (error?.code >= 500) {
       notify.error(error?.message);

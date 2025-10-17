@@ -30,13 +30,20 @@ export default defineNuxtConfig({
       }
     ],
     '@vite-pwa/nuxt',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    'nuxt-lottie'
   ],
   colorMode: {
     preference: 'system',
     fallback: 'light',
     storageKey: 'nuxt-color-mode',
     classSuffix: '',
+  },
+  lottie: {
+    componentName: 'Lottie', // Optional: Customize the component name
+    lottieFolder: '/assets/lottie', // Optional: Customize the Lottie folder path
+    autoFolderCreation: true, // Optional: Auto create lottie folder (default: true)
+    enableLogs: true // Optional: Enable console logs from module (default: true)
   },
   shadcn: {
     /**

@@ -18,10 +18,10 @@
 <script setup lang="ts">
 const props = defineProps<{
   open?: boolean;
-  title?: string;
-  description?: string;
+  title?: string | null;
+  description?: string | null;
   showIndicator: boolean;
-  classes?: string;
+  classes?: string | null;
 }>();
 
 const emit = defineEmits(['update:open', 'cancel']); // Tambahkan 'cancel' di sini

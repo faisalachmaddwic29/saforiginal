@@ -1,12 +1,23 @@
 <template>
   <div>
     <!-- Tombol Install untuk Android/Chrome -->
-    <ListItem v-if="!isIOS && canInstall && !isInstalled" type="default" title="Instal Salammu" subtitle="Lebih mudah akses Salammu di smartphone kamu.">
+    <ListItem v-if="!isIOS && canInstall && !isInstalled" :custom-label="true" class-name="!gap-3" @click="handleInstallClick">
       <template #icon>
-        <NuxtImg src="/images/logos/logo-square.png" class="w-10 h-10 aspect-square rounded-lg" alt="Salammu Logo" />
+        <NuxtImg src="/images/logos/logo-square.png" class="size-10 aspect-square rounded" alt="saf-original Logo" />
+      </template>
+      <template #label>
+        <div>
+          <h3 class="text-sm font-semibold">Install SAFOriginal</h3>
+          <p class="text-xs">Lebih mudah akses Salammu di smartphone kamu</p>
+        </div>
       </template>
       <template #actions>
-        <Button variant="outline" class="text-xs h-full border !border-secondary bg-transparent py-1 px-3 transition hover:bg-secondary hover:text-white disabled:opacity-50" size="sm" :disabled="isInstalling" @click="handleInstallClick">
+        <Button
+          variant="outline"
+          class="text-xs h-full border !border-secondary bg-transparent py-1 px-3 transition hover:bg-secondary hover:text-white disabled:opacity-50"
+          size="sm"
+          :disabled="isInstalling"
+        >
           <span v-if="isInstalling" class="flex items-center gap-1">
             <Icon name="lucide:loader-2" class="w-3 h-3 animate-spin" />
             Installing...
@@ -20,22 +31,28 @@
     </ListItem>
 
     <!-- Panduan untuk iOS -->
-    <ListItem v-if="isIOS && !isInstalled" type="default" title="Instal Salammu" subtitle="Tap tombol Share di bawah, lalu pilih 'Add to Home Screen'.">
+    <ListItem v-if="isIOS && !isInstalled" :custom-label="true" class-name="!gap-3" @click="showIOSInstructions">
       <template #icon>
-        <NuxtImg src="/images/logos/logo-square.png" class="w-10 h-10 aspect-square rounded-lg" alt="Salammu Logo" />
+        <NuxtImg src="/images/logos/logo-square.png" class="size-10 aspect-square rounded" alt="saf-original Logo" />
+      </template>
+      <template #label>
+        <div>
+          <h3 class="text-sm font-semibold">Install SAFOriginal</h3>
+          <p class="text-xs">Tap tombol Share di bawah, lalu pilih 'Add to Home Screen'.</p>
+        </div>
       </template>
       <template #actions>
-        <Button variant="outline" class="text-xs h-full border !border-secondary bg-transparent py-1 px-3 transition hover:bg-secondary hover:text-white" size="sm" @click="showIOSInstructions">Panduan</Button>
+        <Button variant="outline" class="text-xs h-full border !border-secondary bg-transparent py-1 px-3 transition hover:bg-secondary hover:text-white" size="sm">Panduan</Button>
       </template>
     </ListItem>
 
     <!-- Modal instruksi iOS -->
     <div v-if="showIOSModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" @click="showIOSModal = false">
-      <div class="bg-white rounded-lg p-6 max-w-sm w-full" @click.stop>
+      <div class="bg-background rounded p-6 max-w-sm w-full" @click.stop>
         <h3 class="text-lg font-semibold mb-4">Cara Install di iOS</h3>
         <div class="space-y-3 text-sm">
           <div class="flex items-start gap-3">
-            <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold flex-shrink-0">1</span>
+            <span class="rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold flex-shrink-0">1</span>
             <p>
               Tap tombol
               <strong>Share</strong>
@@ -43,14 +60,14 @@
             </p>
           </div>
           <div class="flex items-start gap-3">
-            <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold flex-shrink-0">2</span>
+            <span class="rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold flex-shrink-0">2</span>
             <p>
               Scroll ke bawah dan pilih
               <strong>"Add to Home Screen"</strong>
             </p>
           </div>
           <div class="flex items-start gap-3">
-            <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold flex-shrink-0">3</span>
+            <span class="rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold flex-shrink-0">3</span>
             <p>
               Tap
               <strong>"Add"</strong>
@@ -58,7 +75,7 @@
             </p>
           </div>
         </div>
-        <button class="w-full mt-6 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition" @click="showIOSModal = false">Mengerti</button>
+        <Button variant="outline-primary" class="mt-4 w-full" @click="showIOSModal = false">Mengerti</Button>
       </div>
     </div>
   </div>
@@ -192,6 +209,7 @@ const checkInstallCriteria = async () => {
   }
 
   const platform = detectPlatform();
+  console.log('📱 Detected platform:', platform);
 
   if (platform === 'ios') {
     isIOS.value = true;

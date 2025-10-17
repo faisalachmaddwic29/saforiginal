@@ -8,7 +8,7 @@
       <slot v-else name="label" />
 
       <!-- Right Arrow -->
-      <Icon :name="rightIcon" class="text-2xl size-6" :class="isRed ? 'text-danger' : ''" />
+      <Icon :name="rightIcon" class="flex-shrink-0 text-2xl size-6" :class="isRed ? 'text-danger' : ''" />
     </div>
   </div>
 </template>

@@ -24,12 +24,12 @@
         </TabsContent>
         <TabsContent value="episode">
           <div class="flex flex-col gap-4 px-4 py-2">
-            <NuxtLink v-for="item in product.videos" :key="item.id" :to="product.is_free ? `/event/series/video/${product.slug}` : undefined" class="w-full block">
+            <NuxtLink v-for="item in product.videos" :key="item.id" :to="item?.url ? `/event/series/video/${product.slug}` : undefined" class="w-full block">
               <ListItem
                 :label="item.title"
                 :is-icon="false"
-                :right-icon="!product.is_free ? 'heroicons:lock-closed' : 'ion:chevron-forward-outline'"
-                :class-name="'border rounded-md px-4 ' + (!product.is_free ? '!cursor-not-allowed' : '')"
+                :right-icon="!item?.url ? 'heroicons:lock-closed' : 'ion:chevron-forward-outline'"
+                :class-name="'border rounded-md px-4 ' + (!item?.url ? '!cursor-not-allowed' : '')"
               >
                 <template #icon>
                   <Icon name="heroicons:video-camera" class="text-2xl size-6" />
@@ -166,12 +166,16 @@ const dataInvestasi = [
 
 // Schema validasi Zod - hanya required
 const schema = z.object({
-  amount: z.preprocess((val) => {
-    // Pastikan val selalu string dan hapus tanda titik/koma
-    const numStr = String(val).replace(/[.,\s]/g, '');
-    const num = Number(numStr);
-    return isNaN(num) ? 0 : num;
-  }, z.number({ required_error: 'Jumlah wajib diisi' }).min(10000, 'Minimal nominal adalah 10.000')),
+  amount: z
+    .string()
+    .min(1, 'Jumlah wajib diisi')
+    .transform((val) => {
+      const numStr = val.replace(/[.,\s]/g, '');
+      const num = Number(numStr);
+      if (isNaN(num)) throw new Error('Nominal tidak valid');
+      return num;
+    })
+    .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
 });
 
 const { defineField, handleSubmit, errors } = useForm({
@@ -181,13 +185,12 @@ const { defineField, handleSubmit, errors } = useForm({
   },
 });
 
-const isSubmitDisabled = computed(() => {
-  // ambil nilai numeriknya (hapus titik, koma, spasi)
-  const num = Number(String(amount.value).replace(/[.,\s]/g, ''));
-  return !!errors.amount || num < 10000 || isNaN(num);
-});
-
 const [amount] = defineField('amount');
+
+const isSubmitDisabled = computed(() => {
+  const num = Number(String(amount.value).replace(/[.,\s]/g, ''));
+  return !!errors.value?.amount || num < 10000 || isNaN(num);
+});
 
 const onSubmit = handleSubmit(async (values) => {
   // router.push('/event/series/checkout?amount=' + values.amount);

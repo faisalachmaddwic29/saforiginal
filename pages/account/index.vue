@@ -89,7 +89,7 @@
         </Dialog>
       </div>
 
-      <InstallApps />
+      <InstallApps  />
 
       <p class="font-inter text-menu mt-[85px] text-xs md:text-sm m-auto text-center mb-5">Copyright © 2025 saf-original, All rights reserved</p>
     </div>
@@ -136,6 +136,11 @@ const items = ref([
     label: 'Keamanan & Akun',
     to: '/account/security',
     icon: '/images/items/shield-tick.svg',
+  },
+  {
+    label: 'Riwayat Transaksi',
+    to: '/account/transactions',
+    icon: '/images/items/transaksi.svg',
   },
   {
     label: 'Preferensi Anda',

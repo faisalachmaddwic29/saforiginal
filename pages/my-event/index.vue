@@ -1,50 +1,65 @@
 <template>
   <div>
-    <AppToolbar>
+    <AppToolbar class="z-[999]">
       <div class="flex items-center px-4 h-full gap-4 justify-between">
-        <!-- Search input -->
-        <div class="flex items-center flex-1 rounded-full border border-[rgba(151,151,151,0.2)] text-[rgba(77,77,77,0.03)] h-[48px] px-4">
+        <NuxtLink to="/event/search" class="flex items-center cursor-pointer flex-1 rounded-full border border-[rgba(151,151,151,0.2)] text-[rgba(77,77,77,0.03)] h-[48px] px-4">
           <Icon name="iconamoon:search" class="text-2xl text-[#627086] mr-2" />
-
-          <input
-            type="text"
-            placeholder="Masukan pencarian kamu"
-            class="font-manrope bg-transparent placeholder-[#B0B4C0] text-[#4B5563] dark:placeholder-[#4B5563] dark:text-[#B0B4C0] text-base focus:outline-none w-full"
+          <input type="text" placeholder="Masukan pencarian kamu" class="!cursor-pointer font-manrope bg-transparent placeholder-menu/30 text-menu text-base focus:outline-none w-full" readonly />
+        </NuxtLink>
+        <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6 cursor-pointer" />
+      </div>
+    </AppToolbar>
+    <div class="p-4">
+      <div v-if="transactions.length" class="w-full mx-auto px-4">
+        <div v-for="transaction in transactions" :id="transaction.id + '-transactions'" :key="transaction.id + '-transactions'">
+          <CardMyEvent
+            v-for="item in transaction?.details"
+            :key="item.id"
+            :thumbnail="item.product.cover"
+            :title="item.product.title"
+            :date="item.product.event_at"
+            :slug="item.product.slug"
+            :author="item.product.store.name"
+            :type="toProductType(item.product.type)"
           />
         </div>
 
-        <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6" />
+        <!-- Trigger untuk observer - HANYA tampil jika belum last page dan tidak loading -->
+        <div v-if="!isLastPage && !isLoading" ref="loadMoreTrigger" class="h-4" />
+
+        <!-- Loading indicator -->
+        <div v-if="isLoading" class="text-center py-4">
+          <div class="inline-flex items-center gap-2">
+            <div class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <span class="text-sm text-gray-600">Loading more...</span>
+          </div>
+        </div>
+
+        <!-- Sudah habis -->
+        <div v-if="isLastPage && !isLoading" class="text-center text-sm py-3"></div>
       </div>
-    </AppToolbar>
-    <div class="p-4 flex flex-col gap-4">
-      <CardReview
-        :thumbnail="'https://storage.googleapis.com/gweb-cloudblog-publish/images/0_next25_wrap.max-2000x2000.jpg'"
-        :title="'Google Cloud Next 25'"
-        :author="'Faisal Achmad Dwi Cahyono'"
-        :episode="5"
-        :rating="4.3"
-        date="2023-01-01"
-        review=""
-      />
-      <CardReview
-        :thumbnail="'https://awsimages.detik.net.id/community/media/visual/2023/01/23/pasar-musik-festival.jpeg?w=1200&q=90'"
-        :title="'Pasar Musik Festival'"
-        :author="'Faisal Achmad Dwi Cahyono'"
-        :episode="5"
-        :rating="4.8"
-        date=""
-        review="keren banget"
-      />
-      <CardReview />
+
+      <!-- Empty state -->
+      <div v-else-if="!isFirstLoading && transactions.length === 0" class="text-center py-8">
+        <NuxtImg src="/images/empty.png" alt="Empty event" class="aspect-auto w-full px-12" />
+      </div>
+
+      <!-- Loading saat pertama -->
+      <CardListLoading v-if="isFirstLoading" :rows="1" :length="4" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useIntersectionObserver } from '@vueuse/core';
+import { urlApiTransactions } from '~/constants';
+import { toProductType, type Transaction, type TransactionsResponse } from '~/types/api';
+
 const title = 'My Event';
 definePageMeta({
   layout: 'home',
   isShadow: true,
+  middleware: 'auth',
   isPaddingTop: true,
   isPaddingBottom: true,
   title: title,
@@ -54,7 +69,122 @@ useSeoMeta({
   title: title,
 });
 
-// const goToOtherPage = (id: string) => {
-// 	console.log('Go to other page' + id);
-// }
+// State
+// const isOpen = ref(false);
+// const showDrawer = ref(false);
+const route = useRoute();
+
+const transactions = ref<Transaction[]>([]);
+const page = ref(1);
+const isLoading = ref(false);
+const isFirstLoading = ref(true);
+const isLastPage = ref(false);
+const loadMoreTrigger = ref<HTMLElement | null>(null);
+
+const kategori = ref((route.query.category as string) ?? 'all');
+
+const fetchTransactions = async () => {
+  if (isLoading.value || isLastPage.value) return;
+  isLoading.value = true;
+
+  try {
+    const { data } = await apiSaforiginal.get<TransactionsResponse>(`${urlApiTransactions}?${buildParams({ type: 'event', category: kategori.value, date: 'all', location: 'all' })}`);
+
+    if (data.transactions && data.transactions.length > 0) {
+      transactions.value.push(...data.transactions);
+
+      // Update page untuk next request
+      page.value++;
+
+      // Check apakah sudah last page
+      if (data.meta && data.meta.current_page >= data.meta.last_page) {
+        isLastPage.value = true;
+        // console.log('Reached last page');
+      }
+    } else {
+      // Jika tidak ada data, tandai sebagai last page
+      isLastPage.value = true;
+      // console.log('No more data available');
+    }
+  } catch (error) {
+    console.error('Error fetching transaction:', error);
+  } finally {
+    isLoading.value = false;
+    isFirstLoading.value = false;
+  }
+};
+
+// Helpers
+const buildParams = ({
+  type = null,
+  category = null,
+  date = null,
+  location = null,
+}: {
+  type?: string | null;
+  category?: string | null;
+  date?: string | null;
+  location?: string | null;
+} = {}) => {
+  const params = new URLSearchParams();
+
+  if (category && category !== 'all') {
+    params.append('category', category);
+  }
+  if (date && date !== 'all') {
+    params.append('date', date);
+  }
+  if (location && location !== 'all') {
+    params.append('location', location);
+  }
+
+  if (type && type !== 'all') {
+    params.append('type', type);
+  }
+
+  params.append('payment_status', 'paid');
+  params.append('page', String(page.value));
+  params.append('per_page', '10');
+  params.append('sort', '-created_at');
+
+  return params.toString();
+};
+
+const resetFirstFetch = () => {
+  transactions.value = [];
+  page.value = 1;
+  isLastPage.value = false;
+  isFirstLoading.value = true;
+};
+
+// Effects
+watch(
+  () => route.query,
+  () => {
+    kategori.value = (route.query.category as string) ?? 'all';
+    resetFirstFetch();
+    fetchTransactions();
+  },
+  { immediate: true }
+);
+
+// ✅ Observer infinite scroll dengan proteksi lebih ketat
+const { stop: stopObserver } = useIntersectionObserver(
+  loadMoreTrigger,
+  ([entry]) => {
+    if (entry?.isIntersecting && !isLoading.value && !isLastPage.value && !isFirstLoading.value) {
+      // console.log('Intersection triggered, fetching more...');
+      fetchTransactions();
+    }
+  },
+  {
+    rootMargin: '100px', // Kasih jarak lebih besar
+    threshold: 0.1,
+  }
+);
+
+// ✅ Cleanup observer saat component unmount
+onUnmounted(() => {
+  stopObserver();
+});
 </script>

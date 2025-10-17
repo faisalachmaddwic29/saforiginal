@@ -62,7 +62,7 @@ const computedClasses = computed(() => {
   const classes = [
     baseClasses,
     props.disabled ? 'cursor-not-allowed' : '',
-    props.readOnly ? 'bg-gray-100 cursor-default' : '',
+    props.readOnly ? 'bg-gray-100 dark:bg-[rgba(197,197,197,0)] cursor-default' : '',
     props.isIcon && (props.iconPosition === 'left' ? 'pl-10' : 'pr-10'),
     props.icon && (props.iconPosition === 'left' ? 'pl-10' : 'pr-10'),
     props.error ? '!border-red-500 !focus:ring-red-200 !focus:border-red-500' : '',
