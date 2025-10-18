@@ -21,5 +21,5 @@ WORKDIR /app
 # Copy hasil build aja
 COPY --from=build /app/.output /app
 
-EXPOSE 3000
+EXPOSE 3001
 ENTRYPOINT [ "bun", "run", "/app/server/index.mjs" ]
