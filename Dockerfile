@@ -10,7 +10,7 @@ COPY package.json ./
 # Pastikan bersih & install dependencies
 RUN rm -f package-lock.json && \
     rm -rf node_modules && \
-    npm install --omit=dev --legacy-peer-deps
+    npm install
 
 # Copy semua file setelah install dependencies
 COPY . .
