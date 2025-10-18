@@ -1,25 +1,42 @@
-# Gunakan versi stabil
-FROM node:22-alpine
+# syntax=docker/dockerfile:1.4
 
-# Set working directory
+# =========================================================
+# 🧩 Stage 1: Build stage
+# =========================================================
+FROM node:22-alpine AS builder
+
 WORKDIR /usr/src/app
 
-# Copy dependency files
+# Optional: bersihin cache builder sebelum build baru
+RUN docker builder prune -af > /dev/null 2>&1 || true
+
+# Copy package files dulu biar cache layer efisien
 COPY package*.json ./
 
-# Pastikan bersih & install dependencies
-RUN rm -f package-lock.json && \
-    rm -rf node_modules && \
-    npm install --omit=dev --legacy-peer-deps
+# Pakai cache untuk npm agar build cepat
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev --legacy-peer-deps
 
-# Copy semua file setelah install dependencies
+# Copy semua source code
 COPY . .
 
-# Build aplikasi
+# Build Nuxt (atau Next, tergantung project kamu)
 RUN npm run build --verbose
 
-# Install PM2 runtime secara global
+
+# =========================================================
+# 🧩 Stage 2: Runtime stage (image final)
+# =========================================================
+FROM node:22-alpine
+
+WORKDIR /usr/src/app
+
+# Install PM2 runtime
 RUN npm install -g pm2
 
-# Jalankan aplikasi menggunakan PM2
-CMD ["pm2-runtime", "./.output/server/index.mjs"]
+# Copy hasil build dari stage sebelumnya
+COPY --from=builder /usr/src/app/.output ./.output
+COPY --from=builder /usr/src/app/package*.json ./
+
+# Jalankan app pakai PM2 runtime
+CMD ["pm2-runtime", "./server/index.mjs"]
