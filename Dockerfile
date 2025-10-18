@@ -1,42 +1,32 @@
-# syntax=docker/dockerfile:1.4
-
-# =========================================================
-# 🧩 Stage 1: Build stage
-# =========================================================
+# Stage builder
 FROM node:22-alpine AS builder
-
 WORKDIR /usr/src/app
 
-# Optional: bersihin cache builder sebelum build baru
-RUN docker builder prune -af > /dev/null 2>&1 || true
+# Bersihkan cache build lama di CI/CD
+# (ini dilakukan di luar Dockerfile, bukan di sini!)
+# docker builder prune -af > /dev/null 2>&1 || true
 
-# Copy package files dulu biar cache layer efisien
+# Copy dependency files
 COPY package*.json ./
 
-# Pakai cache untuk npm agar build cepat
+# Gunakan cache npm agar build lebih cepat
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev --legacy-peer-deps
+    npm install --omit=dev --legacy-peer-deps
 
-# Copy semua source code
+# Copy semua source
 COPY . .
 
-# Build Nuxt (atau Next, tergantung project kamu)
-RUN npm run build --verbose
+# Build aplikasi
+RUN npm run build
 
-
-# =========================================================
-# 🧩 Stage 2: Runtime stage (image final)
-# =========================================================
-FROM node:22-alpine
-
+# Stage runtime
+FROM node:22-alpine AS runtime
 WORKDIR /usr/src/app
 
-# Install PM2 runtime
-RUN npm install -g pm2
-
-# Copy hasil build dari stage sebelumnya
+# Copy hasil build dari builder
 COPY --from=builder /usr/src/app/.output ./.output
 COPY --from=builder /usr/src/app/package*.json ./
 
-# Jalankan app pakai PM2 runtime
-CMD ["pm2-runtime", "./server/index.mjs"]
+RUN npm install -g pm2
+
+CMD ["pm2-runtime", "./.output/server/index.mjs"]
