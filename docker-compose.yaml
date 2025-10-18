@@ -2,33 +2,23 @@ version: '3.8'
 
 services:
   saforiginal-fe:
-    build: .
+    image: fiksani/saforiginal_fe:latest
     container_name: saforiginal-fe
     environment:
       - HOST=0.0.0.0
       - PORT=3001
     expose:
       - "3001"
-    # volumes:
-    #   - ./:/usr/src/app
-    #   - /usr/src/app/node_modules
     networks:
       - saforiginal-net
-    restart: always
-
-  nginx:
-    image: nginx:alpine
-    container_name: saforiginal-proxy
-    ports:
-      - "3001:3001"
-    volumes:
-      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - saforiginal-fe
-    networks:
-      - saforiginal-net
+      - caddy
+    labels:
+      caddy: saf-baru.mandatech.co.id
+      caddy.reverse_proxy: "{{upstreams 3001}}"
     restart: always
 
 networks:
   saforiginal-net:
     driver: bridge
+  caddy:
+    external: true
