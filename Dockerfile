@@ -21,5 +21,5 @@ WORKDIR /app
 COPY --from=build /app/.output /app
 
 # run the app
-EXPOSE 3000/tcp
+EXPOSE 3001/tcp
 ENTRYPOINT [ "bun", "--bun", "run", "/app/server/index.mjs" ]
