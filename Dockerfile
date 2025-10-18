@@ -1,25 +1,30 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
+# syntax=docker/dockerfile:1.5
+
+# ======================
+# BUILD STAGE
+# ======================
 FROM oven/bun:1 AS build
 WORKDIR /app
 
-COPY package.json bun.lock* ./
+COPY bun.lockb package.json ./
 
-# use ignore-scripts to avoid builting node modules like better-sqlite3
-RUN bun install --frozen-lockfile --ignore-scripts
+# Install deps (HARUS tanpa --ignore-scripts)
+RUN --mount=type=cache,target=/root/.bun \
+    bun install --frozen-lockfile && bun rebuild
 
-# Copy the entire project
 COPY . .
 
-RUN bun --bun run build
+RUN bun run build
 
-# copy production dependencies and source code into final image
+
+# ======================
+# PRODUCTION STAGE
+# ======================
 FROM oven/bun:1 AS production
 WORKDIR /app
 
-# Only `.output` folder is needed from the build stage
-COPY --from=build /app/.output /app
+COPY --from=build /app/.output /app/.output
 
-# run the app
-EXPOSE 3001/tcp
-ENTRYPOINT [ "bun", "--bun", "run", "/app/server/index.mjs" ]
+EXPOSE 3001
+
+CMD ["bun", "/app/.output/server/index.mjs"]
