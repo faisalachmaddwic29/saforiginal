@@ -5,7 +5,7 @@ FROM node:22-alpine
 WORKDIR /usr/src/app
 
 # Copy dependency files
-COPY package*.json ./
+COPY package.json ./
 
 # Pastikan bersih & install dependencies
 RUN rm -f package-lock.json && \
