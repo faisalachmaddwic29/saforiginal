@@ -1,27 +1,25 @@
-# Stage builder
-FROM node:22-slim AS builder
-WORKDIR /usr/src/app
+# use the official Bun image
+# see all versions at https://hub.docker.com/r/oven/bun/tags
+FROM oven/bun:1 AS build
+WORKDIR /app
 
-RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+COPY package.json bun.lock* ./
 
-COPY package*.json ./
+# use ignore-scripts to avoid builting node modules like better-sqlite3
+RUN bun install --frozen-lockfile --ignore-scripts
 
-# Install semua dependency (tanpa dev)
-RUN --mount=type=cache,target=/root/.npm \
-    npm install --omit=dev --legacy-peer-deps || \
-    (rm -rf node_modules package-lock.json && npm install --omit=dev --legacy-peer-deps)
-
+# Copy the entire project
 COPY . .
 
-RUN npm run build
+RUN bun --bun run build
 
-# Stage runtime
-FROM node:22-slim AS runtime
-WORKDIR /usr/src/app
+# copy production dependencies and source code into final image
+FROM oven/bun:1 AS production
+WORKDIR /app
 
-COPY --from=builder /usr/src/app/.output ./.output
-COPY --from=builder /usr/src/app/package*.json ./
+# Only `.output` folder is needed from the build stage
+COPY --from=build /app/.output /app
 
-RUN npm install -g pm2
-
-CMD ["pm2-runtime", "./.output/server/index.mjs"]
+# run the app
+EXPOSE 3000/tcp
+ENTRYPOINT [ "bun", "--bun", "run", "/app/server/index.mjs" ]
