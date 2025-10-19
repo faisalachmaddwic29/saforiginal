@@ -135,7 +135,7 @@ const buildParams = ({
 
   params.append('payment_status', 'paid');
   params.append('page', String(page.value));
-  params.append('per_page', '10');
+  params.append('per_page', '4');
   params.append('sort', '-created_at');
 
   return params.toString();
