@@ -105,7 +105,7 @@ class ApiSafOriginal implements ApiService {
 	private redirectToLogin() {
 		// For Nuxt 3
 		if (typeof navigateTo !== 'undefined') {
-			navigateTo('/auth');
+			navigateTo('/auth/login');
 		}
 		// For Next.js or other routers, implement accordingly
 		// window.location.href = '//login';

@@ -4,6 +4,8 @@ services:
   saforiginal-fe:
     image: fiksani/saforiginal_fe:latest
     container_name: saforiginal-fe
+    env_file:
+      - .env
     environment:
       - HOST=0.0.0.0
       - PORT=3001
