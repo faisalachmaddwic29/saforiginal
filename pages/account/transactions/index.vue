@@ -69,7 +69,7 @@
           cover: transaction.details[0].product.cover,
           id: transaction.invoice_no + '-transactions',
           invoice: transaction.invoice_no,
-          date: transaction.expired_at ?? '-',
+          date: transaction.expired_at,
           amount: transaction.grand_total,
           label: transaction.details[0].name,
           status: transaction.payment_status,

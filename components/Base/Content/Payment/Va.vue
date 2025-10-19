@@ -11,15 +11,14 @@
       />
 
       <div class="p-4 flex flex-col gap-5">
-        <div class="p-3 flex flex-col gap-3 border-2 border-footer rounded-lg">
+        <div class="flex flex-col gap-3 rounded-lg">
           <p class="font-semibold text-base">Nomor Virtual Account</p>
 
           <div class="flex items-center justify-between rounded">
-            <div>
-              <p class="text-sm"></p>
-              <p class="font-bold text-xl">{{ props.data.payment_bank_va }}</p>
+            <div class="w-full">
+              <p class="font-bold text-xl break-all">{{ props.data.payment_bank_va }}</p>
             </div>
-            <Button variant="outline-primary" size="sm" class="h-fit px-3" @click="copyToClipboard(props.data.payment_bank_va)"> Salin </Button>
+            <Button variant="outline-primary" size="sm" class="h-fit px-3 flex-1 w-full" @click="copyToClipboard(props.data.payment_bank_va)"> Salin </Button>
           </div>
         </div>
 
@@ -48,7 +47,7 @@
 
   <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
     <AppContainer class="p-4">
-      <Button type="submit" class="w-full">Check Status Pembayaran</Button>
+      <Button type="button" class="w-full" @click="$router.replace(`/account/transactions/${props.data.id}`)">Check Status Pembayaran</Button>
     </AppContainer>
   </div>
 </template>

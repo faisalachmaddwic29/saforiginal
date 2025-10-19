@@ -45,7 +45,7 @@
 
   <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
     <AppContainer class="p-4">
-      <Button type="submit" class="w-full">Check Status Pembayaran</Button>
+      <Button type="button" class="w-full" @click="$router.replace(`/account/transactions/${props.data.id}`)">Check Status Pembayaran</Button>
     </AppContainer>
   </div>
 </template>

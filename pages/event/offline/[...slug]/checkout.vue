@@ -28,11 +28,13 @@
 
     <div class="flex flex-col gap-2">
       <LabelSection>Investasi Anda</LabelSection>
-      <FormInput v-model="amount" class-name="text-right !font-extrabold" :is-number="true" :is-icon="true" :is-currency="true">
-        <template #icon>
-          <p class="!font-extrabold text-xl pb-1">Rp</p>
-        </template>
-      </FormInput>
+      <ClientOnly>
+        <FormInput v-if="cart" v-model="cart.total" class-name="text-right !font-extrabold" :is-number="true" :is-icon="true" :is-currency="true" :read-only="true">
+          <template #icon>
+            <p class="!font-extrabold text-xl pb-1">Rp</p>
+          </template>
+        </FormInput>
+      </ClientOnly>
     </div>
 
     <div class="flex flex-col gap-2">
@@ -117,6 +119,16 @@
       </div>
     </div>
 
+    <div class="flex flex-col gap-2">
+      <LabelSection>Data Tiket</LabelSection>
+      <!-- <div v-for="item in selectedTickets" :key="item.id" class="flex flex-col gap-2">
+        <p>{{ item.qty }}</p>
+      </div> -->
+      <ClientOnly>
+        <ContentTicketContainer ref="ticketContainer" :tickets="selectedTickets" :user-login="user" @update="handleTicketUpdate" />
+      </ClientOnly>
+    </div>
+
     <hr />
 
     <div class="border border-[#94A3B81F] rounded-xl p-3 bg-[#94A3B81F]">
@@ -134,10 +146,12 @@
           </h3>
 
           <!-- Price -->
-          <div class="flex text-menu items-start text-xs md:text-lg gap-1 md:gap-2">
-            <p>Rp</p>
-            <p>{{ currency(amount) }}</p>
-          </div>
+          <ClientOnly>
+            <div v-if="cart?.total" class="flex text-menu items-start text-xs md:text-lg gap-1 md:gap-2">
+              <p>Rp</p>
+              <p>{{ currency(cart.total) }}</p>
+            </div>
+          </ClientOnly>
         </div>
       </div>
     </div>
@@ -146,9 +160,9 @@
 
     <table class="w-full text-sm">
       <tbody v-if="!isLoadingCart">
-        <tr>
+        <tr v-if="cart?.total">
           <td class="py-2">Subtotal</td>
-          <th class="py-2 text-right">Rp {{ amount ? currency(amount) : 0 }}</th>
+          <th class="py-2 text-right">Rp {{ cart.total ? currency(cart.total) : 0 }}</th>
         </tr>
 
         <tr>
@@ -196,10 +210,10 @@
 import { z } from 'zod';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
-import { LabelSection } from '#components';
+import { ClientOnly, ContentTicketContainer, LabelSection } from '#components';
 import type { Cart, CartResponse, Payment, Product, ProductResponse, TransactionResponse } from '~/types/api';
 import { urlApiCart, urlApiCheckout, urlApiProducts } from '~/constants';
-import { useDebounceFn } from '@vueuse/core';
+import type { TicketWithUsers } from '~/types/data';
 
 const title = 'Checkout';
 
@@ -219,47 +233,22 @@ const appStore = useAppStore();
 const route = useRoute();
 const router = useRouter();
 const slug = computed(() => route.params.slug);
-const amountParams = Number(route.query.amount ?? 0);
+// const amountParams = Number(route.query.amount ?? 0);
+const amountParams = 0;
+const selectedTickets = Object.values(JSON.parse(route.query.selectedTickets as string));
 const isLoading = ref(false);
 const isLoadingCart = ref(false);
 const product = ref<Product>();
 const cart = ref<Cart>();
 
-const schema = z.object({
-  amount: z.string().min(1, 'Jumlah wajib diisi'),
-  // .transform((val) => {
-  //   const numStr = val.replace(/[.,\s]/g, '');
-  //   const num = Number(numStr);
-  //   if (isNaN(num)) throw new Error('Nominal tidak valid');
-  //   return num;
-  // })
-  // .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
-  voucher_code: z.string().optional(),
-  bank: z
-    .object({
-      value: z.union([z.string(), z.number()]),
-      label: z.string(),
-    })
-    .nullable()
-    .refine((val) => val !== null, {
-      message: 'Bank harus dipilih',
-    }),
-});
-
-const { defineField, handleSubmit, errors, setFieldValue, setErrors } = useForm({
-  validationSchema: toTypedSchema(schema),
-  initialValues: {
-    amount: amountParams.toString(),
-    voucher_code: '',
-    bank: null,
-  },
-});
-
-const [amount] = defineField('amount');
-const [voucher_code] = defineField('voucher_code');
-const bank_id = ref<Payment | null>(null);
-const bankTouched = ref(false);
-const loadingStore = useLoadingStore();
+// Tambahkan di script setup
+const finalTicketData = ref<TicketWithUsers[]>([]);
+const ticketContainer = ref<ComponentPublicInstance<{ validateAll: () => Promise<boolean> }>>();
+// Untuk Update Selected Ticket nambahin dengan user
+function handleTicketUpdate(result: TicketWithUsers[]) {
+  finalTicketData.value = result;
+  console.log('Final Ticket Data:', result);
+}
 
 const fetchDetailProduct = async (slug: string) => {
   // if (isLoading.value || isLastPage.value) return;
@@ -269,8 +258,7 @@ const fetchDetailProduct = async (slug: string) => {
     const { data } = await apiSaforiginal.get<ProductResponse>(urlApiProducts + '/' + slug);
     product.value = data.product ?? {};
 
-    fetchDetailCart(data.product?.id, voucher_code.value ?? '', amount.value ? Number(amount.value) : 0);
-    console.log('kaaln');
+    fetchDetailCart(data.product?.id, voucher_code.value ?? '');
   } catch (error) {
     console.error('Error fetching product:', error);
   } finally {
@@ -278,22 +266,23 @@ const fetchDetailProduct = async (slug: string) => {
   }
 };
 
-const fetchDetailCart = async (product: string | number, voucher_code?: string, amountFix?: number) => {
+const fetchDetailCart = async (product: string | number, voucher_code?: string) => {
+  // if (isLoading.value || isLastPage.value) return;
   isLoadingCart.value = true;
 
   try {
     const params = {
       product_id: product,
-      amount: amountFix ?? 0,
+      amount: amountParams,
       voucher_code: voucher_code ?? '',
+      tickets: selectedTickets,
     };
     const { data } = await apiSaforiginal.post<CartResponse>(urlApiCart, params);
     cart.value = data.cart ?? {};
-    amount.value = cart.value.total?.toString() ?? '0';
   } catch (error) {
     console.error('Error fetching cart:', error);
     handleValidationError(error, setErrors);
-    fetchDetailCart(product ?? 0, '', amount.value ? Number(amount.value) : 0);
+    fetchDetailCart(product ?? 0, '');
   } finally {
     isLoadingCart.value = false;
   }
@@ -316,6 +305,32 @@ onMounted(() => {
   fetchDetailProduct(slug.value as string);
 });
 
+const schema = z.object({
+  voucher_code: z.string().optional(),
+  bank: z
+    .object({
+      value: z.union([z.string(), z.number()]),
+      label: z.string(),
+    })
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Bank harus dipilih',
+    }),
+});
+
+const { defineField, handleSubmit, errors, setFieldValue, setErrors } = useForm({
+  validationSchema: toTypedSchema(schema),
+  initialValues: {
+    voucher_code: '',
+    bank: null,
+  },
+});
+
+const [voucher_code] = defineField('voucher_code');
+const bank_id = ref<Payment | null>(null);
+const bankTouched = ref(false);
+const loadingStore = useLoadingStore();
+
 // Watch address changes and sync with form
 watch(bank_id, (newValue: Payment | null) => {
   if (newValue) {
@@ -330,50 +345,42 @@ watch(bank_id, (newValue: Payment | null) => {
 });
 
 const applyVoucher = async () => {
-  await fetchDetailCart(product?.value?.id ?? 0, voucher_code.value ?? '', amount.value ? Number(amount.value) : 0);
+  await fetchDetailCart(product?.value?.id ?? 0, voucher_code.value ?? '');
 };
-
-const debouncedFetchCart = useDebounceFn(async () => {
-  const num = Number(String(amount.value).replace(/[.,\s]/g, '') || 0);
-
-  if (!num || num <= 0 || !product.value?.id) return;
-
-  await fetchDetailCart(product.value.id, voucher_code.value ?? '', amount.value ? Number(amount.value) : 0);
-}, 500);
-
-// Watch perubahan amount
-watch(amount, () => {
-  debouncedFetchCart();
-});
 
 const payments = computed(() => appStore.payments);
 
 const onSubmit = handleSubmit(async (values) => {
+  const allValid = await ticketContainer.value?.validateAll();
+
+  if (!allValid) {
+    notify.warning('Lengkapi semua data pemegang tiket sebelum melanjutkan.');
+    return;
+  }
+
+  // lanjutkan submit checkout
+  console.log('All valid! Kirim ke backend...', finalTicketData.value);
   try {
     loadingStore.start();
     isLoading.value = true;
 
     const response = await apiSaforiginal.post<TransactionResponse>(urlApiCheckout, {
       product_id: product.value?.id,
-      amount: values.amount ?? 0,
+      amount: amountParams,
       voucher_code: values.voucher_code,
       payment_id: bank_id.value?.id,
+      tickets: finalTicketData.value,
     });
 
     const { message } = response;
     notify.success(message);
 
-    if (values.amount == '0') {
-      console.log(response.data.transaction.id);
-      router.replace(`/account/transactions/${response.data.transaction.id}`);
-    } else {
-      await router.replace({
-        path: '/event/payment/',
-        query: {
-          transaction_id: response.data.transaction.id,
-        },
-      });
-    }
+    await router.replace({
+      path: '/event/payment/',
+      query: {
+        transaction_id: response.data.transaction.id,
+      },
+    });
   } catch (error: any) {
     if (error?.code >= 500) {
       notify.error(error?.message);

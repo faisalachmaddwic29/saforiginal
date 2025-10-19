@@ -12,7 +12,7 @@
         <p class="font-semibold text-sm">{{ props.invoice }}</p>
         <p class="text-xs font-semibold">Rp. {{ currency(props.amount) }}</p>
       </div>
-      <p class="text-xs text-[#808187]">{{ formatDate(props.date).full_long_date_time }}</p>
+      <p v-if="props.date" class="text-xs text-[#808187]">{{ formatDate(props.date).full_long_date_time }}</p>
     </div>
 
     <!-- Status -->
@@ -57,7 +57,7 @@ const props = defineProps({
     required: true,
   },
   date: {
-    type: String,
+    type: [String, null],
     required: true,
   },
   status: {

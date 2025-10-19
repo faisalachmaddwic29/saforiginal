@@ -21,8 +21,16 @@
               'text-menu': !isActive(menu.to),
             }"
           >
-            <NuxtImg :src="isActive(menu.to) ? menu.icon_active : menu.icon" class="size-7" />
-            <p class="text-xs font-semibold">{{ menu.label }}</p>
+            <NuxtImg :src="isActive(menu.to) ? menu.icon_active : menu.icon" class="size-6" />
+            <p
+              class="text-xs"
+              :class="{
+                'font-medium': isActive(menu.to),
+                'font-normal': !isActive(menu.to),
+              }"
+            >
+              {{ menu.label }}
+            </p>
           </NuxtLink>
         </li>
       </ul>
@@ -48,12 +56,12 @@ const menus = ref([
     icon: '/images/menus/calendar-outline.svg',
     icon_active: 'images/menus/calendar.svg',
   },
-  // {
-  //   label: "Merchandise",
-  //   to: "/merchandise",
-  //   icon: "/images/menus/shopping-bag-outline.svg",
-  //   icon_active: "/images/menus/shopping-bag.svg",
-  // },
+  {
+    label: 'Merchandise',
+    to: '/merchandise',
+    icon: '/images/menus/shopping-bag-outline.svg',
+    icon_active: '/images/menus/shopping-bag.svg',
+  },
   {
     label: 'Event Saya',
     to: '/my-event',

@@ -10,11 +10,12 @@
       </div>
     </AppToolbar>
     <div class="p-4">
-      <div v-if="transactions.length" class="w-full mx-auto px-4">
+      <div v-if="transactions.length" class="w-full mx-auto px-4 md:px-0 flex flex-col gap-4">
         <div v-for="transaction in transactions" :id="transaction.id + '-transactions'" :key="transaction.id + '-transactions'">
           <CardMyEvent
             v-for="item in transaction?.details"
             :key="item.id"
+            :transaction-id="transaction.id"
             :thumbnail="item.product.cover"
             :title="item.product.title"
             :date="item.product.event_at"

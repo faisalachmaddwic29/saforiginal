@@ -23,6 +23,7 @@
             :is-full="true"
             :is-show-event="true"
             :slug="item.product?.slug"
+            :transaction-id="transaction.id"
           />
         </div>
 

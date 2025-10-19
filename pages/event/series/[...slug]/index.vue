@@ -14,13 +14,13 @@
 
     <!-- Ringkasan AND Episode -->
     <div class="md:px-4">
-      <Tabs default-value="ringkasan" class="w-full text-menu">
+      <Tabs default-value="ringkasan" class="w-full">
         <TabsList class="grid w-full grid-cols-2">
           <TabsTrigger value="ringkasan"> Ringkasan </TabsTrigger>
           <TabsTrigger value="episode"> Episode </TabsTrigger>
         </TabsList>
         <TabsContent value="ringkasan">
-          <ContentHtml class="text-sm md:text-base font-normal text-justify px-4" :content="product.description" />
+          <ContentHtml class="px-4 py-2" :content="product.description" />
         </TabsContent>
         <TabsContent value="episode">
           <div class="flex flex-col gap-4 px-4 py-2">
@@ -166,16 +166,15 @@ const dataInvestasi = [
 
 // Schema validasi Zod - hanya required
 const schema = z.object({
-  amount: z
-    .string()
-    .min(1, 'Jumlah wajib diisi')
-    .transform((val) => {
-      const numStr = val.replace(/[.,\s]/g, '');
-      const num = Number(numStr);
-      if (isNaN(num)) throw new Error('Nominal tidak valid');
-      return num;
-    })
-    .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
+  amount: z.string().min(1, 'Jumlah wajib diisi'),
+  // .transform((val) => {
+  //   const numStr = val.replace(/[.,\s]/g, '');
+  //   const num = Number(numStr);
+  //   if (isNaN(num)) throw new Error('Nominal tidak valid');
+  //   return num.toString();
+  // })
+  // // .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
+  // .refine((val) => val >= 0, 'Minimal nominal adalah 0'),
 });
 
 const { defineField, handleSubmit, errors } = useForm({
@@ -189,7 +188,7 @@ const [amount] = defineField('amount');
 
 const isSubmitDisabled = computed(() => {
   const num = Number(String(amount.value).replace(/[.,\s]/g, ''));
-  return !!errors.value?.amount || num < 10000 || isNaN(num);
+  return !!errors.value?.amount || num < 0 || isNaN(num);
 });
 
 const onSubmit = handleSubmit(async (values) => {

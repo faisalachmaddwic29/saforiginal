@@ -56,8 +56,8 @@
           <div class="flex flex-col gap-4 px-4 py-2">
             <div v-for="(item, index) in product.videos" :key="item.id" class="w-full block">
               <div class="flex items-center justify-between w-full gap-4 p-3 cursor-pointer border rounded-lg" :class="playVideo === item.url ? 'border-primary' : ''" @click="changeVideo(item.url)">
-                <div class="content-list w-full flex gap-4">
-                  <div class="w-[70px] h-[50px] bg-black rounded">
+                <div class="content-list w-full flex items-center gap-4">
+                  <div class="shrink-0 w-[70px] h-[50px] bg-black rounded">
                     <NuxtImg :src="getYoutubeImageUrl(item.url) ?? ''" :alt="item?.title + '-thumbnail'" class="h-full object-fill text-center m-auto" />
                   </div>
                   <div class="flex flex-col gap-1">
@@ -76,7 +76,51 @@
           <ContentHtml class="px-4 py-2" :content="product.description" />
         </TabsContent>
         <TabsContent value="investasi">
-          <p class="text-center">Masih Tahap Development</p>
+          <div class="px-4 py-2">
+            <div class="flex flex-col text-sm md:text-base space-y-2 divide-y-2 border-y-2 py-1">
+              <div class="flex justify-between pb-1">
+                <p>Tanggal Pembayaran</p>
+                <p>{{ transaction?.expired_at ? formatDate(transaction?.expired_at).full_long_date_time : '-' }}</p>
+              </div>
+              <div class="flex justify-between pb-1">
+                <p>Nomor Invoice</p>
+                <p>{{ transaction?.invoice_no ?? '-' }}</p>
+              </div>
+              <div class="flex flex-col pb-1">
+                <div class="flex justify-between pb-1">
+                  <p>Metode Pembayaran</p>
+                  <p class="uppercase">{{ transaction?.payment?.payment_method ?? '-' }}</p>
+                </div>
+                <div class="flex justify-between pb-1">
+                  <p>Nominal Transaksi</p>
+                  <p>{{ currency(transaction?.total ?? 0) }}</p>
+                </div>
+                <div v-if="transaction?.discount != null && parseFloat(transaction?.discount?.toString()) > 0" class="flex justify-between pb-1">
+                  <p>Diskon</p>
+                  <p>{{ currency(transaction?.discount ?? 0) }}</p>
+                </div>
+                <div
+                  v-if="transaction?.dpp != null && parseFloat(transaction?.dpp?.toString()) > 0 && transaction?.discount != null && parseFloat(transaction?.discount?.toString()) > 0"
+                  class="flex justify-between pb-1"
+                >
+                  <p>DPP</p>
+                  <p>{{ currency(transaction?.dpp ?? 0) }}</p>
+                </div>
+                <div v-if="transaction?.tax != null && parseFloat(transaction?.tax?.toString()) > 0" class="flex justify-between pb-1">
+                  <p>Pajak</p>
+                  <p>{{ currency(transaction?.tax ?? 0) }}</p>
+                </div>
+                <div v-if="transaction?.admin_fee != null && parseFloat(transaction?.admin_fee?.toString()) > 0" class="flex justify-between pb-1">
+                  <p>Biaya Admin</p>
+                  <p>{{ currency(transaction?.admin_fee ?? 0) }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-between pt-1 text-base md:text-lg font-bold">
+              <p>Total</p>
+              <p>{{ currency(transaction?.grand_total ?? 0) }}</p>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
@@ -84,8 +128,8 @@
 </template>
 
 <script setup lang="ts">
-import { urlApiProducts } from '~/constants';
-import type { Product, ProductResponse } from '~/types/api';
+import { urlApiTransactions } from '~/constants';
+import type { Product, Transaction, TransactionResponse } from '~/types/api';
 
 definePageMeta({
   layout: 'detail',
@@ -95,8 +139,9 @@ definePageMeta({
 
 const route = useRoute();
 
-const { data } = await apiSaforiginal.get<ProductResponse>(urlApiProducts + '/' + route.params.slug);
-const product: Product = data.product ?? {};
+const { data } = await apiSaforiginal.get<TransactionResponse>(urlApiTransactions + '/' + route.params.id);
+const product: Product = data.transaction?.details[0].product ?? {};
+const transaction: Transaction = data.transaction ?? {};
 // Pasang SEO langsung (server-rendered)
 
 // Pasang SEO langsung (server-rendered)

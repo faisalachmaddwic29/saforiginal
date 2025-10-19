@@ -1,14 +1,14 @@
 <template>
   <div
-    class="flex gap-4 -mx-4 md:mx-0 overflow-hidden md:rounded relative z-[1] p-4 md:p-6 backdrop-blur-lg shadow-md"
-    :class="{ 'pointer-events-none': props.isShowEvent, 'cursor-pointer': !props.isShowEvent }"
-    @click="goToDetail"
+    class="flex gap-4 -mx-4 md:mx-0 overflow-hidden md:rounded relative z-[1] p-4 md:p-3 backdrop-blur-lg shadow-md"
+    :class="{ 'cursor-pointer': !props.isShowEvent }"
+    @click="!props.isShowEvent ? goToDetail() : null"
   >
     <!-- BACKDROP -->
     <NuxtImg v-if="props.thumbnail" :src="props.thumbnail" :alt="props?.title + '-backdrop'" class="absolute inset-x-0 -z-[1] opacity-10 w-full top-1/2 filter blur-xs transform -translate-y-1/2" />
 
     <!-- THUMBNAIL -->
-    <div class="size-[130px] md:size-[180px] flex-shrink-0 aspect-[1/1]">
+    <div class="size-[130px] mdaspect-180px] flex-shrink-0 aspect-[1/1]">
       <NuxtImg :src="props?.thumbnail ?? ''" :alt="props?.title + '-thumbnail'" class="w-full rounded object-fill aspect-[1/1]" />
     </div>
 
@@ -28,7 +28,7 @@
       <!-- DATE -->
       <div v-if="props.date" class="w-max flex items-center text-xs gap-1 text-menu">
         <Icon name="heroicons-outline:calendar" class="size-6 text-xl md:text-2xl shrink-0" />
-        <span class="text-sm md:text-base">{{ formatDate(props.date) }}</span>
+        <span class="text-sm md:text-base">{{ props.date ? formatDate(props.date) : '' }}</span>
       </div>
 
       <!-- TYPE -->
@@ -60,6 +60,7 @@ interface EventCardProps {
   isFull?: boolean;
   isShowEvent?: boolean;
   slug?: string | null;
+  transactionId?: string | null;
 }
 
 // Define props
@@ -92,13 +93,16 @@ function goToDetail() {
   } else if (props.type === ProductType.ONLINE_EVENT) {
     router.push(`/event/online/${props.slug}`);
   } else {
-    router.push(`/event/series/${props.slug}`);
+    router.push(`/my-event/series/video/${props.transactionId}`);
   }
 }
-
 // Date formatter
 const formatDate = (date: string) => {
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
   return new Date(date).toLocaleDateString('id-ID', options);
 };
 </script>

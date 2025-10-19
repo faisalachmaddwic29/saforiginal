@@ -15,6 +15,7 @@ import { urlApiTransactions } from '~/constants';
 import type { Transaction, TransactionResponse } from '~/types/api';
 
 const route = useRoute();
+// const transactionId = route.query.transaction_id as string; // Pastikan id adalah string
 const transactionId = route.query.transaction_id as string; // Pastikan id adalah string
 const transaction = ref<Transaction>();
 const isLoading = ref(false);
@@ -33,6 +34,7 @@ const fetchStatusPayment = async () => {
     transaction.value = data.transaction;
   } catch (error) {
     console.error('Error fetching status payment:', error);
+    handleValidationError(error);
   } finally {
     isLoading.value = false;
   }
