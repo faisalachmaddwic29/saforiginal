@@ -3,7 +3,7 @@
     <AppToolbar>
       <div class="flex items-center px-5 h-full gap-5 justify-between">
         <AppLogoToHome />
-        <NuxtLink to="/event/search" class="w-6 h-6">
+        <NuxtLink id="home-search" to="/event/search" class="w-6 h-6">
           <Icon name="iconamoon:search" class="text-2xl text-[#627086]" />
         </NuxtLink>
       </div>
@@ -16,7 +16,7 @@
       </div>
 
       <!-- Category -->
-      <div class="py-5">
+      <div id="kategori-section" class="py-5">
         <LabelTitle label="Kategori" class="px-4" />
 
         <div class="overflow-x-auto flex whitespace-nowrap scrollbar-hide gap-4 pt-2.5 px-4">
@@ -26,7 +26,7 @@
       </div>
 
       <!-- Rekomendasi -->
-      <div class="">
+      <div id="event-rekomendasi" class="">
         <LabelTitle label="Event dan Series Rekomendasi" class="px-4" />
 
         <div class="overflow-x-auto flex whitespace-nowrap scrollbar-hide gap-4 pt-4 px-4">
@@ -87,9 +87,14 @@
 <script setup lang="ts">
 import { CardProduct, LabelWithOthers } from '#components';
 import Skeleton from '~/components/ui/skeleton/Skeleton.vue';
+import { useTour } from '~/composables/useTour';
 import { ProductType, toProductType } from '~/types/api';
 
 const title = 'Home';
+
+const home = ref<HTMLElement | null>(null);
+
+const { startTour, tourShown } = useTour();
 
 definePageMeta({
   layout: 'home',
@@ -110,6 +115,13 @@ onMounted(async () => {
   await appStore.fetchProductsEventSeries();
   await appStore.fetchProductsEventNewest([ProductType.ONLINE_EVENT, ProductType.OFFLINE_EVENT]);
   await appStore.fetchProductsSeries(ProductType.VIDEO_SERIES);
+
+  // Jalankan tour hanya jika belum pernah ditampilkan
+  if (!tourShown.value) {
+    setTimeout(() => {
+      startTour();
+    }, 800); // sedikit delay supaya DOM sudah siap
+  }
 });
 
 const detailTypeOthers = (type: ProductType[]) => {

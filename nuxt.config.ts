@@ -57,7 +57,7 @@ export default defineNuxtConfig({
      */
     componentDir: './components/ui'
   },
-  css: ['~/assets/css/tailwind.css', 'vue-sonner/style.css'],
+  css: ['~/assets/css/tailwind.css', 'vue-sonner/style.css', 'shepherd.js/dist/css/shepherd.css', '@/assets/css/shepherd-custom.css'],
   vite: {
     plugins: [
       tailwindcss(),

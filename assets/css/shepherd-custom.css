@@ -1,0 +1,39 @@
+/* Overlay gelap pekat dengan efek fokus */
+.shepherd-modal-overlay-container {
+  /* backdrop-filter: blur(2px); */
+  transition: background-color 0.3s ease;
+}
+
+/* Tambahan biar step card-nya tetap menonjol */
+.shepherd-element.shepherd-open {
+  z-index: 9999 !important;
+}
+/*
+.shepherd-content {
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: white;
+  color: black;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dark .shepherd-content {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+} */
+
+.shepherd-modal-overlay-container {
+  animation: fadeInOverlay 0.4s ease forwards;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    background-color: rgba(0, 0, 0, 0.85);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}

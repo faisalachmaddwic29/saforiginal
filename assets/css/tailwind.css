@@ -67,7 +67,7 @@
   --primary: #a07c4b;
   --secondary: #bd9e72;
   --background: oklch(1 0 0);
-  --footer: #F9F9F9;
+  --footer: #f9f9f9;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -105,7 +105,7 @@
   --info-foreground: #e5f7ff;
   --warning: #ffc409;
   --warning-foreground: #fff8e0;
-  --danger: #DC2626;
+  --danger: #dc2626;
   --danger-foreground: #f9e8ea;
 
   --subtle: #475569;
@@ -120,7 +120,7 @@
 
 .dark {
   --background: #0f172a;
-  --footer: #0D1528;
+  --footer: #0d1528;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);

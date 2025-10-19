@@ -50,8 +50,7 @@ defineExpose({ validateAll });
   <div class="space-y-6">
     <ContentTicketGroup v-for="ticket in props.tickets" :key="ticket.id" ref="groupRefs" :ticket="ticket" :user-login="props.userLogin" @update="onTicketUpdate" />
   </div>
-
-  <pre class="mt-6 bg-background p-4 rounded text-xs">
+  <!-- <pre class="mt-6 bg-background p-4 rounded text-xs">
     {{ JSON.stringify(finalResult, null, 2) }}
-  </pre>
+  </pre> -->
 </template>
