@@ -25,6 +25,8 @@ jobs:
        context: .
        push: true
        tags: fiksani/saforiginal_fe:latest
+       build-args: |
+        NODE_OPTIONS=--max-old-space-size=4096
 
   deploy:
     runs-on: ubuntu-latest
