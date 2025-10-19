@@ -6,6 +6,7 @@ export function formatDate(date: Date | string): {
   full_date_time_wib: string;
   full_date: string;
   time_wib: string;
+  time_only: string;
   full_long_date_time: string;
   full_day_long_date_time: string;
   time_seconds: string
@@ -50,6 +51,7 @@ export function formatDate(date: Date | string): {
   const full_date_time_wib = `${day} ${monthLong} ${year} | ${hour}.${minute} WIB`;
   const full_date = `${day} ${monthLong} ${year}`;
   const time_wib = `${hour}.${minute} WIB`;
+  const time_only = `${hour}:${minute}`;
   const full_long_date_time = `${day} ${monthLong} ${year} | ${hour}:${minute}`;
   const time_seconds = `${hour}:${minute}:${seconds}`;
   const full_day_long_date_time = `${dayName}, ${day} ${monthLong} ${year} | ${hour}:${minute}`;
@@ -62,6 +64,7 @@ export function formatDate(date: Date | string): {
     full_date_time_wib,
     full_date,
     time_wib,
+    time_only,
     full_long_date_time,
     full_day_long_date_time,
     time_seconds

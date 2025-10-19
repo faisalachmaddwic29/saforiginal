@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import type { User } from '~/types/auth';
 import type { TicketWithUsers } from '~/types/data';
 
 // props
 const props = defineProps({
-  tickets: { type: Array, required: true },
-  userLogin: { type: Object, required: true },
+  tickets: {
+    type: Array as PropType<TicketWithUsers[]>,
+    required: true,
+  },
+  userLogin: {
+    type: Object as PropType<User | null | undefined>,
+    required: false,
+  },
 });
 
 const emit = defineEmits(['update']);
@@ -41,7 +48,7 @@ defineExpose({ validateAll });
 
 <template>
   <div class="space-y-6">
-    <ContentTicketGroup v-for="ticket in props.tickets" :key="ticket.id" ref="groupRefs" :ticket="ticket" :registration-data="props.userLogin" @update="onTicketUpdate" />
+    <ContentTicketGroup v-for="ticket in props.tickets" :key="ticket.id" ref="groupRefs" :ticket="ticket" :user-login="props.userLogin" @update="onTicketUpdate" />
   </div>
 
   <pre class="mt-6 bg-background p-4 rounded text-xs">

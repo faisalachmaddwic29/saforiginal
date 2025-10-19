@@ -11,7 +11,7 @@
         :description="product?.description"
       />
     </div>
-    <ContentHtml class="text-menu px-4" :content="product.description" />
+    <ContentHtml class="px-4 pb-4" :content="product.description" />
 
     <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">

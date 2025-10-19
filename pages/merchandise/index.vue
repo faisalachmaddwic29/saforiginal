@@ -7,7 +7,7 @@
           <Icon name="iconamoon:search" class="text-2xl text-[#627086] mr-2" />
           <input type="text" placeholder="Masukan pencarian kamu" class="!cursor-pointer font-manrope bg-transparent placeholder-menu/30 text-menu text-base focus:outline-none w-full" readonly />
         </NuxtLink>
-        <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6 cursor-pointer" @click="handleFilter" />
+        <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6 cursor-pointer" />
       </div>
     </AppToolbar>
 

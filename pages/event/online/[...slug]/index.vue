@@ -5,41 +5,15 @@
         :id="product?.id"
         :title="product?.title"
         :thumbnail="product?.cover"
-        :type="product?.videos.length + ' Episode'"
+        type="Online Event"
         :date="product.event_at"
         :author="product?.store?.name"
         :description="product?.description"
       />
     </div>
 
-    <!-- Ringkasan AND Episode -->
-    <div class="md:px-4">
-      <Tabs default-value="ringkasan" class="w-full">
-        <TabsList class="grid w-full grid-cols-2">
-          <TabsTrigger value="ringkasan"> Ringkasan </TabsTrigger>
-          <TabsTrigger value="episode"> Episode </TabsTrigger>
-        </TabsList>
-        <TabsContent value="ringkasan">
-          <ContentHtml class="px-4 pt-2 pb-4" :content="product.description" />
-        </TabsContent>
-        <TabsContent value="episode">
-          <div class="flex flex-col gap-4 px-4 pt-2 pb-4">
-            <NuxtLink v-for="item in product.videos" :key="item.id" :to="item?.url ? `/event/series/video/${product.slug}` : undefined" class="w-full block">
-              <ListItem
-                :label="item.title"
-                :is-icon="false"
-                :right-icon="!item?.url ? 'heroicons:lock-closed' : 'ion:chevron-forward-outline'"
-                :class-name="'border rounded-md px-4 ' + (!item?.url ? '!cursor-not-allowed' : '')"
-              >
-                <template #icon>
-                  <Icon name="heroicons:video-camera" class="text-2xl size-6" />
-                </template>
-              </ListItem>
-            </NuxtLink>
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+    <!-- Description -->
+    <ContentHtml class="text-menu px-4" :content="product.description" />
 
     <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">
@@ -93,6 +67,7 @@
 </template>
 
 <script setup lang="ts">
+import { urlApiProducts } from '~/constants';
 import { z } from 'zod';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -107,7 +82,7 @@ definePageMeta({
 
 const route = useRoute();
 
-const { data } = await apiSaforiginal.get<ProductResponse>('/v1/products/' + route.params.slug);
+const { data } = await apiSaforiginal.get<ProductResponse>(urlApiProducts + '/' + route.params.slug);
 const product: Product = data.product ?? {};
 // Pasang SEO langsung (server-rendered)
 
@@ -195,7 +170,7 @@ const onSubmit = handleSubmit(async (values) => {
   // router.push('/event/series/checkout?amount=' + values.amount);
   // router.push('/event/series/' + route.params.slug + '/checkout', { query: { amount: values.amount } });
   router.push({
-    path: '/event/series/' + route.params.slug + '/checkout',
+    path: '/event/online/' + route.params.slug + '/checkout',
     query: { amount: values.amount },
   });
 });

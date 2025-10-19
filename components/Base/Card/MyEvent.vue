@@ -1,44 +1,53 @@
 <template>
   <div
     class="flex gap-4 -mx-4 md:mx-0 overflow-hidden md:rounded relative z-[1] p-4 md:p-3 backdrop-blur-lg shadow-md"
-    :class="{ 'cursor-pointer': !props.isShowEvent }"
-    @click="!props.isShowEvent ? goToDetail() : null"
+    :class="{ 'cursor-pointer': !props.isShowEvent && props.transactionId }"
+    @click="!props.isShowEvent && props.transactionId ? goToDetail() : null"
   >
     <!-- BACKDROP -->
-    <NuxtImg v-if="props.thumbnail" :src="props.thumbnail" :alt="props?.title + '-backdrop'" class="absolute inset-x-0 -z-[1] opacity-10 w-full top-1/2 filter blur-xs transform -translate-y-1/2" />
+    <NuxtImg
+      v-if="props.product?.cover"
+      :src="props.product?.cover"
+      :alt="props?.product?.title + '-backdrop'"
+      class="absolute inset-x-0 -z-[1] opacity-10 w-full top-1/2 filter blur-xs transform -translate-y-1/2"
+    />
 
     <!-- THUMBNAIL -->
     <div class="size-[130px] mdaspect-180px] flex-shrink-0 aspect-[1/1]">
-      <NuxtImg :src="props?.thumbnail ?? ''" :alt="props?.title + '-thumbnail'" class="w-full rounded object-fill aspect-[1/1]" />
+      <NuxtImg :src="props.product?.cover ?? ''" :alt="props?.product?.title + '-thumbnail'" class="w-full rounded object-fill aspect-[1/1]" />
     </div>
 
     <!-- CONTENT -->
     <div class="flex flex-col flex-1 min-w-0 gap-1.5 md:gap-2.5">
       <!-- TITLE -->
       <h3 class="text-sm md:text-base font-bold uppercase line-clamp-2">
-        {{ props.title }}
+        {{ props?.product?.title }}
       </h3>
 
       <!-- AUTHOR -->
-      <div class="w-max flex items-center text-xs gap-1 text-menu">
+      <div class="flex items-center text-xs gap-1 text-menu">
         <Icon name="heroicons-outline:user" class="size-6 text-xl md:text-2xl shrink-0" />
-        <span class="text-sm md:text-base">{{ props.author }}</span>
+        <span class="text-sm md:text-base">{{ props?.product?.store?.name }}</span>
       </div>
 
       <!-- DATE -->
-      <div v-if="props.date" class="w-max flex items-center text-xs gap-1 text-menu">
+      <div v-if="props?.product?.event_at" class="flex items-center text-xs gap-1 text-menu">
         <Icon name="heroicons-outline:calendar" class="size-6 text-xl md:text-2xl shrink-0" />
-        <span class="text-sm md:text-base">{{ props.date ? formatDate(props.date) : '' }}</span>
+        <span class="text-sm md:text-base">{{ props?.product?.event_at ? formatDate(props?.product?.event_at) : '' }}</span>
       </div>
 
       <!-- TYPE -->
-      <div v-if="props.type" class="w-max flex items-center text-xs gap-1 text-menu">
-        <Icon :name="getIconName(props.type)" class="size-6 text-xl md:text-2xl shrink-0" />
-        <span class="text-sm md:text-base capitalize">{{ formatType(props.type) }}</span>
+      <div v-if="props?.product?.type" class="flex items-center text-xs gap-1 text-menu">
+        <Icon :name="getIconName(props?.product?.type as ProductType)" class="size-6 text-xl md:text-2xl shrink-0" />
+        <span class="text-sm md:text-base capitalize break-all">{{ finalType }}</span>
       </div>
 
       <!-- Show Event -->
-      <button v-if="props.isShowEvent" class="border border-secondary rounded-md w-fit ml-auto py-1 px-3 flex justify-center items-center gap-1 cursor-pointer" @click="goToDetail()">
+      <button
+        v-if="props.isShowEvent && props.transactionId"
+        class="border border-secondary rounded-md w-fit ml-auto py-1 px-3 flex justify-center items-center gap-1 cursor-pointer"
+        @click="goToDetail()"
+      >
         <span class="text-sm md:text-base font-medium">Lihat Event</span>
       </button>
     </div>
@@ -46,25 +55,50 @@
 </template>
 
 <script setup lang="ts">
-import { ProductType } from '~/types/api';
+import { ProductType, type Product } from '~/types/api';
 
 const router = useRouter();
 // Props interface
-interface EventCardProps {
-  title?: string | undefined | null;
-  rating?: number | string | null;
-  author?: string | null;
-  date?: string | null;
-  type: ProductType | null;
-  thumbnail?: string | undefined | null;
-  isFull?: boolean;
-  isShowEvent?: boolean;
-  slug?: string | null;
-  transactionId?: string | null;
-}
-
 // Define props
-const props = defineProps<EventCardProps>();
+const props = defineProps({
+  product: {
+    type: Object as PropType<Product> | null | undefined,
+    required: true,
+  },
+  isFull: {
+    type: Boolean,
+    default: false,
+  },
+  isShowEvent: {
+    type: Boolean,
+    default: false,
+  },
+  transactionId: {
+    type: String,
+    default: null,
+  },
+  transactionStatus: {
+    type: String,
+    default: null,
+  },
+});
+
+const finalType = computed(() => {
+  switch (props.product?.type) {
+    case ProductType.ONLINE_EVENT:
+      return 'Online Event';
+    case ProductType.OFFLINE_EVENT:
+      return `${props?.product?.address}${props?.product?.location?.text ? `, ${props.product.location.text}` : ''}`;
+    case ProductType.VIDEO_SERIES:
+      return props?.product?.videos.length + ' Episode';
+    case ProductType.BOOK:
+      return 'mdi:book-open-page-variant-outline';
+    case ProductType.MERCHANDISE:
+      return 'mdi:tshirt-crew-outline';
+    default:
+      return 'mdi:tag-outline'; // fallback
+  }
+});
 
 function getIconName(type: ProductType): string {
   switch (type) {
@@ -83,17 +117,26 @@ function getIconName(type: ProductType): string {
   }
 }
 
-function formatType(type: ProductType): string {
-  return type.replace(/_/g, ' ');
-}
-
 function goToDetail() {
-  if (props.type === ProductType.OFFLINE_EVENT) {
-    router.push(`/event/offline/${props.slug}`);
-  } else if (props.type === ProductType.ONLINE_EVENT) {
-    router.push(`/event/online/${props.slug}`);
+  console.log(props?.transactionStatus);
+  if (props?.product?.type === ProductType.OFFLINE_EVENT) {
+    if (props?.transactionStatus == 'paid') {
+      router.push(`/my-event/offline/${props.transactionId}`);
+    } else {
+      router.push(`/event/offline/${props?.product?.slug}`);
+    }
+  } else if (props?.product?.type === ProductType.ONLINE_EVENT) {
+    if (props?.transactionStatus == 'paid') {
+      router.push(`/my-event/online/${props.transactionId}`);
+    } else {
+      router.push(`/event/online/${props?.product?.slug}`);
+    }
   } else {
-    router.push(`/my-event/series/video/${props.transactionId}`);
+    if (props?.transactionStatus == 'paid') {
+      router.push(`/my-event/series/${props.transactionId}`);
+    } else {
+      router.push(`/event/series/${props?.product?.slug}`);
+    }
   }
 }
 // Date formatter

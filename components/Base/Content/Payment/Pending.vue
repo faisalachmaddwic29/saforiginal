@@ -14,17 +14,7 @@
       <div class="w-full px-4 flex flex-col gap-4">
         <!-- product -->
         <div v-for="item in transaction.details" :key="item.id" class="flex flex-col gap-4">
-          <CardMyEvent
-            :title="item.product?.title"
-            :author="item.product?.store?.name"
-            :thumbnail="item.product?.cover"
-            :date="item.product?.event_at"
-            :type="toProductType(item.product?.type)"
-            :is-full="true"
-            :is-show-event="true"
-            :slug="item.product?.slug"
-            :transaction-id="transaction.id"
-          />
+          <CardMyEvent :product="item.product" :transaction-id="transaction.id" :is-show-event="true" :transaction-status="transaction.payment_status" />
         </div>
 
         <ContentPaymentDetailTransaction :transaction="transaction" />
@@ -53,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { toProductType, type Transaction } from '~/types/api';
+import type { Transaction } from '~/types/api';
 
 const router = useRouter();
 

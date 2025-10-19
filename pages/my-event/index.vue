@@ -12,17 +12,7 @@
     <div class="p-4">
       <div v-if="transactions.length" class="w-full mx-auto px-4 md:px-0 flex flex-col gap-4">
         <div v-for="transaction in transactions" :id="transaction.id + '-transactions'" :key="transaction.id + '-transactions'">
-          <CardMyEvent
-            v-for="item in transaction?.details"
-            :key="item.id"
-            :transaction-id="transaction.id"
-            :thumbnail="item.product.cover"
-            :title="item.product.title"
-            :date="item.product.event_at"
-            :slug="item.product.slug"
-            :author="item.product.store.name"
-            :type="toProductType(item.product.type)"
-          />
+          <CardMyEvent v-for="item in transaction?.details" :key="item.id" :transaction-id="transaction.id" :product="item.product" :transaction-status="transaction.payment_status" />
         </div>
 
         <!-- Trigger untuk observer - HANYA tampil jika belum last page dan tidak loading -->
@@ -54,7 +44,7 @@
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core';
 import { urlApiTransactions } from '~/constants';
-import { toProductType, type Transaction, type TransactionsResponse } from '~/types/api';
+import type { Transaction, TransactionsResponse } from '~/types/api';
 
 const title = 'My Event';
 definePageMeta({

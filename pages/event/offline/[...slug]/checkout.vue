@@ -121,39 +121,15 @@
 
     <div class="flex flex-col gap-2">
       <LabelSection>Data Tiket</LabelSection>
-      <!-- <div v-for="item in selectedTickets" :key="item.id" class="flex flex-col gap-2">
-        <p>{{ item.qty }}</p>
-      </div> -->
       <ClientOnly>
-        <ContentTicketContainer ref="ticketContainer" :tickets="selectedTickets" :user-login="user" @update="handleTicketUpdate" />
+        <ContentTicketContainer ref="ticketContainer" :tickets="selectedTickets ?? []" :user-login="user" @update="handleTicketUpdate" />
       </ClientOnly>
     </div>
 
     <hr />
 
-    <div class="border border-[#94A3B81F] rounded-xl p-3 bg-[#94A3B81F]">
-      <div class="flex items-center gap-4">
-        <!-- THUMBNAIL -->
-        <div class="size-20 bg-white rounded shrink-0 overflow-hidden">
-          <NuxtImg :src="product?.cover ?? ''" :alt="product?.cover + '-thumbnail'" class="w-full h-full object-fill" />
-        </div>
-
-        <!-- CONTENT -->
-        <div class="flex flex-col shrink-0 flex-1 min-w-0 gap-1 self-start">
-          <!-- TITLE -->
-          <h3 class="text-sm md:text-base uppercase font-bold">
-            {{ product?.title ?? '' }}
-          </h3>
-
-          <!-- Price -->
-          <ClientOnly>
-            <div v-if="cart?.total" class="flex text-menu items-start text-xs md:text-lg gap-1 md:gap-2">
-              <p>Rp</p>
-              <p>{{ currency(cart.total) }}</p>
-            </div>
-          </ClientOnly>
-        </div>
-      </div>
+    <div class="relative px-4 md:px-0">
+      <CardMyEvent :product="(product ?? {} as Product) ?? null" :is-full="true" />
     </div>
 
     <hr />
@@ -210,10 +186,9 @@
 import { z } from 'zod';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
-import { ClientOnly, ContentTicketContainer, LabelSection } from '#components';
-import type { Cart, CartResponse, Payment, Product, ProductResponse, TransactionResponse } from '~/types/api';
 import { urlApiCart, urlApiCheckout, urlApiProducts } from '~/constants';
 import type { TicketWithUsers } from '~/types/data';
+import type { Cart, CartResponse, Payment, Product, ProductResponse, TransactionResponse } from '~/types/api';
 
 const title = 'Checkout';
 
@@ -235,7 +210,9 @@ const router = useRouter();
 const slug = computed(() => route.params.slug);
 // const amountParams = Number(route.query.amount ?? 0);
 const amountParams = 0;
-const selectedTickets = Object.values(JSON.parse(route.query.selectedTickets as string));
+const selectedTickets = route.query.selectedTickets ? Object.values(JSON.parse(route.query.selectedTickets as string) as Record<string, TicketWithUsers>) : [];
+// const selectedTickets = Object.values(JSON.parse(route.query.selectedTickets as string));
+
 const isLoading = ref(false);
 const isLoadingCart = ref(false);
 const product = ref<Product>();

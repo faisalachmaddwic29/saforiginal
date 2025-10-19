@@ -36,13 +36,14 @@ import { watch } from 'vue';
 import { z } from 'zod';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+import type { User } from '~/types/auth';
 
 const props = defineProps({
   index: Number,
   ticketId: Number,
-  registrationData: {
-    type: Object,
-    required: true,
+  userLogin: {
+    type: Object as PropType<User | null | undefined>,
+    required: false,
   },
 });
 
@@ -69,9 +70,9 @@ const [phone] = defineField('phone');
 watch(sameAsRegistration, (val) => {
   if (val) {
     setValues({
-      name: props.registrationData.name,
-      email: props.registrationData.email,
-      phone: props.registrationData.phone,
+      name: props.userLogin?.name,
+      email: props.userLogin?.email,
+      phone: props.userLogin?.phone,
     });
   }
 });

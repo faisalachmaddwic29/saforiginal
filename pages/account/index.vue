@@ -1,6 +1,6 @@
 <template>
   <div class="relative pb-[60px]">
-    <div class="px-4 pt-[38px] pb-5 w-full">
+    <div class="px-4 pt-6 md:pt-[40px] pb-5 w-full">
       <ClientOnly>
         <div class="flex items-center gap-3 w-full">
           <!--profile -->
@@ -42,11 +42,11 @@
       </ClientOnly>
 
       <!-- list -->
-      <div class="list_items mb-5 mt-10">
+      <div class="list_items mt-4">
         <LabelTitle>Data Pribadi</LabelTitle>
 
-        <div class="mt-6 md:mt-8 mb-15">
-          <ul class="flex flex-col justify-between items-center gap-4 md:gap-6">
+        <div class="w-full mb-8 md:mb-10">
+          <ul class="flex flex-col justify-between items-center gap-2 md:gap-4">
             <NuxtLink v-for="item in items" :key="item.label" :to="item.to" class="w-full">
               <ListItem :label="item.label" :is-icon="false">
                 <template #icon>
@@ -67,7 +67,7 @@
           </DialogTrigger>
           <DialogContent class="sm:max-w-[425px] p-4 text-center">
             <DialogHeader>
-              <DialogTitle class="mb-5 m-auto">
+              <DialogTitle class="mb-4 m-auto">
                 <div class="text-center inline-flex p-3.5 items-center justify-center shrink-0 size-15 rounded-full text-danger bg-danger-foreground">
                   <Icon name="solar:danger-triangle-outline" class="text-4xl" />
                 </div>
@@ -89,9 +89,9 @@
         </Dialog>
       </div>
 
-      <InstallApps  />
+      <InstallApps />
 
-      <p class="font-inter text-menu mt-[85px] text-xs md:text-sm m-auto text-center mb-5">Copyright © 2025 saf-original, All rights reserved</p>
+      <p class="font-inter text-menu mt-[60px] md:mt-[85px] text-xs md:text-sm m-auto text-center mb-5 font-light">Copyright © 2025 saf-original, All rights reserved</p>
     </div>
   </div>
 </template>

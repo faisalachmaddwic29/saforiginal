@@ -53,7 +53,7 @@
           <TabsTrigger value="investasi"> Investasi </TabsTrigger>
         </TabsList>
         <TabsContent value="episode">
-          <div class="flex flex-col gap-4 px-4 py-2">
+          <div class="flex flex-col gap-4 px-4 pt-2 pb-4">
             <div v-for="(item, index) in product.videos" :key="item.id" class="w-full block">
               <div class="flex items-center justify-between w-full gap-4 p-3 cursor-pointer border rounded-lg" :class="playVideo === item.url ? 'border-primary' : ''" @click="changeVideo(item.url)">
                 <div class="content-list w-full flex items-center gap-4">
@@ -73,10 +73,10 @@
           </div>
         </TabsContent>
         <TabsContent value="ringkasan">
-          <ContentHtml class="px-4 py-2" :content="product.description" />
+          <ContentHtml class="px-4 pt-2 pb-4" :content="product.description" />
         </TabsContent>
         <TabsContent value="investasi">
-          <div class="px-4 py-2">
+          <div class="px-4 pt-2 pb-4">
             <div class="flex flex-col text-sm md:text-base space-y-2 divide-y-2 border-y-2 py-1">
               <div class="flex justify-between pb-1">
                 <p>Tanggal Pembayaran</p>

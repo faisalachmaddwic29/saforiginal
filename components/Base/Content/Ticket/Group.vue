@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import type { TicketUser } from '~/types/data';
+import type { User } from '~/types/auth';
+import type { TicketUser, TicketWithUsers } from '~/types/data';
 
+// props
 const props = defineProps({
-  ticket: { type: Object, required: true },
-  registrationData: { type: Object, required: true },
+  ticket: {
+    type: Object as PropType<TicketWithUsers>,
+    required: true,
+  },
+  userLogin: {
+    type: Object as PropType<User | null | undefined>,
+    required: false,
+  },
 });
 
 const emit = defineEmits(['update']);
@@ -42,12 +50,12 @@ defineExpose({ validateAll });
 
     <div class="space-y-4">
       <ContentTicketForm
-        v-for="i in ticket.qty"
+        v-for="i in props.ticket.qty"
         :key="`ticket-form-${props.ticket.id}-${i}`"
         ref="formRefs"
         :index="i"
         :ticket-id="ticket.id"
-        :registration-data="props.registrationData"
+        :user-login="props.userLogin"
         @change="onFormChange(i - 1, $event)"
       />
     </div>

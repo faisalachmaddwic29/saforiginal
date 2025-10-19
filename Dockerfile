@@ -6,6 +6,8 @@ WORKDIR /usr/src/app
 
 # Copy dependency files
 COPY package.json ./
+COPY .env.production .env
+
 
 # Pastikan bersih & install dependencies
 RUN rm -f package-lock.json && \
