@@ -1,27 +1,27 @@
-# Gunakan Node Debian stable slim
-FROM node:22-bullseye-slim
+# Gunakan versi stabil
+FROM node:22-alpine
 
 # Set working directory
 WORKDIR /usr/src/app
 
-# Set Node heap lebih besar (misal 4GB) untuk Nuxt build besar
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # Copy dependency files
-COPY package.json package-lock.json ./
+COPY package.json ./
 
-# Install dependencies
-RUN rm -rf node_modules package-lock.json
-RUN npm install --legacy-peer-deps
+# Pastikan bersih & install dependencies
+RUN rm -f package-lock.json && \
+    rm -rf node_modules && \
+    npm install --legacy-peer-deps
 
-# Copy semua source code
+# Copy semua file setelah install dependencies
 COPY . .
 
-# Build Nuxt app
+# Build aplikasi
 RUN npm run build --verbose
 
-# Install PM2 globally untuk runtime
+# Install PM2 runtime secara global
 RUN npm install -g pm2
 
-# Jalankan server Nuxt via PM2
+# Jalankan aplikasi menggunakan PM2
 CMD ["pm2-runtime", "./.output/server/index.mjs"]
