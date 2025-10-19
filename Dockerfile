@@ -11,7 +11,8 @@ ENV NODE_OPTIONS="--max-old-space-size=4096"
 COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm ci --legacy-peer-deps
+RUN rm -rf node_modules package-lock.json
+RUN npm install --legacy-peer-deps
 
 # Copy semua source code
 COPY . .
