@@ -1,25 +1,27 @@
-# Gunakan versi stabil
 FROM node:22-alpine
 
-# Set working directory
 WORKDIR /usr/src/app
 
+# Set heap lebih besar
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+# Install build tools supaya native module bisa compile
+RUN apk add --no-cache python3 make g++ libc6-compat bash git
+
 # Copy dependency files
-COPY package.json ./
+COPY package.json package-lock.json ./
 
-# Pastikan bersih & install dependencies
-RUN rm -f package-lock.json && \
-    rm -rf node_modules && \
-    npm install --legacy-peer-deps
+# Install dependencies
+RUN rm -rf node_modules && npm install --legacy-peer-deps
 
-# Copy semua file setelah install dependencies
+# Copy seluruh source
 COPY . .
 
-# Build aplikasi
+# Build Nuxt
 RUN npm run build --verbose
 
-# Install PM2 runtime secara global
+# Install PM2
 RUN npm install -g pm2
 
-# Jalankan aplikasi menggunakan PM2
+# Jalankan Nuxt server
 CMD ["pm2-runtime", "./.output/server/index.mjs"]
