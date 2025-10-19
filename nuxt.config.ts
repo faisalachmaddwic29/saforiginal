@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   runtimeConfig: {
     public: {
-      apiUrl: process.env.NUXT_API_URL,
+      apiUrl: process.env.NUXT_API_URL || 'https://saf-api.mandatech.co.id/api',
     },
   },
   modules: [
