@@ -5,6 +5,7 @@ export interface Attendee {
   email: string;
   phone: string;
   ticket_code: string;
+  ticket_qrcode_url: string;
   checked_in: boolean;
   checked_in_at: string | null;
   created_at: string;

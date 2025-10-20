@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware((to) => {
   const authStore = useAuthStore();
 
-  // Kalau belum ada user, ambil dari cookie
+  // Ambil user dari cookie kalau belum ada
   if (!authStore.user) {
     const userCookie = useCookie('user');
     if (userCookie.value) {
@@ -9,18 +9,18 @@ export default defineNuxtRouteMiddleware((to) => {
     }
   }
 
-  // Cek apakah user sudah login
+  // Cek login
   if (!authStore.isLoggedIn) {
-    // Simpan URL tujuan untuk redirect setelah login
-    const redirectTo = to.fullPath !== '/login' ? to.fullPath : undefined;
+    const redirectTo =
+      to.fullPath !== '/login' ? encodeURIComponent(to.fullPath) : undefined;
 
     return navigateTo({
       path: '/login',
-      query: redirectTo ? { redirect: redirectTo } : {}
+      query: redirectTo ? { redirect: redirectTo } : {},
     });
   }
 
-  // Cek apakah token expired
+  // Token expired
   if (authStore.isTokenExpired) {
     authStore.logout({ redirectTo: '/login' });
     return;

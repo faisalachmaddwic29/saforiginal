@@ -132,6 +132,7 @@ onMounted(() => {
   }
 });
 
+const route = useRoute();
 const appStore = useAppStore();
 const preferences = ref<PreferenceItem[]>([]);
 
@@ -254,7 +255,7 @@ const onSubmit = handleSubmit(
         name: values.name,
         email: values.email,
         phone: registrationStore.phone,
-        location_id: values.address?.value,
+        location_id: values?.address?.value ?? '',
         gender: values.gender,
       });
 
@@ -276,7 +277,11 @@ const onSubmit = handleSubmit(
       if (preferences.value.length <= 0) {
         navigateTo('/preferences', { replace: true });
       } else {
-        navigateTo('/', { replace: true });
+        // navigateTo('/', { replace: true });
+        // Ambil redirect dari query dan decode
+        const redirect = route.query.redirect ? decodeURIComponent(route.query.redirect as string) : '/';
+
+        await navigateTo(redirect);
       }
 
       // Redirect setelah berhasil

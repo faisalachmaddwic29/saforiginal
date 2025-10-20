@@ -1,12 +1,12 @@
 <template>
-  <div class="relative flex flex-col gap-5 mb-4">
-    <div v-for="item in props.data" :key="item.id" class="relative bg-background w-full p-4 rounded-[20px] flex flex-col gap-5 shadow-xl overflow-hidden">
+  <div v-for="item in props.data" :key="item.id" class="relative flex flex-col gap-5 mb-4">
+    <div v-for="(attendee, index) in item?.attendees" :key="attendee.id" class="relative bg-background w-full p-4 rounded-[20px] flex flex-col gap-5 shadow-xl overflow-hidden">
       <NuxtImg src="/images/tickets/bg-text.png" alt="bg-text" class="absolute inset-0 w-full" />
       <div class="flex flex-col gap-5 justify-center items-center">
         <NuxtImg src="/images/logos/logo.svg" alt="logo" class="w-[160px] h-auto" />
 
-        <div class="border border-primary rounded w-[180px] md:w-[240px] aspect-[1/1]">
-          <NuxtImg src="/images/tickets/barcode.png" alt="barcode" class="size-full" />
+        <div class="border border-primary rounded w-[190px] md:w-[250px] aspect-[1/1] p-3">
+          <NuxtImg :src="attendee?.ticket_qrcode_url" alt="barcode" class="size-full" />
         </div>
       </div>
 
@@ -33,8 +33,7 @@
 
       <!-- Attendees -->
       <div class="flex flex-col gap-5 divide-y-1 divide-dashed divide-primary">
-        <div v-for="(attendee, index) in item?.attendees" :key="attendee.id" class="pb-5">
-          <p v-if="item?.attendees?.length != 1" class="font-bold pb-3 text-primary">Peserta {{ index + 1 }}</p>
+        <div class="pb-5">
           <div class="grid grid-cols-2 gap-5">
             <div class="flex flex-col gap-1">
               <p class="text-menu">Nama</p>

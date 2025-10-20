@@ -112,7 +112,7 @@
     </div>
     <p class="text-xs md:text-sm text-[#1E293B] dark:text-[#94A3B8]">
       Sudah punya akun?
-      <NuxtLink to="/login-password" class="text-primary font-bold pl-0.5">Masuk disini</NuxtLink>
+      <NuxtLink :to="{ path: '/login-password', query: $route.query }" class="text-primary font-bold pl-0.5">Masuk disini</NuxtLink>
     </p>
 
     <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
@@ -143,6 +143,7 @@ definePageMeta({
   title: title,
 });
 
+const route = useRoute();
 const appStore = useAppStore();
 const isLoading = ref(false);
 const showPassword = ref(false);
@@ -284,7 +285,10 @@ const onSubmit = handleSubmit(
 
       // Redirect setelah berhasil
       registrationStore.setPhone(values.phone);
-      await navigateTo('/otp-password');
+      await navigateTo({
+        path: '/otp-password',
+        query: route.query, // ⬅️ bawa redirect dari login
+      });
     } catch (error: any) {
       handleValidationError(error, setErrors);
 

@@ -28,9 +28,11 @@
       </div>
     </div>
 
-    <NuxtLink to="/forgot-password" class="mb-8 text-xs md:text-sm text-primary font-bold">Lupa password?</NuxtLink>
+    <NuxtLink :to="{ path: '/forgot-password', query: $route.query }" class="mb-8 text-xs md:text-sm text-primary font-bold">Lupa password?</NuxtLink>
 
-    <p class="text-xs md:text-sm text-[#1E293B] dark:text-menu">Belum punya akun? <NuxtLink to="/registration-password" class="text-primary font-bold pl-0.5">Daftar sekarang</NuxtLink></p>
+    <p class="text-xs md:text-sm text-[#1E293B] dark:text-menu">
+      Belum punya akun? <NuxtLink :to="{ path: '/registration-password', query: $route.query }" class="text-primary font-bold pl-0.5">Daftar sekarang</NuxtLink>
+    </p>
 
     <div class="fixed w-full z-10 bottom-0 left-0 bg-background shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
       <AppContainer class="p-4">
@@ -61,6 +63,7 @@ useSeoMeta({
   title: title,
 });
 
+const route = useRoute();
 const showPassword = ref(false);
 const isLoading = ref(false);
 
@@ -123,7 +126,10 @@ const onSubmit = handleSubmit(async (values) => {
     console.log('Login response:', response);
 
     // Redirect setelah berhasil
-    await navigateTo('/');
+    // Ambil redirect dari query dan decode
+    const redirect = route.query.redirect ? decodeURIComponent(route.query.redirect as string) : '/';
+
+    await navigateTo(redirect);
   } catch (error: any) {
     handleValidationError(error, setErrors);
 

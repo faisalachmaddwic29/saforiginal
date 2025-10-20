@@ -70,6 +70,7 @@ useSeoMeta({
 });
 
 // Di script setup
+const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
@@ -147,7 +148,9 @@ const onSubmit = handleSubmit(async (values) => {
     const { message } = response;
     notify.success(message);
 
-    navigateTo('/');
+    const redirect = route.query.redirect ? decodeURIComponent(route.query.redirect as string) : '/';
+
+    await navigateTo(redirect, { replace: true });
 
     // Redirect setelah berhasil
     // await navigateTo('/');

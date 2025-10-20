@@ -39,6 +39,7 @@ useSeoMeta({
 });
 
 // Di script setup
+const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
@@ -121,7 +122,11 @@ const onSubmit = handleSubmit(async (values) => {
     if (preferences.value.length <= 0) {
       navigateTo('/preferences', { replace: true });
     } else {
-      navigateTo('/', { replace: true });
+      // navigateTo('/', { replace: true });
+      // Ambil redirect dari query dan decode
+      const redirect = route.query.redirect ? decodeURIComponent(route.query.redirect as string) : '/';
+
+      await navigateTo(redirect);
     }
   } catch (error: any) {
     handleValidationError(error, setErrors);

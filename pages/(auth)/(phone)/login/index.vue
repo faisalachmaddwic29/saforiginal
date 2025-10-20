@@ -23,7 +23,7 @@
           </div>
 
           <div class="pt-5">
-            <NuxtLink to="/login-password" class="inline-block w-full cursor-pointer">
+            <NuxtLink :to="{ path: '/login-password', query: $route.query }" class="inline-block w-full cursor-pointer">
               <Button class="w-full" type="button" variant="outline-primary">Masuk dengan password</Button>
             </NuxtLink>
           </div>
@@ -55,6 +55,7 @@ useSeoMeta({
   title: 'Login',
 });
 
+const route = useRoute();
 const isLoading = ref(false);
 
 // Schema validasi Zod - hanya required
@@ -94,11 +95,17 @@ const onSubmit = handleSubmit(async (values) => {
     if (data?.is_registered ?? false) {
       // Redirect setelah berhasil
       loginStore.setPhone(values.phone);
-      await navigateTo('/otp');
+      await navigateTo({
+        path: '/otp',
+        query: route.query, // ⬅️ bawa redirect dari login
+      });
     } else {
       // Redirect setelah berhasil
       registrationStore.setPhone(values.phone);
-      await navigateTo('/registration');
+      await navigateTo({
+        path: '/registration',
+        query: route.query, // ⬅️ bawa redirect dari login
+      });
     }
     notify.success(message);
   } catch (error: any) {
