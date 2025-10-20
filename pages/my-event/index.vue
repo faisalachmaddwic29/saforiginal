@@ -6,13 +6,14 @@
           <Icon name="iconamoon:search" class="text-2xl text-[#627086] mr-2" />
           <input type="text" placeholder="Masukan pencarian kamu" class="!cursor-pointer font-manrope bg-transparent placeholder-menu/30 text-menu text-base focus:outline-none w-full" readonly />
         </NuxtLink>
-        <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6 cursor-pointer" />
+        <!-- <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6 cursor-pointer" /> -->
       </div>
     </AppToolbar>
     <div class="p-4">
       <div v-if="transactions.length" class="w-full mx-auto px-4 md:px-0 flex flex-col gap-4">
         <div v-for="transaction in transactions" :id="transaction.id + '-transactions'" :key="transaction.id + '-transactions'">
-          <CardMyEvent v-for="item in transaction?.details" :key="item.id" :transaction-id="transaction.id" :product="item.product" :transaction-status="transaction.payment_status" />
+          <!-- <CardMyEvent v-for="item in transaction?.details" :key="item.id" :transaction-id="transaction.id" :product="item.product" :transaction-status="transaction.payment_status" /> -->
+          <CardMyEvent :transaction-id="transaction.id" :product="transaction.details[0].product" :transaction-status="transaction.payment_status" />
         </div>
 
         <!-- Trigger untuk observer - HANYA tampil jika belum last page dan tidak loading -->
@@ -135,7 +136,7 @@ const buildParams = ({
 
   params.append('payment_status', 'paid');
   params.append('page', String(page.value));
-  params.append('per_page', '4');
+  params.append('per_page', '3');
   params.append('sort', '-created_at');
 
   return params.toString();

@@ -1,6 +1,6 @@
 <template>
   <div v-for="item in props.data" :key="item.id" class="relative flex flex-col gap-5 mb-4">
-    <div v-for="(attendee, index) in item?.attendees" :key="attendee.id" class="relative bg-background w-full p-4 rounded-[20px] flex flex-col gap-5 shadow-xl overflow-hidden">
+    <div v-for="attendee in item?.attendees" :key="attendee.id" class="relative bg-background w-full p-4 rounded-[20px] flex flex-col gap-5 shadow-xl overflow-hidden">
       <NuxtImg src="/images/tickets/bg-text.png" alt="bg-text" class="absolute inset-0 w-full" />
       <div class="flex flex-col gap-5 justify-center items-center">
         <NuxtImg src="/images/logos/logo.svg" alt="logo" class="w-[160px] h-auto" />

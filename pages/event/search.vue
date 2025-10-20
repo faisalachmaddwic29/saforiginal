@@ -130,9 +130,19 @@ const fetchEvents = async (isNewSearch = false) => {
 
     if (data.products && data.products.length > 0) {
       items.value.push(...data.products);
+
+      // Update page untuk next request
       page.value++;
+
+      // Check apakah sudah last page
+      if (data.meta && data.meta.current_page >= data.meta.last_page) {
+        isLastPage.value = true;
+        // console.log('Reached last page');
+      }
     } else {
+      // Jika tidak ada data, tandai sebagai last page
       isLastPage.value = true;
+      // console.log('No more data available');
     }
   } catch (error) {
     console.error('Error fetching search products:', error);
@@ -154,6 +164,9 @@ watchDebounced(
 
     if (searchQuery.value.trim().length > 2) {
       fetchEvents(true); // ⬅️ New search
+    } else if (searchQuery.value.trim().length === 0) {
+      isFirstTimeShowing.value = true;
+      isLoadingEventsBest.value = false;
     }
   },
   { debounce: 500, maxWait: 1000 }

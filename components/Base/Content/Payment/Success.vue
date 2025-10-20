@@ -13,9 +13,9 @@
 
       <div class="w-full px-4 flex flex-col gap-4 pb-18">
         <!-- product -->
-        <div v-for="item in transaction.details" :key="item.id" class="flex flex-col gap-4">
-          <CardMyEvent :product="item.product" :transaction-id="transaction.id" :is-show-event="true" :transaction-status="transaction.payment_status" />
-        </div>
+        <CardMyEvent :product="transaction.details[0].product" :transaction-id="transaction.id" :is-show-event="true" :transaction-status="transaction.payment_status" />
+        <!-- <div v-for="item in transaction.details" :key="item.id" class="flex flex-col gap-4">
+        </div> -->
 
         <ContentPaymentDetailTransaction :transaction="transaction" />
       </div>
