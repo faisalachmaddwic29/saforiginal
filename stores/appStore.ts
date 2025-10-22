@@ -6,7 +6,7 @@ export const useAppStore = defineStore("app", {
   state: () => ({
     locations: [] as Locations,
     categories: [] as Categories,
-    popup: {} as Banner | object,
+    popup: {} as Partial<Banner>,
     showPopup: false,
     banners: [] as Banners,
     productsEventNewest: [] as Products,
