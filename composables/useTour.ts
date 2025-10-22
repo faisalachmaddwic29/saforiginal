@@ -1,13 +1,14 @@
 import { useState, onMounted } from '#imports'
 import Shepherd from 'shepherd.js'
 import 'shepherd.js/dist/css/shepherd.css'
+import { localStorageInitTour } from '~/constants'
 
 export const useTour = () => {
-  const tourShown = useState<boolean>('tour-shown', () => false)
+  const tourShown = useState<boolean>(localStorageInitTour, () => false)
 
   const startTour = () => {
     // kalau sudah pernah dijalankan, langsung return
-    if (tourShown.value || localStorage.getItem('tour-shown') === 'true') return
+    if (tourShown.value || localStorage.getItem(localStorageInitTour) === 'true') return
 
     const tour = new Shepherd.Tour({
       useModalOverlay: true,
@@ -92,7 +93,7 @@ export const useTour = () => {
           classes: '!bg-secondary text-white !text-sm rounded-md px-3 py-1 !hover:bg-primary',
           action: () => {
             tour.complete()
-            localStorage.setItem('tour-shown', 'true')
+            localStorage.setItem(localStorageInitTour, 'true')
             tourShown.value = true
           },
         },
@@ -105,7 +106,7 @@ export const useTour = () => {
 
   // saat halaman pertama kali dimount, ambil status dari localStorage
   onMounted(() => {
-    const stored = localStorage.getItem('tour-shown')
+    const stored = localStorage.getItem(localStorageInitTour)
     if (stored === 'true') {
       tourShown.value = true
     }
