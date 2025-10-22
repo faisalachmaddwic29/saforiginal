@@ -141,15 +141,17 @@ const dataInvestasi = [
 
 // Schema validasi Zod - hanya required
 const schema = z.object({
-  amount: z.string().min(1, 'Jumlah wajib diisi'),
-  // .transform((val) => {
-  //   const numStr = val.replace(/[.,\s]/g, '');
-  //   const num = Number(numStr);
-  //   if (isNaN(num)) throw new Error('Nominal tidak valid');
-  //   return num.toString();
-  // })
-  // // .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
-  // .refine((val) => val >= 0, 'Minimal nominal adalah 0'),
+  amount: z
+    .string()
+    .min(1, 'Jumlah wajib diisi')
+    .transform((val) => {
+      const numStr = val.replace(/[.,\s]/g, '');
+      const num = Number(numStr);
+      if (isNaN(num)) throw new Error('Nominal tidak valid');
+      return num;
+    })
+    .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
+  // Kalau mau minimal 10.000, tinggal ubah jadi:
 });
 
 const { defineField, handleSubmit, errors } = useForm({

@@ -207,14 +207,16 @@ const product = ref<Product>();
 const cart = ref<Cart>();
 
 const schema = z.object({
-  amount: z.string().min(1, 'Jumlah wajib diisi'),
-  // .transform((val) => {
-  //   const numStr = val.replace(/[.,\s]/g, '');
-  //   const num = Number(numStr);
-  //   if (isNaN(num)) throw new Error('Nominal tidak valid');
-  //   return num;
-  // })
-  // .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
+  amount: z
+    .string()
+    .min(1, 'Jumlah wajib diisi')
+    .transform((val) => {
+      const numStr = val.replace(/[.,\s]/g, '');
+      const num = Number(numStr);
+      if (isNaN(num)) throw new Error('Nominal tidak valid');
+      return num;
+    })
+    .refine((val) => val >= 10000, 'Minimal nominal adalah 10.000'),
   voucher_code: z.string().optional(),
   bank: z
     .object({
@@ -344,7 +346,7 @@ const onSubmit = handleSubmit(async (values) => {
     const { message } = response;
     notify.success(message);
 
-    if (values.amount == '0') {
+    if (values.amount == 0) {
       console.log(response.data.transaction.id);
       router.replace(`/account/transactions/${response.data.transaction.id}`);
     } else {
