@@ -49,7 +49,7 @@
           :class="{ 'pl-4': !hasStarted && item?.file_path === slides[1].file_path }"
         >
           <div class="w-full h-36 md:h-48 bg-primary/40 my-2 shadow-[0px_0px_4px_2px_rgba(0,0,0,0.09)] rounded-xl overflow-hidden flex items-center">
-            <NuxtImg :src="item?.file_path" class="size-full object-cover m-auto" alt="carousel image" loading="lazy" draggable="false" @click="item?.file_path ? linkNewTab(item.file_path) : null" />
+            <NuxtImg :src="item?.file_path" class="size-full object-cover m-auto" alt="carousel image" loading="lazy" draggable="false" @click="item?.url ? linkNewTab(item.url) : null" />
           </div>
         </div>
       </div>

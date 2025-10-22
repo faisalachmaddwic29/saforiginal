@@ -4,10 +4,15 @@ export interface Banner {
   file_path: string;
   publish: boolean;
   time_to_show: string; // Format "HH:mm:ss"
+  url: string | null;
 }
 
 export type Banners = Banner[];
 
 export interface BannerResponse {
   popups: Banner[] | [];
+}
+
+export interface PopupResponse {
+  popup: Banner | null;
 }

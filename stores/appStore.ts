@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
-import { urlApiBanks, urlApiBannerSlider, urlApiCategories, urlApiLocations, urlApiPayments, urlApiProducts, urlApiTransactions } from '~/constants';
-import type { Categories, CategoriesResponse, Locations, ProductTimeType, Products, ProductsResponse, ProductType, LocationsResponse, Banks, BanksResponse, Payments, PaymentsResponse, Banners, BannerResponse, Transactions, TransactionsResponse } from '~/types/api';
+import { urlApiBanks, urlApiBannerPopup, urlApiBannerSlider, urlApiCategories, urlApiLocations, urlApiPayments, urlApiProducts, urlApiTransactions } from '~/constants';
+import type { Categories, CategoriesResponse, Locations, ProductTimeType, Products, ProductsResponse, ProductType, LocationsResponse, Banks, BanksResponse, Payments, PaymentsResponse, Banners, BannerResponse, Transactions, TransactionsResponse, Banner, PopupResponse } from '~/types/api';
 
 export const useAppStore = defineStore("app", {
   state: () => ({
     locations: [] as Locations,
     categories: [] as Categories,
+    popup: {} as Banner | object,
+    showPopup: false,
     banners: [] as Banners,
     productsEventNewest: [] as Products,
     productsSeries: [] as Products,
@@ -32,7 +34,8 @@ export const useAppStore = defineStore("app", {
     isProductsByLocationLoaded: false,
     isProductsByTypeLoaded: false,
     isBannerSliderLoaded: false,
-    isTrasanctionsLoaded: false
+    isTrasanctionsLoaded: false,
+    isPopupsLoaded: false,
   }),
   actions: {
     async fetchLocations() {
@@ -41,6 +44,20 @@ export const useAppStore = defineStore("app", {
       const { data } = await apiSaforiginal.get<LocationsResponse>(urlApiLocations);
       this.locations = data?.locations ?? [];
       this.isLocationsLoaded = true;
+    },
+    async fetchPopup() {
+      if (this.isPopupsLoaded) return;
+
+      try {
+        const { data } = await apiSaforiginal.get<PopupResponse>(urlApiBannerPopup);
+        this.showPopup = true;
+        this.popup = data?.popup ?? {};
+        this.isPopupsLoaded = true;
+      } catch (error) {
+        this.popup = {};
+        this.showPopup = false;
+        console.error('Error fetching popup:', error);
+      }
     },
     async fetchBanners() {
       if (this.isBannerSliderLoaded) return;
@@ -143,6 +160,7 @@ export const useAppStore = defineStore("app", {
       this.categories = [] as Categories;
       this.payments = [] as Payments;
       this.banners = [] as Banners;
+      this.popup = {} as Banner | object;
       this.banks = [] as Banks;
       this.productsEventNewest = [] as Products;
       this.productsByCategory = [] as Products;
@@ -161,7 +179,9 @@ export const useAppStore = defineStore("app", {
       this.isPaymentsLoaded = false;
       this.isBanksLoaded = false;
       this.isBannerSliderLoaded = false;
-      this.isTrasanctionsLoaded = false
+      this.isTrasanctionsLoaded = false;
+      this.isPopupsLoaded = false;
+      this.showPopup = false;
     }
   },
 });

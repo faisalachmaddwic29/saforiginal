@@ -1,5 +1,6 @@
 <template>
-  <div ref="home">
+  <div ref="home" class="relative w-full">
+    <AppPopup />
     <AppToolbar>
       <div class="flex items-center px-5 h-full gap-5 justify-between">
         <AppLogoToHome />

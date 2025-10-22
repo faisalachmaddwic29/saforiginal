@@ -2,6 +2,7 @@
 const urlApiPreferences = '/v1/preferences';
 const urlApiTags = '/v1/tags';
 const urlApiBannerSlider = '/v1/banner/sliders';
+const urlApiBannerPopup = '/v1/banner/popup';
 
 const urlApiLocations = '/v1/locations';
 const urlApiBanks = '/v1/banks';
@@ -17,4 +18,4 @@ const urlApiCheckout = '/v1/checkout';
 const urlApiTransactions = '/v1/transactions';
 
 
-export { urlApiPreferences, urlApiTags, urlApiLocations, urlApiCategories, urlApiProducts, urlApiBanks, urlApiPayments, urlApiCheckout, urlApiCart, urlApiBannerSlider, urlApiTransactions };
+export { urlApiPreferences, urlApiTags, urlApiLocations, urlApiCategories, urlApiProducts, urlApiBanks, urlApiPayments, urlApiCheckout, urlApiCart, urlApiBannerSlider, urlApiTransactions, urlApiBannerPopup };
