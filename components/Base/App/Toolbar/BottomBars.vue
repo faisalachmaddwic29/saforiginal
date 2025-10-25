@@ -56,12 +56,12 @@ const menus = ref([
     icon: '/images/menus/calendar-outline.svg',
     icon_active: 'images/menus/calendar.svg',
   },
-  // {
-  //   label: 'Merchandise',
-  //   to: '/merchandise',
-  //   icon: '/images/menus/shopping-bag-outline.svg',
-  //   icon_active: '/images/menus/shopping-bag.svg',
-  // },
+  {
+    label: 'Merchandise',
+    to: '/merchandise',
+    icon: '/images/menus/shopping-bag-outline.svg',
+    icon_active: '/images/menus/shopping-bag.svg',
+  },
   {
     label: 'Event Saya',
     to: '/my-event',

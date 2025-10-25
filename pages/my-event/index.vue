@@ -2,10 +2,16 @@
   <div>
     <AppToolbar class="z-[999]">
       <div class="flex items-center px-4 h-full gap-4 justify-between">
-        <NuxtLink to="/event/search" class="flex items-center cursor-pointer flex-1 rounded-full border border-[rgba(151,151,151,0.2)] text-[rgba(77,77,77,0.03)] h-[48px] px-4">
+        <div class="flex items-center flex-1 rounded-full border border-[rgba(151,151,151,0.2)] text-[rgba(77,77,77,0.03)] h-[48px] px-4">
           <Icon name="iconamoon:search" class="text-2xl text-[#627086] mr-2" />
-          <input type="text" placeholder="Masukan pencarian kamu" class="!cursor-pointer font-manrope bg-transparent placeholder-menu/30 text-menu text-base focus:outline-none w-full" readonly />
-        </NuxtLink>
+          <input
+            ref="searchInput"
+            v-model="searchQuery"
+            type="text"
+            placeholder="Masukan pencarian kamu"
+            class="font-manrope bg-transparent placeholder-menu/30 text-menu text-base focus:outline-none w-full"
+          />
+        </div>
         <!-- <NuxtImg src="/images/icons/filter.svg" alt="filter" class="h-6 w-6 cursor-pointer" /> -->
       </div>
     </AppToolbar>
@@ -43,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { useIntersectionObserver } from '@vueuse/core';
+import { useIntersectionObserver, watchDebounced } from '@vueuse/core';
 import { urlApiTransactions } from '~/constants';
 import type { Transaction, TransactionsResponse } from '~/types/api';
 
@@ -65,6 +71,8 @@ useSeoMeta({
 // const isOpen = ref(false);
 // const showDrawer = ref(false);
 const route = useRoute();
+const searchQuery = ref('');
+const searchInput = ref<HTMLInputElement | null>(null);
 
 const transactions = ref<Transaction[]>([]);
 const page = ref(1);
@@ -75,12 +83,22 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
 
 const kategori = ref((route.query.category as string) ?? 'all');
 
-const fetchTransactions = async () => {
+const fetchTransactions = async (isNewSearch = false) => {
+  if (isLoading.value && !isNewSearch) return;
   if (isLoading.value || isLastPage.value) return;
   isLoading.value = true;
 
   try {
-    const { data } = await apiSaforiginal.get<TransactionsResponse>(`${urlApiTransactions}?${buildParams({ type: 'event', category: kategori.value, date: 'all', location: 'all' })}`);
+    if (isNewSearch) {
+      page.value = 1;
+      transactions.value = [];
+      isLastPage.value = false;
+      isFirstLoading.value = true;
+    }
+
+    const { data } = await apiSaforiginal.get<TransactionsResponse>(
+      `${urlApiTransactions}?${buildParams({ type: 'event', category: kategori.value, date: 'all', location: 'all', search: searchQuery.value })}`
+    );
 
     if (data.transactions && data.transactions.length > 0) {
       transactions.value.push(...data.transactions);
@@ -106,19 +124,41 @@ const fetchTransactions = async () => {
   }
 };
 
+watchDebounced(
+  searchQuery,
+  () => {
+    transactions.value = [];
+    page.value = 1;
+    isLastPage.value = false;
+
+    if (searchQuery.value.trim().length > 2) {
+      fetchTransactions(true); // ⬅️ New search
+    } else if (searchQuery.value.trim().length === 0) {
+      fetchTransactions();
+    }
+  },
+  { debounce: 500, maxWait: 1000 }
+);
+
 // Helpers
 const buildParams = ({
   type = null,
   category = null,
   date = null,
   location = null,
+  search = null,
 }: {
   type?: string | null;
   category?: string | null;
   date?: string | null;
   location?: string | null;
+  search?: string | null;
 } = {}) => {
   const params = new URLSearchParams();
+
+  if (search && search !== 'all') {
+    params.append('search', search);
+  }
 
   if (category && category !== 'all') {
     params.append('category', category);

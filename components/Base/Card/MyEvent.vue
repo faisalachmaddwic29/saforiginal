@@ -25,19 +25,19 @@
       </h3>
 
       <!-- AUTHOR -->
-      <div class="flex items-center text-xs gap-1 text-menu">
+      <div class="flex items-start text-xs gap-1 text-menu">
         <Icon name="heroicons-outline:user" class="size-6 text-xl md:text-2xl shrink-0" />
         <span class="text-sm md:text-base">{{ props?.product?.store?.name }}</span>
       </div>
 
       <!-- DATE -->
-      <div v-if="props?.product?.event_at" class="flex items-center text-xs gap-1 text-menu">
+      <div v-if="props?.product?.event_at" class="flex items-start text-xs gap-1 text-menu">
         <Icon name="heroicons-outline:calendar" class="size-6 text-xl md:text-2xl shrink-0" />
         <span class="text-sm md:text-base">{{ props?.product?.event_at ? formatDate(props?.product?.event_at) : '' }}</span>
       </div>
 
       <!-- TYPE -->
-      <div v-if="props?.product?.type" class="flex items-center text-xs gap-1 text-menu">
+      <div v-if="props?.product?.type" class="flex items-start text-xs gap-1 text-menu">
         <Icon :name="getIconName(props?.product?.type as ProductType)" class="size-6 text-xl md:text-2xl shrink-0" />
         <span class="text-sm md:text-base capitalize break-all">{{ finalType }}</span>
       </div>
@@ -45,7 +45,7 @@
       <!-- Show Event -->
       <button
         v-if="props.isShowEvent && props.transactionId"
-        class="border border-secondary rounded-md w-fit ml-auto py-1 px-3 flex justify-center items-center gap-1 cursor-pointer"
+        class="border border-secondary rounded-md w-fit ml-auto py-1 px-3 flex justify-center items-start gap-1 cursor-pointer"
         @click="goToDetail()"
       >
         <span class="text-sm md:text-base font-medium">Lihat Event</span>
