@@ -196,9 +196,9 @@ export default defineNuxtConfig({
       clientsClaim: true,
       // globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
     },
-    injectManifest: {
-      globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webmanifest}'],
-    },
+    // injectManifest: {
+    //   globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webmanifest}'],
+    // },
     client: {
       installPrompt: true,
     },

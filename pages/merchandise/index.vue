@@ -95,6 +95,7 @@ definePageMeta({
   layout: 'home',
   isShadow: true,
   title: title,
+  isPaddingBottom: true,
 });
 
 useSeoMeta({
