@@ -65,7 +65,7 @@ export interface Product {
   closed_at: string | null;
   stock: number | null;
   limit: number | null;
-  sold: number;
+  sold: number | string | null;
   media_type: string | null;
   availability_type: string | null;
   note: string | null;

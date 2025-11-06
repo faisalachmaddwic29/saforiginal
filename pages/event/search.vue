@@ -123,7 +123,7 @@ const fetchEvents = async (isNewSearch = false) => {
       isFirstLoading.value = true;
     }
 
-    const { data } = await apiSaforiginal.get<ProductsResponse>(`/v1/products?search=${encodeURIComponent(searchQuery.value)}&page=${page.value}&per_page=10&sort=-created_at`);
+    const { data } = await apiSaforiginal.get<ProductsResponse>(`/v1/products?search=${encodeURIComponent(searchQuery.value)}&page=${page.value}&per_page=5&sort=-created_at`);
 
     // ⛔ Kalau ini bukan request terbaru (search), abaikan
     if (isNewSearch && thisCallId !== currentCallId) return;
@@ -199,7 +199,7 @@ const fetchEventsBest = async () => {
   isLoadingEventsBest.value = true;
 
   try {
-    const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + `?page=1&per_page=3`);
+    const { data } = await apiSaforiginal.get<ProductsResponse>(urlApiProducts + `?page=1&per_page=5`);
 
     itemsEventsBest.value = data.products;
   } catch (error) {

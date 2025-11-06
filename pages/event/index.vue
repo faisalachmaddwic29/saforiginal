@@ -276,10 +276,15 @@ const buildParams = ({
 
   if (type && type !== 'all') {
     params.append('type', type);
+  } else {
+    params.append('type[]', ProductType.EVENT);
+    params.append('type[]', ProductType.ONLINE_EVENT);
+    params.append('type[]', ProductType.OFFLINE_EVENT);
+    params.append('type[]', ProductType.VIDEO_SERIES);
   }
 
   params.append('page', String(page.value));
-  params.append('per_page', '2');
+  params.append('per_page', '5');
   params.append('sort', '-created_at');
 
   return params.toString();

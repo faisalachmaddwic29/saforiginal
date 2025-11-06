@@ -9,9 +9,9 @@ const ApiInstance: AxiosInstance = axios.create({
         'Content-Type': 'application/json',
     },
 });
-export function setApiBaseUrl(newBaseUrl: string) {
-	ApiInstance.defaults.baseURL = newBaseUrl;
-}
+// export function setApiBaseUrl(newBaseUrl: string) {
+// 	ApiInstance.defaults.baseURL = newBaseUrl;
+// }
 
 // Request Interceptor
 ApiInstance.interceptors.request.use(
