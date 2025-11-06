@@ -92,11 +92,11 @@ const finalType = computed(() => {
     case ProductType.VIDEO_SERIES:
       return props?.product?.videos.length + ' Episode';
     case ProductType.BOOK:
-      return 'mdi:book-open-page-variant-outline';
+      return 'Buku';
     case ProductType.MERCHANDISE:
-      return 'mdi:tshirt-crew-outline';
+      return 'Merchandise';
     default:
-      return 'mdi:tag-outline'; // fallback
+      return 'Tag';
   }
 });
 

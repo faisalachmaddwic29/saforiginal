@@ -1,5 +1,5 @@
 <template>
-  <div class="md:py-5 flex flex-col gap-4">
+  <div class="md:pb-5 flex flex-col gap-4">
     <!-- Loading State -->
     <div v-if="pending" class="px-4 py-8 text-center">
       <CardMerchandiseDetailLoading />
@@ -25,6 +25,79 @@
           </Button>
         </AppContainer>
       </div>
+
+      <DrawerCustom v-model:open="showDrawer" title="Buying Offline Event" description="Buying Offline Event" :show-indicator="false" classes="pb-0 !mb-0">
+        <AppContainer>
+          <form class="flex flex-col justify-between h-full bg-background rounded-t-2xl overflow-auto">
+            <div class="flex flex-col shrink text-title dark:text-menu font-normal p-4">
+              <div class="flex justify-between items-start">
+                <h4 class="font-extrabold">Pilih Variant</h4>
+                <Icon name="ion:close-outline" class="text-2xl size-6 cursor-pointer" @click="() => (showDrawer = false)" />
+              </div>
+
+              <!-- value inves -->
+              <div class="flex flex-col gap-4 my-4">
+                <div v-for="item in product.variants" :key="item.id" class="flex items-center justify-between w-full gap-4 p-3 border rounded-lg">
+                  <div class="w-full flex gap-2 font-bold">
+                    <div class="flex flex-col">
+                      <p class="font-extrabold">{{ item.name }}</p>
+                      <div class="flex items-start gap-1 text-primary">
+                        <span class="text-xs">Rp</span>
+                        <p class="text-sm">{{ currency(item.price) }}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="w-50 text-sm">
+                    <!-- kalau qty 0 -> tampil tombol Beli -->
+                    <Button v-if="!selectedItems[item.id]" type="button" variant="default" class="w-full font-bold" size="sm" @click="addItems(item)"> Beli </Button>
+
+                    <!-- kalau qty > 0 -> tampil counter -->
+                    <div v-else class="flex items-center justify-between border rounded overflow-hidden w-full h-8">
+                      <button
+                        type="button"
+                        class="flex items-center justify-center h-full cursor-pointer px-2 active:bg-red-300 transition-colors duration-150 rounded-l"
+                        @click="decreaseItems(item.id)"
+                      >
+                        <Icon name="mdi:minus" class="text-base text-primary" />
+                      </button>
+
+                      <div class="flex-1 bg-footer text-center w-10 h-full font-semibold text-sm flex items-center justify-center border-x-1">
+                        {{ selectedItems[item.id].qty }}
+                      </div>
+
+                      <button
+                        type="button"
+                        class="flex items-center justify-center h-full cursor-pointer px-2 active:bg-sky-300 transition-colors duration-150 rounded-r"
+                        @click="increaseItems(item.id, item.stock)"
+                      >
+                        <Icon name="mdi:plus" class="text-base text-primary" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Error message -->
+              <p v-if="formError" class="text-red-500 text-sm mt-2">{{ formError }}</p>
+            </div>
+
+            <div class="bg-footer p-4 flex justify-between gap-2 items-center">
+              <div class="w-full flex gap-2 font-bold">
+                <div class="flex flex-col">
+                  <p class="font-extrabold text-sm md:text-lg">Subtotal</p>
+                  <div class="flex items-start gap-1 text-primary">
+                    <span class="text-sm md:text-lg">Rp</span>
+                    <p class="text-base md:text-2xl font-bold">{{ currency(totalAmount) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <Button type="submit" variant="default" class="w-fit text-sm md:text-lg" :disabled="isSubmitDisabled"> Lanjutkan Pembayaran </Button>
+            </div>
+          </form>
+        </AppContainer>
+      </DrawerCustom>
     </template>
   </div>
 </template>
@@ -88,8 +161,48 @@ watchEffect(() => {
 
 const isLoading = ref(false);
 const showDrawer = ref(false);
+const selectedItems = ref<Record<number, any>>({});
+const formError = ref('');
 
 const handleBuy = () => {
   showDrawer.value = true;
 };
+
+function addItems(item: any) {
+  selectedItems.value[item.id] = {
+    id: item.id,
+    qty: 1,
+    unitPrice: item.price,
+    price: item.price,
+    name: item?.name,
+    users: [],
+  };
+  formError.value = '';
+}
+
+function increaseItems(id: number, maxQty?: number) {
+  const items = selectedItems.value[id];
+  if (items) {
+    if (maxQty && items.qty >= maxQty) return;
+    items.qty++;
+    items.price = items.qty * items.unitPrice;
+  }
+}
+
+function decreaseItems(id: number) {
+  const items = selectedItems.value[id];
+  if (!items) return;
+
+  if (items.qty > 1) {
+    items.qty--;
+    items.price = items.qty * items.unitPrice;
+  } else {
+    const { [id]: _, ...rest } = selectedItems.value;
+    selectedItems.value = rest;
+  }
+}
+
+const totalAmount = computed(() => Object.values(selectedItems.value).reduce((sum: number, t: any) => sum + t.price, 0));
+
+const isSubmitDisabled = computed(() => totalAmount.value <= 0);
 </script>

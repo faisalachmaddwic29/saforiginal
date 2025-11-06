@@ -1,5 +1,5 @@
 <template>
-  <div class="md:py-5 flex flex-col gap-4">
+  <div class="md:pb-5 flex flex-col gap-4">
     <!-- Loading State -->
     <div v-if="pending" class="px-4 py-8 text-center">
       <CardMerchandiseDetailLoading />
@@ -20,8 +20,8 @@
 
       <div class="fixed w-full z-10 bottom-0 left-0 bg-footer shadow-[0px_-2px_4px_rgba(0,0,0,0.05)]">
         <AppContainer class="p-4">
-          <Button class="w-full" type="button" :disabled="isLoading" @click="handleBuy">
-            {{ isLoading ? 'Loading...' : product.btn_label }}
+          <Button class="w-full" type="button" :disabled="!product" @click="handleBuy">
+            {{ product.btn_label }}
           </Button>
         </AppContainer>
       </div>
@@ -41,6 +41,7 @@ definePageMeta({
 });
 
 const route = useRoute();
+const router = useRouter();
 
 // Gunakan useAsyncData untuk handle SSR dengan baik
 const {
@@ -86,10 +87,12 @@ watchEffect(() => {
   }
 });
 
-const isLoading = ref(false);
-const showDrawer = ref(false);
-
 const handleBuy = () => {
-  showDrawer.value = true;
+  if (product.value) {
+    router.push({
+      path: `/merchandise/book/${route.params.slug}/checkout`,
+      query: { amount: product.value?.price },
+    });
+  }
 };
 </script>

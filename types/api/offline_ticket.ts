@@ -10,4 +10,5 @@ export interface OfflineTicket {
   sold: number;
   is_active: boolean;
   order_index: number;
+  available_stock: number;
 }

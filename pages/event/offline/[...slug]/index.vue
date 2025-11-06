@@ -77,7 +77,7 @@
                       <button
                         type="button"
                         class="flex items-center justify-center h-full cursor-pointer px-2 active:bg-sky-300 transition-colors duration-150 rounded-r"
-                        @click="increaseTicket(item.id)"
+                        @click="increaseTicket(item.id, item.available_stock)"
                       >
                         <Icon name="mdi:plus" class="text-base text-primary" />
                       </button>
@@ -219,9 +219,10 @@ function addTicket(item: any) {
   formError.value = '';
 }
 
-function increaseTicket(id: number) {
+function increaseTicket(id: number, maxQty?: number) {
   const ticket = selectedTickets.value[id];
   if (ticket) {
+    if (maxQty && ticket.qty >= maxQty) return;
     ticket.qty++;
     ticket.price = ticket.qty * ticket.unitPrice;
   }

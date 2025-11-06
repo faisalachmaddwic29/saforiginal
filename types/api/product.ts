@@ -1,12 +1,11 @@
-import type { PaginateData } from "./base";
-import type { Category } from "./category";
-import type { Creator } from "./creator";
-import type { Location } from "./location";
-import type { OfflineTicket } from "./offline_ticket";
-import type { Store } from "./store";
-import type { TagItem } from "./tag";
-import type { Video } from "./video";
-
+import type { PaginateData } from './base';
+import type { Category } from './category';
+import type { Creator } from './creator';
+import type { Location } from './location';
+import type { OfflineTicket } from './offline_ticket';
+import type { Store } from './store';
+import type { TagItem } from './tag';
+import type { Video } from './video';
 
 export enum ProductType {
   EVENT = 'online_event,offline_event',
@@ -14,7 +13,7 @@ export enum ProductType {
   OFFLINE_EVENT = 'offline_event',
   VIDEO_SERIES = 'video_series',
   BOOK = 'book',
-  MERCHANDISE = 'merchandise'
+  MERCHANDISE = 'merchandise',
 }
 
 export function toProductType(value: string): ProductType | null {
@@ -28,7 +27,7 @@ export enum ProductTimeType {
   TOMORROW = 'tomorrow',
   THIS_WEEK = 'this_week',
   THIS_MONTH = 'this_month',
-  NEXT_MONTH = 'next_month'
+  NEXT_MONTH = 'next_month',
 }
 
 export function toProductTimeType(value: string): ProductTimeType | null {
@@ -36,6 +35,15 @@ export function toProductTimeType(value: string): ProductTimeType | null {
   return values.includes(value as ProductTimeType) ? (value as ProductTimeType) : null;
 }
 
+export interface Variant {
+  id: number;
+  name: string;
+  price: string; // format desimal dari API
+  price_sale: string;
+  stock: number;
+  image: string | null;
+  order_index: number;
+}
 
 export interface Product {
   id: number;
@@ -77,26 +85,22 @@ export interface Product {
   offline_tickets: OfflineTicket[];
   created_at: string;
   updated_at: string;
+  variants: Variant[] | null;
 }
 
 export type Products = Product[] | [];
 
-
-
 export type ProductResponse = {
-  product: Product
+  product: Product;
   message: string;
   status: number;
 };
-
 
 // Langsung response API
 export type ProductsResponse = PaginateData<Product, 'products'> & {
   message: string;
   status: number;
 };
-
-
 
 export enum ProductStatus {
   SUKSES = 'paid',
