@@ -17,6 +17,9 @@ RUN rm -f package-lock.json && \
 # Copy semua file setelah install dependencies
 COPY . .
 
+ARG NUXT_API_URL
+ENV NUXT_API_URL=$NUXT_API_URL
+
 # Build aplikasi
 RUN npm run build --verbose
 
