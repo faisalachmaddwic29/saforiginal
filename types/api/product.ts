@@ -45,6 +45,20 @@ export interface Variant {
   order_index: number;
 }
 
+export interface Book {
+  id: number;
+  author: string;
+  publisher: string;
+  publish_year: number;
+  language: string;
+  isbn: string;
+  length: number;
+  pages: number;
+  weight: number;
+  width: number;
+  book_updated_at: string;
+}
+
 export interface Product {
   id: number;
   type: string;
@@ -86,6 +100,7 @@ export interface Product {
   created_at: string;
   updated_at: string;
   variants: Variant[] | null;
+  book: Book | null;
 }
 
 export type Products = Product[] | [];

@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { useIntersectionObserver, watchDebounced } from '@vueuse/core';
 import { urlApiTransactions } from '~/constants';
-import type { Transaction, TransactionsResponse } from '~/types/api';
+import { ProductType, type Transaction, type TransactionsResponse } from '~/types/api';
 
 const title = 'My Event';
 definePageMeta({
@@ -173,6 +173,10 @@ const buildParams = ({
   if (type && type !== 'all') {
     params.append('type', type);
   }
+
+  params.append('type[]', ProductType.ONLINE_EVENT);
+  params.append('type[]', ProductType.OFFLINE_EVENT);
+  params.append('type[]', ProductType.VIDEO_SERIES);
 
   params.append('payment_status', 'paid');
   params.append('page', String(page.value));

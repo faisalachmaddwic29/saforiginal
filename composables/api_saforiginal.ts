@@ -58,8 +58,6 @@ class ApiSafOriginal implements ApiService {
         params,
         headers,
         timeout: 30000, // 30 second timeout
-        // Tambahan config untuk stabilitas
-        validateStatus: (status) => status < 500, // Accept semua status < 500
       });
 
       return ApiResponseHandler.handleSuccess(response) as TResponse;

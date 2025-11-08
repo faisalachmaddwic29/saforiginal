@@ -1,72 +1,49 @@
 <template>
-  <div class="flex flex-col items-center -mx-4 md:mx-0 overflow-hidden md:rounded-xl relative z-[1] p-4 md:p-6 backdrop-blur-lg shadow-md">
-    <!-- BACKDROP -->
-    <NuxtImg
-      v-if="props.product?.cover"
-      :src="props.product?.cover"
-      :alt="props?.product?.title + '-backdrop'"
-      class="absolute inset-x-0 -z-[1] opacity-10 w-full top-1/2 filter blur-xs transform -translate-y-1/2"
-    />
-    <div class="w-full flex gap-6">
+  <div class="flex flex-col gap-4 md:gap-6">
+    <div class="flex gap-6 -mx-4 md:mx-0 overflow-hidden md:rounded-xl relative z-[1] p-4 md:p-6 backdrop-blur-lg shadow-sm">
+      <!-- BACKDROP -->
+      <NuxtImg
+        v-if="props?.product?.cover"
+        :src="props?.product?.cover"
+        :alt="props?.product?.title + '-backdrop'"
+        class="absolute inset-x-0 -z-[1] opacity-10 w-full top-1/2 filter blur-xs transform -translate-y-1/2"
+      />
+
       <!-- THUMBNAIL -->
-      <div v-if="props?.product?.cover" class="aspect-square flex-2">
-        <NuxtImg :src="props?.product?.cover ?? ''" :alt="props?.product?.title + '-thumbnail'" class="aspect-square rounded object-fill" />
+      <div class="w-[130px] md:w-[180px] h-full flex-shrink-0 aspect-[5/6]">
+        <NuxtImg :src="props?.product?.cover ?? ''" :alt="props?.product?.title + '-thumbnail'" class="w-full rounded object-fill aspect-[5/6]" />
       </div>
 
       <!-- CONTENT -->
-      <div class="flex flex-col flex-3 gap-1 md:gap-2 justify-between">
+      <div class="flex flex-col flex-1 min-w-0 gap-1.5 md:gap-2.5">
         <!-- TITLE -->
-        <div class="flex flex-col gap-1 md:gap-2">
-          <h3 class="text-lg md:text-2xl font-bold uppercase line-clamp-2">
-            {{ props.product?.title }}
-          </h3>
+        <h3 class="text-lg md:text-2xl font-bold uppercase line-clamp-2">
+          {{ props?.product?.title }}
+        </h3>
 
-          <!-- Category + Sold -->
-          <div class="flex items-center gap-4 text-sm md:text-base">
-            <div class="flex items-center gap-1">
-              <Icon :name="getIconName(toProductType(props.product.type) as ProductType)" class="w-5 h-5 text-secondary" />
-              <span class="capitalize">{{ formatType(toProductType(props.product.type) as ProductType) }}</span>
-            </div>
-
-            <div class="flex items-center gap-1">
-              <Icon name="heroicons-outline:fire" class="w-5 h-5 text-danger" />
-              <span>{{ props.product?.sold ?? 0 }} terjual</span>
-            </div>
-          </div>
+        <!-- AUTHOR -->
+        <div class="flex items-start text-xs md:text-lg gap-1 md:gap-2 text-menu">
+          <Icon name="heroicons-outline:user" class="size-6 text-2xl shrink-0" />
+          <span class="text-sm md:text-base truncate">{{ props?.product?.store?.name }}</span>
         </div>
 
-        <!-- PRICE -->
-        <div class="text-2xl md:text-4xl font-extrabold text-primary mt-1">Rp {{ currency(props.product?.price ?? 0) }}</div>
+        <!-- TYPE -->
+        <div class="flex items-start text-xs md:text-lg gap-1 md:gap-2 text-menu">
+          <Icon :name="getIconName(toProductType(props.product.type) as ProductType)" class="size-6 text-2xl shrink-0" />
+          <span class="text-sm md:text-base capitalize">{{ formatType(toProductType(props.product.type) as ProductType) }}</span>
+        </div>
+
+        <!-- Harga -->
+        <span class="text-xl md:text-2xl text-primary font-extrabold">{{ props?.product?.price ? 'Rp ' + currency(props?.product?.price) : 'Harga tidak tersedia' }}</span>
+
+        <!-- SHARE BUTTON -->
+        <ShareSocmed ref="share" :title="props?.product?.title ?? ''" class="mt-3 self-end" @click="shareSocmed">
+          <button class="border border-secondary rounded-md py-1 px-3 flex justify-center items-center gap-1 cursor-pointer" @click="shareSocmed">
+            <Icon name="heroicons-outline:share" class="w-4 h-4 text-xl shrink-0" />
+            <span class="text-sm md:text-base font-medium">Bagikan</span>
+          </button>
+        </ShareSocmed>
       </div>
-    </div>
-    <!-- STORE CARD -->
-    <div class="w-full flex items-center justify-between mt-4 bg-background/40 p-3 rounded-xl shadow-sm border">
-      <!-- Store -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-secondary/40 rounded-full overflow-hidden flex items-center justify-center">
-          <Icon name="ic:baseline-store-mall-directory" class="text-3xl" />
-          <!-- <NuxtImg v-if="props.product?.store?.logo" :src="props.product?.store?.logo" class="w-full h-full object-cover" /> -->
-        </div>
-
-        <div class="flex flex-col">
-          <span class="font-semibold text-sm md:text-base">
-            {{ props.product?.store?.name }}
-          </span>
-
-          <div class="flex items-center gap-1 text-xs text-gray-500">
-            <Icon name="heroicons-outline:map-pin" class="w-4 h-4" />
-            <span>{{ props.product?.store?.address ?? 'Lokasi tidak tersedia' }}</span>
-          </div>
-        </div>
-      </div>
-      <!-- SHARE BUTTON -->
-
-      <ShareSocmed ref="share" :title="props?.product?.title ?? ''" @click="shareSocmed">
-        <button class="border border-secondary rounded-md py-1 px-3 flex justify-center items-center gap-1 cursor-pointer" @click="shareSocmed">
-          <Icon name="heroicons-outline:share" class="w-4 h-4 text-xl shrink-0" />
-          <span class="text-xs md:text-sm font-medium">Bagikan</span>
-        </button>
-      </ShareSocmed>
     </div>
   </div>
 </template>

@@ -277,7 +277,6 @@ const buildParams = ({
   if (type && type !== 'all') {
     params.append('type', type);
   } else {
-    params.append('type[]', ProductType.EVENT);
     params.append('type[]', ProductType.ONLINE_EVENT);
     params.append('type[]', ProductType.OFFLINE_EVENT);
     params.append('type[]', ProductType.VIDEO_SERIES);

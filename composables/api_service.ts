@@ -2,7 +2,8 @@
 import type { AxiosResponse } from 'axios';
 import { ApiInstance } from '~/services/api/api_instance';
 import { ApiResponseHandler } from '~/services/api/api_response';
-import type { ApiService, ApiResponseType } from '~/types/api';
+import type { ApiResponseType } from '~/types/api';
+import type { ApiService } from '~/types/api/service';
 
 class ApiServiceImpl implements ApiService {
 	private async makeRequest<T>(

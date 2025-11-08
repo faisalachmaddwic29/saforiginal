@@ -4,7 +4,7 @@
     <NuxtImg v-if="props.thumbnail" :src="props.thumbnail" :alt="props?.title + '-backdrop'" class="absolute inset-x-0 -z-[1] opacity-10 w-full top-1/2 filter blur-xs transform -translate-y-1/2" />
 
     <!-- THUMBNAIL -->
-    <div class="size-[130px] md:size-[180px] flex-shrink-0 aspect-[5/6]">
+    <div class="w-[130px] md:w-[180px] h-full flex-shrink-0 aspect-[5/6]">
       <NuxtImg :src="props?.thumbnail ?? ''" :alt="props?.title + '-thumbnail'" class="w-full rounded object-fill aspect-[5/6]" />
     </div>
 

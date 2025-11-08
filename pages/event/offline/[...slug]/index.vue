@@ -194,7 +194,7 @@ if (import.meta.client) {
       (tickets) => {
         const values = Object.values(tickets);
         if (values.length === 0) return false;
-        const total = values.reduce((sum: number, t: any) => sum + t.price, 0);
+        const total = values.reduce((sum: number, t: any) => sum + parseFloat(t.price), 0);
         return total > 0;
       },
       { message: 'Pilih minimal 1 tiket' }
@@ -241,7 +241,7 @@ function decreaseTicket(id: number) {
   }
 }
 
-const totalAmount = computed(() => Object.values(selectedTickets.value).reduce((sum: number, t: any) => sum + t.price, 0));
+const totalAmount = computed(() => Object.values(selectedTickets.value).reduce((sum: number, t: any) => sum + parseFloat(t.price), 0));
 
 const isSubmitDisabled = computed(() => totalAmount.value <= 0);
 

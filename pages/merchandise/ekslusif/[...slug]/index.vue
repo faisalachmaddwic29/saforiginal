@@ -28,7 +28,7 @@
 
       <DrawerCustom v-model:open="showDrawer" title="Buying Offline Event" description="Buying Offline Event" :show-indicator="false" classes="pb-0 !mb-0">
         <AppContainer>
-          <form class="flex flex-col justify-between h-full bg-background rounded-t-2xl overflow-auto">
+          <form class="flex flex-col justify-between h-full bg-background rounded-t-2xl overflow-auto" @submit.prevent="onSubmit">
             <div class="flex flex-col shrink text-title dark:text-menu font-normal p-4">
               <div class="flex justify-between items-start">
                 <h4 class="font-extrabold">Pilih Variant</h4>
@@ -114,6 +114,7 @@ definePageMeta({
 });
 
 const route = useRoute();
+const router = useRouter();
 
 // Gunakan useAsyncData untuk handle SSR dengan baik
 const {
@@ -175,8 +176,9 @@ function addItems(item: any) {
     unitPrice: item.price,
     price: item.price,
     name: item?.name,
-    users: [],
   };
+
+  console.log(selectedItems);
   formError.value = '';
 }
 
@@ -185,8 +187,10 @@ function increaseItems(id: number, maxQty?: number) {
   if (items) {
     if (maxQty && items.qty >= maxQty) return;
     items.qty++;
-    items.price = items.qty * items.unitPrice;
+    items.price = items.qty * parseFloat(items.unitPrice);
   }
+
+  console.log(items);
 }
 
 function decreaseItems(id: number) {
@@ -195,14 +199,42 @@ function decreaseItems(id: number) {
 
   if (items.qty > 1) {
     items.qty--;
-    items.price = items.qty * items.unitPrice;
+    items.price = items.qty * parseFloat(items.unitPrice);
   } else {
     const { [id]: _, ...rest } = selectedItems.value;
     selectedItems.value = rest;
   }
 }
 
-const totalAmount = computed(() => Object.values(selectedItems.value).reduce((sum: number, t: any) => sum + t.price, 0));
+const totalAmount = computed(() => Object.values(selectedItems.value).reduce((sum: number, t: any) => sum + parseFloat(t.price), 0));
 
 const isSubmitDisabled = computed(() => totalAmount.value <= 0);
+
+const onSubmit = async () => {
+  try {
+    formError.value = '';
+
+    // // Manual validation fallback
+    if (Object.keys(selectedItems.value).length === 0) {
+      formError.value = 'Pilih minimal 1 item';
+      return;
+    }
+
+    if (totalAmount.value <= 0) {
+      formError.value = 'Total harus lebih dari 0';
+      return;
+    }
+
+    // // Navigate to checkout
+    router.push({
+      path: `/merchandise/ekslusif/${route.params.slug}/checkout`,
+      query: {
+        selectedItems: JSON.stringify(selectedItems.value),
+      },
+    });
+  } catch (err) {
+    console.error('Submit error:', err);
+    formError.value = 'Terjadi kesalahan, silakan coba lagi';
+  }
+};
 </script>
