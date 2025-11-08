@@ -43,4 +43,4 @@ jobs:
           script: |
             cd ${{ secrets.SSH_APP_PATH_PROD }}
             docker compose -f docker-compose.prod.yml pull frontend
-            docker compose -f docker-compose.prod.yml up -d --build
+            docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
