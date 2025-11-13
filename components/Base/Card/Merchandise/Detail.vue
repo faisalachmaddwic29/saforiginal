@@ -10,16 +10,22 @@
       />
 
       <!-- THUMBNAIL -->
-      <div class="w-[130px] md:w-[180px] h-full flex-shrink-0 aspect-[5/6]">
-        <NuxtImg :src="props?.product?.cover ?? ''" :alt="props?.product?.title + '-thumbnail'" class="w-full rounded object-fill aspect-[5/6]" />
+      <div class="w-[150px] md:w-[180px] h-full flex-shrink-0 aspect-[1/1]">
+        <NuxtImg :src="props?.product?.cover ?? ''" :alt="props?.product?.title + '-thumbnail'" class="w-full rounded object-fill aspect-[1/1]" />
       </div>
 
-      <!-- CONTENT -->
       <div class="flex flex-col flex-1 min-w-0 gap-1.5 md:gap-2.5">
         <!-- TITLE -->
-        <h3 class="text-lg md:text-2xl font-bold uppercase line-clamp-2">
+        <h3 class="text-lg md:text-2xl font-bold uppercase line-clamp-3">
           {{ props?.product?.title }}
         </h3>
+
+        <!-- CATEGORIES -->
+        <div v-if="props?.product?.categories?.length" class="flex flex-wrap gap-1 md:gap-2">
+          <span v-for="cat in props.product.categories" :key="cat.id" class="text-xs md:text-sm px-2 py-1 bg-secondary/10 text-secondary font-semibold rounded-full">
+            {{ cat.name }}
+          </span>
+        </div>
 
         <!-- AUTHOR -->
         <div class="flex items-start text-xs md:text-lg gap-1 md:gap-2 text-menu">
@@ -34,8 +40,9 @@
         </div>
 
         <!-- Harga -->
-        <span class="text-xl md:text-2xl text-primary font-extrabold">{{ props?.product?.price ? 'Rp ' + currency(props?.product?.price) : 'Harga tidak tersedia' }}</span>
-
+        <span v-if="isPrice" class="text-xl md:text-2xl text-primary font-extrabold">
+          {{ props?.product?.price ? 'Rp ' + currency(props?.product?.price) : 'Harga tidak tersedia' }}
+        </span>
         <!-- SHARE BUTTON -->
         <ShareSocmed ref="share" :title="props?.product?.title ?? ''" class="mt-3 self-end" @click="shareSocmed">
           <button class="border border-secondary rounded-md py-1 px-3 flex justify-center items-center gap-1 cursor-pointer" @click="shareSocmed">
@@ -56,6 +63,10 @@ const props = defineProps({
   product: {
     type: Object as PropType<Product> | null | undefined,
     required: true,
+  },
+  isPrice: {
+    type: Boolean,
+    default: true,
   },
 });
 

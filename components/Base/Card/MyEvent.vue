@@ -118,7 +118,6 @@ function getIconName(type: ProductType): string {
 }
 
 function goToDetail() {
-  console.log(props?.transactionStatus);
   if (props?.product?.type === ProductType.OFFLINE_EVENT) {
     if (props?.transactionStatus == 'paid') {
       router.push(`/my-event/offline/${props.transactionId}`);
@@ -131,11 +130,23 @@ function goToDetail() {
     } else {
       router.push(`/event/online/${props?.product?.slug}`);
     }
-  } else {
+  } else if (props?.product?.type === ProductType.VIDEO_SERIES) {
     if (props?.transactionStatus == 'paid') {
       router.push(`/my-event/series/${props.transactionId}`);
     } else {
       router.push(`/event/series/${props?.product?.slug}`);
+    }
+  } else if (props?.product?.type === ProductType.MERCHANDISE) {
+    if (props?.transactionStatus == 'paid') {
+      router.push(`/my-event/merchandise/${props.transactionId}`);
+    } else {
+      router.push(`/event/ekslusif/${props?.product?.slug}`);
+    }
+  } else if (props?.product?.type === ProductType.BOOK) {
+    if (props?.transactionStatus == 'paid') {
+      router.push(`/my-event/book/${props.transactionId}`);
+    } else {
+      router.push(`/event/book/${props?.product?.slug}`);
     }
   }
 }
