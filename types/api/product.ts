@@ -57,6 +57,7 @@ export interface Book {
   weight: number;
   width: number;
   book_updated_at: string;
+  stock: number;
 }
 
 export interface Product {

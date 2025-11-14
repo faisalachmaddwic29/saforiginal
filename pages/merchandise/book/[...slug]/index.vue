@@ -119,7 +119,7 @@
 
                   <div class="w-50 text-sm">
                     <!-- kalau qty 0 -> tampil tombol Beli -->
-                    <Button v-if="!selectedItems" type="button" variant="default" class="w-full font-bold" size="sm" @click="addItems(product.price)"> Beli </Button>
+                    <Button v-if="!selectedItems" type="button" variant="default" class="w-full font-bold" size="sm" @click="addItems(product)"> Beli </Button>
 
                     <!-- kalau qty > 0 -> tampil counter -->
                     <div v-else class="flex items-center justify-between border rounded overflow-hidden w-full h-8">
@@ -132,7 +132,7 @@
                       <button
                         type="button"
                         class="flex items-center justify-center h-full cursor-pointer px-2 active:bg-sky-300 transition-colors duration-150 rounded-r"
-                        @click="increaseItems(product?.stock ?? 1)"
+                        @click="increaseItems(product?.stock ?? 0)"
                       >
                         <Icon name="mdi:plus" class="text-base text-primary" />
                       </button>
@@ -167,7 +167,7 @@
 
 <script setup lang="ts">
 import { urlApiProducts } from '~/constants';
-import type { ProductResponse } from '~/types/api';
+import type { Product, ProductResponse } from '~/types/api';
 
 definePageMeta({
   layout: 'detail',
@@ -232,10 +232,14 @@ const handleBuy = () => {
   showDrawer.value = true;
 };
 
-function addItems(price: string) {
+function addItems(product: Product) {
+  if (product.book?.stock === 0) {
+    notify.error(`Stok Untuk ${product.title} sudah habis`);
+    return;
+  }
   selectedItems.value = {
     qty: 1,
-    unitPrice: parseFloat(price),
+    unitPrice: parseFloat(product.price),
   };
 
   formError.value = '';

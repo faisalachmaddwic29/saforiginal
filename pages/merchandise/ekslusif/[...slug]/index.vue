@@ -170,6 +170,10 @@ const handleBuy = () => {
 };
 
 function addItems(item: any) {
+  if (item.stock === 0) {
+    notify.error(`Stok Untuk Variant ${item.name} barang habis`);
+    return;
+  }
   selectedItems.value[item.id] = {
     id: item.id,
     qty: 1,
